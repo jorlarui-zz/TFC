@@ -1,8 +1,9 @@
 <?php ob_start(); session_start(); require('routeros_api.class.php'); ?>
+<?php error_reporting (E_ALL ^ E_NOTICE); ?>
 <html>
 <head>
 	<title>Login</title>
-	<link href="/css/login.css" type="text/css" rel="stylesheet" />
+	<link href="css/login.css" type="text/css" rel="stylesheet" />
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 </head>
 <body>

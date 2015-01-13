@@ -1,8 +1,9 @@
 <?php ob_start(); session_start(); require('routeros_api.class.php'); ?>
+<?php error_reporting (E_ALL ^ E_NOTICE); ?>
 <html>
 <head>
 	<title>Mikrotik Web Controller</title>
-	<link href="/css/styleAccessPoints.css" type="text/css" rel="stylesheet" />
+	<link href="css/styleAccessPoints.css" type="text/css" rel="stylesheet" />
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> 
 	

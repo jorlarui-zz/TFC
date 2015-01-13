@@ -1,0 +1,90 @@
+body{font-family:"Open Sans";}
+
+
+.menuTop{
+	
+	width: auto;
+	font-size:14px;
+	background-color: rgba(255, 255, 255, 0.95);
+	border-bottom: 1px solid #ddd;
+	height: 35px; 
+}
+
+.menuTop .menuTop2 {
+  float:right;
+  list-style: none;
+  margin-top: 5px;
+	
+}
+
+.menuTop2 > li {
+  display: inline;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.menuLeft{
+	float:left;
+	font-size:15px;
+	padding-top:20px;
+	background-color: rgba(255, 255, 255, 0.95);
+	border-right: 1px solid #ddd;
+	width:200px; 
+	
+	height:100%;
+}
+
+.menuLeft .menuLeft2 {
+  list-style: none;
+	
+}
+
+.menuLeft2 > li {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.titulo{
+  font-weight: bold; 	
+  border-bottom: 1px solid #ddd;
+  color:#de0000;
+  margin-top: 20px;
+}
+
+.menuLeft2 #seleccionado a{
+	color:#434141;}
+
+.menuLeft2 li a{
+  	text-decoration: none;
+  	color:#aba4a4;
+  	padding-left: 5px;
+  	padding-right: 5px;
+}
+
+.menuLeft2 li a:hover{
+	color:#434141;
+	}
+
+.cuerpo{
+	font-size:12px;
+	width:84%;;
+	float:right;
+	}
+#logOut{margin-left:50px;}
+#logOut:link {text-decoration: none;
+		font-weight: bold;
+		color:#de0000;}
+#logOut:visited {text-decoration: none;
+		font-weight: bold;
+		color:#de0000;}
+#logOut:active {text-decoration: none;
+		font-weight: bold;
+		color:#de0000;}
+#logOut:hover {text-decoration: underline;
+		font-weight: bold;}
+
+.redText{
+	font-weight: bold;
+	 display: inline;
+	color:#de0000;}
+

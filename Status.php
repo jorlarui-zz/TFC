@@ -5,27 +5,27 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
+		
 
 	
 <!--Script para dibujar las graficas-->
 
 
 </head>
-<body>
-
-    <nav role="navigation" class="navbar navbar-default navbar-fixed-top">
-        <!-- Brand and toggle get grouped for better mobile display -->
+<body>	
+    <!--<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
         <div class="navbar-header">
-            <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
             <p class="navbar-text"><img src="images/logolittle.png" width="75" height="20" style="margin-left:70px;"></p>
         </div>
-        <!-- Collection of nav links and other content for toggling -->
-        <div id="navbarCollapse" class="collapse navbar-collapse">
+       
+        <div id="navbar" class="collapse navbar-collapse">
 
 	    <ul class="nav navbar-nav navbar-right">
                 <li><a href="#">Log Out&nbsp&nbsp&nbsp</a></li>
@@ -36,9 +36,51 @@
                 <li><a href="#">Vlan</a></li>
 		<li><a href="#">ACL</a></li>
             </ul>
-            
-        </div>
-    </nav>		
+        </div> 
+    	</div>
+    </nav>-->
+<style media="screen" type="text/css">
+
+.top-bar a{
+	color:#333;
+	background-color:#DDD;
+	
+	border-radius:6px;}
+
+.top-bar li{
+}
+
+</style>
+ <div class="container top-bar">
+
+      <div class="masthead">
+        <img src="images/logolittle.png" width="100" height="30" style="margin-top:20px;"></p>
+        <nav>
+          <ul class="nav nav-justified">
+            <li class="active"><a href="#">STATUS</a></li>
+            <li><a href="#">PORTS</a></li>
+            <li><a href="#">VLANs</a></li>
+            <li><a href="#">ACLs</a></li>
+          </ul>
+        </nav>
+      </div>
+
+
+<div class="container">
+
+      	<div class="row">
+		<div class="col-lg-12" style="background-color:#DDD; margin-top:10px;">
+				<h1>PROBANDO</H1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-12" style="background-color:#DDD;margin-top:10px;">
+				<h1>PROBANDO</H1>
+		</div>
+	</div>
+
+</div>
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>			
 			

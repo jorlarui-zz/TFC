@@ -6,6 +6,7 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
+	<link rel="stylesheet" href="css/styleStatus.css"/>
 		
 
 	
@@ -96,7 +97,7 @@
 ?>
 
 	
-    <!--<nav class="navbar navbar-default navbar-fixed-top">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -105,7 +106,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-            <p class="navbar-text"><img src="images/logolittle.png" width="75" height="20" style="margin-left:70px;"></p>
+            <p class="navbar-text"><img src="images/logolittle.png"></p>
         </div>
        
         <div id="navbar" class="collapse navbar-collapse">
@@ -114,27 +115,16 @@
                 <li><a href="#">Log Out&nbsp&nbsp&nbsp</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right"  style="margin-right:70px;">
-                <li class="active"><a href="#">Status</a></li>
-                <li><a href="#">Ports</a></li>
-                <li><a href="#">Vlan</a></li>
-		<li><a href="#">ACL</a></li>
+                <li class="active"><a href="Status.php">Status</a></li>
+                <li><a href="Ports.php">Ports</a></li>
+                <li><a href="Vlans.php">Vlans</a></li>
+		<li><a href="ACLs.php">ACLs</a></li>
             </ul>
         </div> 
     	</div>
-    </nav>-->
-<style media="screen" type="text/css">
+    </nav>
 
-.top-bar a{
-	color:#333;
-	background-color:#DDD;
-	
-	border-radius:6px;}
-
-.top-bar li{
-}
-
-</style>
- <div class="container top-bar">
+     <!--<div class="container top-bar">
 
       <div class="masthead">
         <img src="images/logolittle.png" width="100" height="30" style="margin-top:20px;"></p>
@@ -146,23 +136,23 @@
             <li><a href="#">ACLs</a></li>
           </ul>
         </nav>
-      </div>
+      </div>-->
 
 
-<div class="container">
+<div class="container" style="margin-top:50px;">
 
       	<div class="row">
-		<div class="col-lg-12" style="background-color:#DDD; margin-top:10px;">
+		<div class="col-lg-12 switch-box">
 			<div class="col-lg-2"></div>
 			<div class="col-lg-8">
-				<h1><img src="images/CRS210-8G-2S+IN.png" width=100% align=center></H1>
+				<img src="images/CRS109-8G-1S-2HnD-IN.png">
 			</div>
 			<div class="col-lg-2"></div>		
 		</div>
 	</div>
 
 	<div class="row">
-		<div class="col-lg-12" style="background-color:#DDD; margin-top:10px;">
+		<div class="col-lg-12 info-box">
 			<div class="col-lg-2"></div>
 			<div class="col-lg-8">
 				<?php
@@ -201,7 +191,7 @@
 				<div class='graphics'>
 				<div id="container" style="max-width: 80%; height: 200px; margin: 0 auto"></div>
 				<input name="interface" id="interface" type="text" value="rb_inalambricos" />
-				<div id="trafico"></div>
+				
 				</div>
 			</div>
 			<div class="col-lg-2"></div>		

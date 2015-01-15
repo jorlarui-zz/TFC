@@ -1,0 +1,30 @@
+body{
+	background-color:#DDD;
+}
+.navbar-text img{
+	width:85px; 
+	height:20px;
+	margin-left:70px;
+}
+.switch-box{
+	padding-top:40px;
+	margin-top:10px;
+	background-color:#fff;
+	border:1px solid #b1b1b1;
+}
+
+.switch-box img{
+	width:100%;
+}
+
+.info-box{
+	padding-top:20px;
+	padding-bottom:30px;
+	margin-top:10px;
+	background-color:#fff;
+	border:1px solid #b1b1b1;
+}
+
+#interface{
+	display:none;
+}

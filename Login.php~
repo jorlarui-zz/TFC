@@ -63,7 +63,7 @@
 	if( $buttonClick){
 		if ($API->connect($IP, $user, $password)) {
 
-   			header( 'Location:Status.php') ;}
+   			header( 'Location:Overview.php') ;}
 
 	
 		else {

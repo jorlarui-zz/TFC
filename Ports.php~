@@ -1,12 +1,51 @@
 <?php ob_start(); session_start(); require('routeros_api.class.php'); ?>
 <?php error_reporting (E_ALL ^ E_NOTICE); ?>
+<?php
+		$API = new routeros_api();
+		$IP = $_SESSION[ 'ip' ];
+		$user = $_SESSION[ 'user' ];
+		$password = $_SESSION[ 'password' ];
+		//Comprobamos conexion API
+		if ($API->connect($IP, $user, $password)) {
+
+		//Comprobamos interfaces
+		$ARRAY = $API->comm("/interface/print");
+		$interfaces = count($ARRAY);
+		$Ports = $API->comm("/interface/ethernet/print");
+		$numPorts = count($Ports);
+
+		//Modelo
+		$modeloCom = $API->comm("/system/routerboard/print");
+		$modelo=$modeloCom[0]['model'];
+		//Estado Link
+
+		$valoresPar= json_encode(range(0, $numPorts-1));
+		$valores = substr($valoresPar, 1, -1);
+		echo $valores;
+
+
+		$API->write("/interface/ethernet/monitor",false);
+		$API->write("=numbers=".$valores,false);  
+		$API->write("=once=",true);
+		$READ = $API->read(false);
+		$statusPorts = $API->parse_response($READ);
+		$API->disconnect();
+		}
+		else {
+			header( 'Location:Login.php?notLogin=true' );}
+
+?>
+
 <html>
 <head>
 	<title>Mikrotik Web Controller</title>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
-	<link rel="stylesheet" href="css/stylePorts.css"/>
+	<?php
+		echo "<link rel='stylesheet' href='css/stylePorts$modelo.css'/>";
+		echo $modelo;
+	?>
 		
 
 	
@@ -89,38 +128,6 @@
 </head>
 <body>
 
-<?php
-		$API = new routeros_api();
-		$IP = $_SESSION[ 'ip' ];
-		$user = $_SESSION[ 'user' ];
-		$password = $_SESSION[ 'password' ];
-		//Comprobamos conexion API
-		if ($API->connect($IP, $user, $password)) {
-
-		//Comprobamos interfaces
-		$ARRAY = $API->comm("/interface/print");
-		$interfaces = count($ARRAY);
-		$Ports = $API->comm("/interface/ethernet/print");
-		$numPorts = count($Ports);
-
-		//Estado Link
-
-		$valoresPar= json_encode(range(0, $numPorts-1));
-		$valores = substr($valoresPar, 1, -1);
-		echo $valores;
-
-
-		$API->write("/interface/ethernet/monitor",false);
-		$API->write("=numbers=".$valores,false);  
-		$API->write("=once=",true);
-		$READ = $API->read(false);
-		$statusPorts = $API->parse_response($READ);
-		$API->disconnect();
-		}
-		else {
-			header( 'Location:Login.php?notLogin=true' );}
-
-?>
 
 	
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -158,6 +165,18 @@
 		<div class="col-lg-12 switch-box">
 			<div class="col-lg-2"></div>
 			<div class="col-lg-6">
+				
+				<?php
+				for ($cont = 0; $cont < $numPorts; $cont++){
+				
+				if($statusPorts[$cont]['status']=='link-ok'){
+					echo "<div class='etherGreen' id='etherGreen$cont'><img src='images/etherGreen.png'></div>";			
+					}
+				else if($statusPorts[$cont]['status']=='no-link'){			
+					}
+				
+				}			
+				?>
 				<img src="images/RB2011UiAS-2HnD-IN.png">
 			</div>
 			<div class="col-lg-2">INFO HERE</div>
@@ -201,12 +220,13 @@
 			<div class="col-lg-4 ports-box">
 
 			<?php
+			echo $modelo;
 			echo "<table>";
 			for ($cont = 0; $cont < $numPorts; $cont++){
 				echo "<tr>";
 				echo "<td>".$Ports[$cont]['name']."</td>";
 				if($statusPorts[$cont]['status']=='link-ok'){
-					echo "<td class='link-ok'>";				
+					echo "<td class='link-ok'>";			
 					}
 				else if($statusPorts[$cont]['status']=='no-link'){
 					echo "<td class='no-link'>";				

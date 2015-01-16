@@ -145,7 +145,7 @@
 		<div class="col-lg-12 switch-box">
 			<div class="col-lg-2"></div>
 			<div class="col-lg-8">
-				<img src="images/CRS109-8G-1S-2HnD-IN.png">
+				<img src="images/RB2011UiAS-2HnD-IN.png">
 			</div>
 			<div class="col-lg-2"></div>		
 		</div>

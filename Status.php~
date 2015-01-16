@@ -190,7 +190,7 @@
 ?>
 				<div class='graphics'>
 				<div id="container" style="max-width: 80%; height: 200px; margin: 0 auto"></div>
-				
+				<input name="interface" id="interface" type="text" value="rb_inalambricos" />
 				
 				</div>
 			</div>

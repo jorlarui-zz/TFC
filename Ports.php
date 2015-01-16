@@ -6,7 +6,7 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
-	<link rel="stylesheet" href="css/styleStatus.css"/>
+	<link rel="stylesheet" href="css/stylePorts.css"/>
 		
 
 	
@@ -59,7 +59,7 @@
 			}
 		 },
 		 title: {
-			text: 'Monitoring'
+			text: ''
 		 },
 		 xAxis: {
 			type: 'datetime',
@@ -94,6 +94,32 @@
 		$IP = $_SESSION[ 'ip' ];
 		$user = $_SESSION[ 'user' ];
 		$password = $_SESSION[ 'password' ];
+		//Comprobamos conexion API
+		if ($API->connect($IP, $user, $password)) {
+
+		//Comprobamos interfaces
+		$ARRAY = $API->comm("/interface/print");
+		$interfaces = count($ARRAY);
+		$Ports = $API->comm("/interface/ethernet/print");
+		$numPorts = count($Ports);
+
+		//Estado Link
+
+		$valoresPar= json_encode(range(0, $numPorts-1));
+		$valores = substr($valoresPar, 1, -1);
+		echo $valores;
+
+
+		$API->write("/interface/ethernet/monitor",false);
+		$API->write("=numbers=".$valores,false);  
+		$API->write("=once=",true);
+		$READ = $API->read(false);
+		$statusPorts = $API->parse_response($READ);
+		$API->disconnect();
+		}
+		else {
+			header( 'Location:Login.php?notLogin=true' );}
+
 ?>
 
 	
@@ -124,19 +150,6 @@
     	</div>
     </nav>
 
-     <!--<div class="container top-bar">
-
-      <div class="masthead">
-        <img src="images/logolittle.png" width="100" height="30" style="margin-top:20px;"></p>
-        <nav>
-          <ul class="nav nav-justified">
-            <li class="active"><a href="#">STATUS</a></li>
-            <li><a href="#">PORTS</a></li>
-            <li><a href="#">VLANs</a></li>
-            <li><a href="#">ACLs</a></li>
-          </ul>
-        </nav>
-      </div>-->
 
 
 <div class="container" style="margin-top:50px;">
@@ -144,32 +157,25 @@
       	<div class="row">
 		<div class="col-lg-12 switch-box">
 			<div class="col-lg-2"></div>
-			<div class="col-lg-8">
-				<img src="images/CRS109-8G-1S-2HnD-IN.png">
+			<div class="col-lg-6">
+				<img src="images/RB2011UiAS-2HnD-IN.png">
 			</div>
+			<div class="col-lg-2">INFO HERE</div>
 			<div class="col-lg-2"></div>		
 		</div>
 	</div>
 
 	<div class="row">
 		<div class="col-lg-12 info-box">
-			<div class="col-lg-2"></div>
-			<div class="col-lg-8">
+			<div class="col-lg-1"></div>
+			<div class="col-lg-7">
 				<?php
-					
-					//Comprobamos conexion API
-					if ($API->connect($IP, $user, $password)) {
-
-			//Comprobamos cuantas interfaces tiene CAPsMAN
-			$ARRAY = $API->comm("/interface/print");
-			$interfaces = count($ARRAY);
-			$API->disconnect();
-
 			//Creamos un formulario que actualiza la gráfica en función de la interfaz seleccionada
-			echo "<form action=Status.php method=post>";
+			echo "<form action=Ports.php method=post>";
 			echo "Selecciona interfaz:   ";
 			echo "<select name='interfaces' size='1' onchange='this.form.submit()'>";
 			echo "<option value>Interfaz</option>";
+			
 			for ($cont = 0; $cont < $interfaces; $cont++){
 			
 				$interfazSel = $ARRAY[$cont]['name'];
@@ -183,17 +189,36 @@
 			echo $_POST['interfaces'];
 
 			$interfaz =  $_POST['interfaces'];
-			$_SESSION[ 'interfaz' ]=$interfaz;}
+			$_SESSION[ 'interfaz' ]=$interfaz;
 	
-			else {
-					header( 'Location:Login.php?notLogin=true' );}
+			
 ?>
 				<div class='graphics'>
 				<div id="container" style="max-width: 80%; height: 200px; margin: 0 auto"></div>
 				<input name="interface" id="interface" type="text" value="rb_inalambricos" />
 				</div>
 			</div>
-			<div class="col-lg-2"></div>		
+			<div class="col-lg-4 ports-box">
+
+			<?php
+			echo "<table>";
+			for ($cont = 0; $cont < $numPorts; $cont++){
+				echo "<tr>";
+				echo "<td>".$Ports[$cont]['name']."</td>";
+				if($statusPorts[$cont]['status']=='link-ok'){
+					echo "<td class='link-ok'>";				
+					}
+				else if($statusPorts[$cont]['status']=='no-link'){
+					echo "<td class='no-link'>";				
+					}
+				
+				
+				echo $statusPorts[$cont]['status']."</td>";
+				echo "</tr>";
+}			
+			echo "</table>";
+			?>
+			</div>		
 		</div>
 	</div>
 

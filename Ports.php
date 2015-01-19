@@ -149,6 +149,7 @@
             <ul class="nav navbar-nav navbar-right"  style="margin-right:70px;">
                 <li><a href="Status.php">Status</a></li>
                 <li class="active"><a href="Ports.php">Ports</a></li>
+		<li><a href="Switch.php">Switch</a></li>
                 <li><a href="Vlans.php">Vlans</a></li>
 		<li><a href="ACLs.php">ACLs</a></li>
             </ul>
@@ -174,9 +175,9 @@
 				else if($statusPorts[$cont]['status']=='no-link'){			
 					}
 				
-				}			
+				}
+				echo "<img src='images/$modelo.png'>";			
 				?>
-				<img src="images/RB2011UiAS-2HnD-IN.png">
 			</div>
 			<div class="col-lg-2">INFO HERE</div>
 			<div class="col-lg-2"></div>		
@@ -219,7 +220,6 @@
 			<div class="col-lg-4 ports-box">
 
 			<?php
-			echo $modelo;
 			echo "<table>";
 			for ($cont = 0; $cont < $numPorts; $cont++){
 				echo "<tr>";

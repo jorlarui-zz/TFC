@@ -32,6 +32,22 @@ body{
 	margin-top:10px;
 	background-color:#fff;
 }
+table{
+	 margin-left:auto; 
+    	margin-right:auto;
+	border-collapse: collapse; 
+}
+#refreshPorts{
+	margin-right:10%;
+}
+
+#refreshPorts td{
+	padding-top: 2.5%;
+}
+
+form{
+	margin-bottom:0px;
+	}
 
 .link-ok{
 	padding-left:50px;
@@ -48,11 +64,7 @@ body{
 	width:5%;
 }
 
-#master-port{
-	color:red;
-	font-style:bold;
-	
-	}
+
 
 #etherGreen0 {
 	min-height: 100%;

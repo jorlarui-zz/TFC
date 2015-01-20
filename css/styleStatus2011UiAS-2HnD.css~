@@ -43,7 +43,7 @@
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
 	<?php
-		echo "<link rel='stylesheet' href='css/stylePorts$modelo.css'/>";
+		echo "<link rel='stylesheet' href='css/styleStatus$modelo.css'/>";
 	?>
 		
 
@@ -186,77 +186,62 @@
 
 	<div class="row">
 		<div class="col-lg-12 info-box">
-			<div class="col-lg-2"></div>
-			<div class="col-lg-8 ports-box">
+			<div class="col-lg-1"></div>
+			<div class="col-lg-7">
 				<?php
-				echo "<table>";
-					for ($cont = 0; $cont < $numPorts; $cont++){
-						echo "<tr>";
-						
-						echo "<td>".$Ports[$cont]['name']."</td>";
-						if($statusPorts[$cont]['status']=='link-ok'){
-							echo "<td class='link-ok'>";			
-						}
-						else if($statusPorts[$cont]['status']=='no-link'){
-							echo "<td class='no-link'>";				
-						}
-				
-				
-						echo $statusPorts[$cont]['status']."</td>";
-						echo "<td><form name='button$cont' method='post' action='Ports.php'>
-							<input type='submit' name='enablePort$cont' value='&#10004' class='button'/>
-							<input type='submit' name='disablePort$cont' value='X' class='button'/>
-							</form></td>";
-						echo "</tr>";
-					}			
-				echo "</table>";
-
-			?>
-			</div>
-			<div class="col-lg-2">
-
+			//Creamos un formulario que actualiza la gráfica en función de la interfaz seleccionada
+			echo "<form action=Ports.php method=post>";
+			echo "Selecciona interfaz:   ";
+			echo "<select name='interfaces' size='1' onchange='this.form.submit()'>";
+			echo "<option value>Interfaz</option>";
 			
+			for ($cont = 0; $cont < $interfaces; $cont++){
+			
+				$interfazSel = $ARRAY[$cont]['name'];
+				echo "<option value=$interfazSel>$interfazSel</option>";
+			
+			}		
+			echo "</select></form>";
+		
+			echo "Interfaz:";
+		 
+			echo $_POST['interfaces'];
+
+			$interfaz =  $_POST['interfaces'];
+			$_SESSION[ 'interfaz' ]=$interfaz;
+	
+			
+?>
+				<div class='graphics'>
+				<div id="container" style="max-width: 80%; height: 200px; margin: 0 auto"></div>
+				<input name="interface" id="interface" type="text" value="rb_inalambricos" />
+				</div>
+			</div>
+			<div class="col-lg-4 ports-box">
+
+			<?php
+			echo "<table>";
+			for ($cont = 0; $cont < $numPorts; $cont++){
+				echo "<tr>";
+				echo "<td>".$Ports[$cont]['name']."</td>";
+				if($statusPorts[$cont]['status']=='link-ok'){
+					echo "<td class='link-ok'>";			
+					}
+				else if($statusPorts[$cont]['status']=='no-link'){
+					echo "<td class='no-link'>";				
+					}
+				
+				
+				echo $statusPorts[$cont]['status']."</td>";
+				echo "</tr>";
+}			
+			echo "</table>";
+			?>
 			</div>		
 		</div>
 	</div>
 
 </div>
-
-<?php
-		for ($cont = 0; $cont < $numPorts; $cont++){
-		if(isset($_POST['enablePort'.$cont])){
-			echo $Ports[$cont]['name'];
-			$API = new routeros_api();
-			$IP = $_SESSION[ 'ip' ];
-			$user = $_SESSION[ 'user' ];
-			$password = $_SESSION[ 'password' ];
-			if ($API->connect($IP, $user, $password)) {
-				$API->write("/interface/ethernet/set",false);
-				$API->write("=disabled=no",false);
-				$API->write("=.id=".$Ports[$cont]['name']);
-				$ARRAY = $API->read();
-				$API->disconnect();
-		}}
-		}
-
-		for ($cont = 0; $cont < $numPorts; $cont++){
-		if(isset($_POST['disablePort'.$cont])){
-			echo $Ports[$cont]['name'];
-			$API = new routeros_api();
-			$IP = $_SESSION[ 'ip' ];
-			$user = $_SESSION[ 'user' ];
-			$password = $_SESSION[ 'password' ];
-			if ($API->connect($IP, $user, $password)) {
-				$API->write("/interface/ethernet/set",false);
-				$API->write("=disabled=yes",false);
-				$API->write("=.id=".$Ports[$cont]['name']);
-				$ARRAY = $API->read();
-				$API->disconnect();
-		}}
-		}
-
-
-?>
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>			
 			

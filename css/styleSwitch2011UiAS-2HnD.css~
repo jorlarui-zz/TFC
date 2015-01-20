@@ -50,7 +50,16 @@ body{
 
 table {
 	 border-collapse: separate;
-	border-spacing: 0px 40px;
+	border-spacing: 20px;
+	}
+
+table th{
+	font-size:20px;
+	}
+
+table td{
+	font-size:12px;
+	
 	}
 
 #etherGreen0 {

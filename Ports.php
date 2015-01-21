@@ -16,7 +16,6 @@
 	
   </script>
 
-
 <?php
 		$API = new routeros_api();
 		$IP = $_SESSION[ 'ip' ];
@@ -116,7 +115,11 @@
 				for ($cont = 0; $cont < $numPorts; $cont++){
 				
 				if($statusPorts[$cont]['status']=='link-ok'){
-					echo "<div class='etherGreen' id='etherGreen$cont'><img src='images/etherGreen.png'></div>";			
+					
+					echo "<svg version='1.1' id='etherGreen$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
+	 				width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve'>
+					<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+					</svg>";
 					}
 				else if($statusPorts[$cont]['status']=='no-link'){			
 					}

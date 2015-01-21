@@ -28,7 +28,6 @@
 		$READ = $API->read(false);
 		$statusPorts = $API->parse_response($READ);
 		$API->disconnect();}	
-				echo "HOLA";
 				for ($cont = 0; $cont < $numPorts; $cont++){
 				
 				if($statusPorts[$cont]['status']=='link-ok'){

@@ -1,8 +1,8 @@
 <?php ob_start(); session_start(); require('routeros_api.class.php'); ?>
 <?php error_reporting (E_ALL ^ E_NOTICE); ?>
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 
-<!--
+
+
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
@@ -16,7 +16,6 @@
 	
   </script>
 
--->
 <?php
 		$API = new routeros_api();
 		$IP = $_SESSION[ 'ip' ];
@@ -118,7 +117,7 @@
 				if($statusPorts[$cont]['status']=='link-ok'){
 					
 					echo "<svg version='1.1' id='etherGreen$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
-	 				width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve'>
+	 				width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
 					<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
 					</svg>";
 					}
@@ -214,7 +213,7 @@
 
 
 ?>
-
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>	
 
 

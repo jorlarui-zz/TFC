@@ -1,5 +1,18 @@
 <?php ob_start(); session_start(); require('routeros_api.class.php'); ?>
 <?php error_reporting (E_ALL ^ E_NOTICE); ?>
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+			var auto_refresh = setInterval(function (){
+			$('#refreshImage').load('datosSwitchImage.php').fadeIn("slow");
+			$('#refreshPorts').load('datosSwitch.php').fadeIn("slow");
+			}, 2000);
+		});		
+			
+
+ 
+	
+  </script>
 <?php
 
 
@@ -114,19 +127,44 @@ function random_color(){
 		<div class="col-lg-12 switch-box">
 			<div class="col-lg-2"></div>
 			<div class="col-lg-6">
+				 <div id="refreshImage">
 				
 				<?php
+				$contSwitchImg=-1;
 				for ($cont = 0; $cont < $numPorts; $cont++){
+					if($Ports[$cont]['master-port']=='none'){
+
+						$contSwitchImg=$contSwitchImg+1;
 				
-				if($statusPorts[$cont]['status']=='link-ok'){
-					echo "<div class='etherGreen' id='etherGreen$cont'><img src='images/etherGreen.png'></div>";			
-					}
-				else if($statusPorts[$cont]['status']=='no-link'){			
+						if($statusPorts[$cont]['status']=='link-ok'){
+						echo "<svg version='1.1' id='etherGreen$cont' style='fill:$colores[$contSwitchImg]' xmlns='http://www.w3.org/2000/svg' 
+						xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
+	 					width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
+						<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+						</svg>";
+						
+							
+						}
+					}	
+
+					else{
+						if($statusPorts[$cont]['status']=='link-ok'){
+						echo "<svg version='1.1' id='etherGreen$cont' style='fill:$colores[$contSwitchImg]' xmlns='http://www.w3.org/2000/svg' 
+									xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
+	 								width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
+									<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+									</svg>";
+						
+							
+						}	
+					
+					
 					}
 				
 				}
 				echo "<img src='images/$modelo.png'>";			
 				?>
+			</div>
 			</div>
 			<div class="col-lg-2">INFO HERE</div>
 			<div class="col-lg-2"></div>		
@@ -135,21 +173,23 @@ function random_color(){
 
 	<div class="row">
 		<div class="col-lg-12 info-box">
-			<div class="col-lg-1"></div>
-			<div class="col-lg-10">
+			<div class="col-lg-2"></div>
+			<div class="col-lg-4">
+			<div id="refreshPorts">
 				<table>
 				<?php
+				$contSwitch=-1;
 				for ($cont = 0; $cont < $numPorts; $cont++){
-				
+						
 						if($Ports[$cont]['master-port']=='none'){
 							$contSwitch=$contSwitch+1;
 							echo "<tr>";
-							echo "<th style='border-bottom: 3px solid ".$colores[$cont].";'>Switch ".$contSwitch."</th></tr>";
+							echo "<th style='border-bottom: 3px solid ".$colores[$contSwitch].";'>Switch ".$contSwitch."</th></tr>";
 							echo "<tr>";
-							echo "<td id='master-port'>".$Ports[$cont]['name']."</td>";
+							echo "<td id='master-port'>".$Ports[$cont]['name']." (Master-port)</td>";
 							for($cont2 = 0; $cont2 < $numPorts; $cont2++){
 								if($Ports[$cont]['name']==$Ports[$cont2]['master-port']){
-									echo "<td>".$Ports[$cont2]['name']."</td>";
+									echo "<tr><td>".$Ports[$cont2]['name']."</td></tr>";
 								}
 
 							}
@@ -160,16 +200,65 @@ function random_color(){
 				}
 						
 				?>
-				<table>
+				</table>
 			</div>
-			<div class="col-lg-1">
+			</div>
+			<div class="col-lg-6">
+				<table>
+				<td>
+				<table>
+				<?php
+					for ($cont = 0; $cont < $numPorts; $cont++){
+						
+						echo "<tr>";
+						echo "<td>".$Ports[$cont]['name']."</td>";
+						echo "<td>";
+						echo "<form action=Switch.php method=post>";
+						echo "<select name='formMaster$cont' onchange='this.form.submit()'>
+  							<option value=''>Master Port</option>";
+								echo "<option value='none'>none</option>";
+							for ($cont2 = 0; $cont2 < $numPorts; $cont2++){
+								echo "<option value='".$Ports[$cont2]['name']."'>".$Ports[$cont2]['name']."</option>";  								
+								
+							}
 
+						echo "</select></form>";	
+						echo "</td>";
+									
+						echo "</tr>";
+					}
+				?>
+					</table>
+				</td>
+				<td>
+				
 			
 			</div>		
 		</div>
 	</div>
 
 </div>
+
+<?php
+		for ($cont = 0; $cont < $numPorts; $cont++){
+			if(isset($_POST['formMaster'.$cont])){
+			$seleccion= $_POST['formMaster'.$cont];
+
+			$API = new routeros_api();
+			$IP = $_SESSION[ 'ip' ];
+			$user = $_SESSION[ 'user' ];
+			$password = $_SESSION[ 'password' ];
+			if ($API->connect($IP, $user, $password)) {
+				$API->write("/interface/ethernet/set",false);
+				$API->write("=master-port=".$seleccion,false);
+				$API->write("=.id=".$Ports[$cont]['name']);
+				$ARRAY = $API->read();
+				$API->disconnect();
+			}
+			}
+
+}
+?>
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>			
 			

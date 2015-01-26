@@ -1,53 +1,22 @@
 <?php ob_start(); session_start(); require('routeros_api.class.php'); ?>
 <?php error_reporting (E_ALL ^ E_NOTICE); ?>
-<?php
-		$API = new routeros_api();
-		$IP = $_SESSION[ 'ip' ];
-		$user = $_SESSION[ 'user' ];
-		$password = $_SESSION[ 'password' ];
-		//Comprobamos conexion API
-		if ($API->connect($IP, $user, $password)) {
 
-		//Comprobamos interfaces
-		$ARRAY = $API->comm("/interface/print");
-		$interfaces = count($ARRAY);
-		$Ports = $API->comm("/interface/ethernet/print");
-		$numPorts = count($Ports);
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 
-		//Modelo
-		$modeloCom = $API->comm("/system/routerboard/print");
-		$modelo=$modeloCom[0]['model'];
-		//Estado Link
+<script type="text/javascript">
+  $(document).ready(function(){
+			var auto_refresh = setInterval(function (){
+			$('#refreshImage').load('datosStatusImage.php').fadeIn("slow");
+			$('#refreshPorts').load('datosStatus.php').fadeIn("slow");
+			}, 2000);
+		});		
+			
 
-		$valoresPar= json_encode(range(0, $numPorts-1));
-		$valores = substr($valoresPar, 1, -1);
-		echo $valores;
-
-
-		$API->write("/interface/ethernet/monitor",false);
-		$API->write("=numbers=".$valores,false);  
-		$API->write("=once=",true);
-		$READ = $API->read(false);
-		$statusPorts = $API->parse_response($READ);
-		$API->disconnect();
-		}
-		else {
-			header( 'Location:Login.php?notLogin=true' );}
-
-?>
-
-<html>
-<head>
-	<title>Mikrotik Web Controller</title>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
-	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
-	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
-	<?php
-		echo "<link rel='stylesheet' href='css/stylePorts$modelo.css'/>";
-	?>
-		
-
+ 
 	
+  </script>
+
+
 <!--Script para dibujar las graficas-->
 <script> 
 	var chart;
@@ -123,6 +92,56 @@
   });
 </script>
 
+<?php
+		$API = new routeros_api();
+		$IP = $_SESSION[ 'ip' ];
+		$user = $_SESSION[ 'user' ];
+		$password = $_SESSION[ 'password' ];
+		//Comprobamos conexion API
+		if ($API->connect($IP, $user, $password)) {
+
+		//Comprobamos interfaces
+		
+		$Ports = $API->comm("/interface/ethernet/print");
+		$numPorts = count($Ports);
+
+		//Modelo
+		$modeloCom = $API->comm("/system/routerboard/print");
+		$modelo=$modeloCom[0]['model'];
+		//Estado Link
+
+		$valoresPar= json_encode(range(0, $numPorts-1));
+		$valores = substr($valoresPar, 1, -1);
+		echo $valores;
+
+
+		$API->write("/interface/ethernet/monitor",false);
+		$API->write("=numbers=".$valores,false);  
+		$API->write("=once=",true);
+		$READ = $API->read(false);
+		$statusPorts = $API->parse_response($READ);
+		$API->disconnect();
+		}
+		else {
+			header( 'Location:Login.php?notLogin=true' );}
+
+?>
+
+<html>
+<head>
+	<title>Mikrotik Web Controller</title>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
+	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
+	<?php
+		echo "<link rel='stylesheet' href='css/styleStatus$modelo.css'/>";
+	?>
+		
+
+	
+<!--Script para dibujar las graficas-->
+
+
 
 </head>
 <body>
@@ -147,7 +166,7 @@
                 <li><a href="#">Log Out&nbsp&nbsp&nbsp</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right"  style="margin-right:70px;">
-                <li  class="active"><a href="Status.php">Status</a></li>
+                <li class="active"><a href="Status.php">Status</a></li>
                 <li><a href="Ports.php">Ports</a></li>
 		<li><a href="Switch.php">Switch</a></li>
                 <li><a href="Vlans.php">Vlans</a></li>
@@ -165,16 +184,17 @@
 		<div class="col-lg-12 switch-box">
 			<div class="col-lg-2"></div>
 			<div class="col-lg-6">
-				
+				 <div id="refreshImage">
+    
 				<?php
 				for ($cont = 0; $cont < $numPorts; $cont++){
 				
 				if($statusPorts[$cont]['status']=='link-ok'){
-					echo "<svg version='1.1' id='etherGreen$cont' style='fill:$colores[$contSwitchImg]' xmlns='http://www.w3.org/2000/svg' 
-									xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
-	 								width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
-									<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
-									</svg>";		
+					
+					echo "<svg version='1.1' id='etherGreen$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
+	 				width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
+					<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+					</svg>";
 					}
 				else if($statusPorts[$cont]['status']=='no-link'){			
 					}
@@ -182,7 +202,8 @@
 				}
 				echo "<img src='images/$modelo.png'>";			
 				?>
-			</div>
+ 				 </div> 
+				</div>
 			<div class="col-lg-2">INFO HERE</div>
 			<div class="col-lg-2"></div>		
 		</div>
@@ -190,18 +211,17 @@
 
 	<div class="row">
 		<div class="col-lg-12 info-box">
-			<div class="col-lg-2"></div>
-			<div class="col-lg-8">
-				<?php
+			<div class="col-lg-6">
+					<?php
 			//Creamos un formulario que actualiza la gráfica en función de la interfaz seleccionada
-			echo "<form action=Status.php method=post>";
+			echo "<form method=post>";
 			echo "Selecciona interfaz:   ";
 			echo "<select name='interfaces' size='1' onchange='this.form.submit()'>";
 			echo "<option value>Interfaz</option>";
 			
-			for ($cont = 0; $cont < $interfaces; $cont++){
+			for ($cont = 0; $cont < $numPorts; $cont++){
 			
-				$interfazSel = $ARRAY[$cont]['name'];
+				$interfazSel = $Ports[$cont]['name'];
 				echo "<option value=$interfazSel>$interfazSel</option>";
 			
 			}		
@@ -215,21 +235,97 @@
 			$_SESSION[ 'interfaz' ]=$interfaz;
 	
 			
-?>
+			?>
 				<div class='graphics'>
 				<div id="container" style="max-width: 80%; height: 200px; margin: 0 auto"></div>
 				<input name="interface" id="interface" type="text" value="rb_inalambricos" />
 				</div>
 			</div>
-			<div class="col-lg-2">
-			</div>		
-		</div>
+
+
+			<div class="col-lg-6">
+				<table>
+				<td>
+					 <table id="refreshPorts">
+          
+           
+
+				<?php
+					for ($cont = 0; $cont < $numPorts; $cont++){
+						
+						echo "<tr>";
+						echo "<td>".$Ports[$cont]['name']."</td>";
+						if($statusPorts[$cont]['status']=='link-ok'){
+							echo "<td class='link-ok'>";			
+						}
+						else if($statusPorts[$cont]['status']=='no-link'){
+							echo "<td class='no-link'>";				
+						}
+						echo $statusPorts[$cont]['status']."</td>";
+						}			
+						echo "</tr>";
+				?>
+					</table>
+				</td>
+				<td>
+				<table id="PortsButtons">
+				 
+
+				<?php
+					for ($cont = 0; $cont < $numPorts; $cont++){
+						echo "<tr>";
+						echo "<td><form name='button$cont' method='post'>
+							<input type='submit' name='enablePort$cont' value='&#10004' class='button'/>
+							<input type='submit' name='disablePort$cont' value='X' class='button'/>
+							</form></td>";
+						echo "</tr>";
+					}	
+				?>
+				</table>
+				</td>
+			</table>
+			</div>
+			</div>
+			
 	</div>
 
-</div>
+<?php
+		for ($cont = 0; $cont < $numPorts; $cont++){
+		if(isset($_POST['enablePort'.$cont])){
+			$API = new routeros_api();
+			$IP = $_SESSION[ 'ip' ];
+			$user = $_SESSION[ 'user' ];
+			$password = $_SESSION[ 'password' ];
+			if ($API->connect($IP, $user, $password)) {
+				$API->write("/interface/ethernet/set",false);
+				$API->write("=disabled=no",false);
+				$API->write("=.id=".$Ports[$cont]['name']);
+				$Ports = $API->read();
+				$API->disconnect();
+		}}
+		}
+
+		for ($cont = 0; $cont < $numPorts; $cont++){
+		if(isset($_POST['disablePort'.$cont])){
+			$API = new routeros_api();
+			$IP = $_SESSION[ 'ip' ];
+			$user = $_SESSION[ 'user' ];
+			$password = $_SESSION[ 'password' ];
+			if ($API->connect($IP, $user, $password)) {
+				$API->write("/interface/ethernet/set",false);
+				$API->write("=disabled=yes",false);
+				$API->write("=.id=".$Ports[$cont]['name']);
+				$Ports = $API->read();
+				$API->disconnect();
+		}}
+		}
+
+
+?>
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="bootstrap/js/bootstrap.min.js"></script>			
-			
+<script src="bootstrap/js/bootstrap.min.js"></script>	
+
+
 			
 <!-- Dibujamos las graficas-->
 

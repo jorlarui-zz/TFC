@@ -110,9 +110,9 @@ function random_color(){
             </ul>
             <ul class="nav navbar-nav navbar-right"  style="margin-right:70px;">
                 <li><a href="Status.php">Status</a></li>
+               <li  class="active"><a href="Switch.php">Switch</a></li>
+		<li><a href="Vlans.php">Vlans</a></li>
                 <li><a href="Ports.php">Ports</a></li>
-		<li class="active"><a href="Switch.php">Switch</a></li>
-                <li><a href="Vlans.php">Vlans</a></li>
 		<li><a href="ACLs.php">ACLs</a></li>
             </ul>
         </div> 

@@ -1,11 +1,12 @@
 <?php ob_start(); session_start(); require('routeros_api.class.php'); ?>
 <?php error_reporting (E_ALL ^ E_NOTICE); ?>
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosSwitchImage.php').fadeIn("slow");
-			$('#refreshPorts').load('datosSwitch.php').fadeIn("slow");
+			$('#refreshImage').load('datosVlansImage.php').fadeIn("slow");
+			$('#refreshVlans').load('datosVlans.php').fadeIn("slow");
 			}, 2000);
 		});		
 			
@@ -13,6 +14,7 @@
  
 	
   </script>
+
 <?php
 
 
@@ -41,15 +43,23 @@ function random_color(){
 		$Ports = $API->comm("/interface/ethernet/print");
 		$numPorts = count($Ports);
 
+		//Ports VLAN (incluse switchcpu)
+
+		$PortsVlans = $API->comm("/interface/ethernet/switch/port/print");
+		$numPortsVlans = count($PortsVlans);
+
+		//Switch
+		$switches = $API->comm("/interface/ethernet/switch/print");
+		$numSwitches = count($switches);
+
 		//Modelo
 		$modeloCom = $API->comm("/system/routerboard/print");
 		$modelo=$modeloCom[0]['model'];
 		
-		//Estado Link
-		$valoresPar= json_encode(range(0, $numPorts-1));
-		$valores = substr($valoresPar, 1, -1);
-		echo $valores;
-
+		//Vlans
+		$vlans = $API->comm("/interface/ethernet/switch/vlan/print");
+		$numVlans = count($vlans);
+		
 		$API->write("/interface/ethernet/monitor",false);
 		$API->write("=numbers=".$valores,false);  
 		$API->write("=once=",true);
@@ -175,27 +185,29 @@ function random_color(){
 		<div class="col-lg-12 info-box">
 			<div class="col-lg-2"></div>
 			<div class="col-lg-4">
-			<div id="refreshPorts">
+			<div id="refreshVlans">
 				<table>
 				<?php
-				$contSwitch=-1;
-				for ($cont = 0; $cont < $numPorts; $cont++){
+				$contVlan=-1;
+				for ($cont = 0; $cont < $numVlans; $cont++){
 						
-						if($Ports[$cont]['master-port']=='none'){
-							$contSwitch=$contSwitch+1;
-							echo "<tr>";
-							echo "<th style='border-bottom: 3px solid ".$colores[$contSwitch].";'>Switch ".$contSwitch."</th></tr>";
-							echo "<tr>";
-							echo "<td id='master-port'>".$Ports[$cont]['name']." (Master-port)</td>";
-							for($cont2 = 0; $cont2 < $numPorts; $cont2++){
-								if($Ports[$cont]['name']==$Ports[$cont2]['master-port']){
-									echo "<tr><td>".$Ports[$cont2]['name']."</td></tr>";
-								}
+						$contVlan=$contVlan+1;
+						echo "<tr>";
+						echo "<th style='border-bottom: 3px solid ".$colores[$contVlan].";'>Vlan ".$vlans[$cont]['vlan-id']."</th>";
+						echo "<td><form name='button$cont' method='post'>
+							<input type='submit' name='disableVlan$cont' value='X' class='button'/>
+							</form></td>";
+						echo "</tr>";
+						echo "<tr>";
+						echo "<td>".$vlans[$cont]['ports']."</td>";
+						
+						echo "</tr>";
+								
 
-							}
+							
 						
 
-						}
+						
 					
 				}
 						
@@ -208,25 +220,23 @@ function random_color(){
 				<td>
 				<table>
 				<?php
-					for ($cont = 0; $cont < $numPorts; $cont++){
-						
+					
 						echo "<tr>";
-						echo "<td>".$Ports[$cont]['name']."</td>";
+						echo "<form action=Vlans.php method=post>";
+						echo "<td>VLAN-ID: <input name='vlan-id' type='number' min='0' max='4095' value='0'/></td>";
 						echo "<td>";
-						echo "<form action=Switch.php method=post>";
-						echo "<select name='formMaster$cont' onchange='this.form.submit()'>
-  							<option value=''>Master Port</option>";
-								echo "<option value='none'>none</option>";
-							for ($cont2 = 0; $cont2 < $numPorts; $cont2++){
-								echo "<option value='".$Ports[$cont2]['name']."'>".$Ports[$cont2]['name']."</option>";  								
-								
-							}
-
-						echo "</select></form>";	
+						
+						
+  							for ($cont = 0; $cont < $numPortsVlans; $cont++){
+								echo "<input type='checkbox' name='checkbox[]' value='".$PortsVlans[$cont]['name']."'/>".$PortsVlans[$cont]['name']."</br>";  								}
+						echo "</br></br>";
+							for ($cont = 0; $cont < $numSwitches; $cont++){
+								echo "<input type='radio' name='radioSwitch' value='".$switches[$cont]['name']."'/>".$switches[$cont]['name']."</br>";  						}
+						echo "</br><input type='submit' name='formSubmit' value='Submit' /></form>";	
 						echo "</td>";
 									
 						echo "</tr>";
-					}
+					
 				?>
 					</table>
 				</td>
@@ -240,24 +250,53 @@ function random_color(){
 </div>
 
 <?php
-		for ($cont = 0; $cont < $numPorts; $cont++){
-			if(isset($_POST['formMaster'.$cont])){
-			$seleccion= $_POST['formMaster'.$cont];
 
+
+for ($cont = 0; $cont < $numVlans; $cont++){
+		if(isset($_POST['disableVlan'.$cont])){
 			$API = new routeros_api();
 			$IP = $_SESSION[ 'ip' ];
 			$user = $_SESSION[ 'user' ];
 			$password = $_SESSION[ 'password' ];
 			if ($API->connect($IP, $user, $password)) {
-				$API->write("/interface/ethernet/set",false);
-				$API->write("=master-port=".$seleccion,false);
-				$API->write("=.id=".$Ports[$cont]['name']);
-				$ARRAY = $API->read();
+				$API->write("/interface/ethernet/switch/vlan/remove",false);
+				$API->write("=.id=".$cont);
+				$Ports = $API->read();
 				$API->disconnect();
-			}
-			}
+		}}
+		}
+$vlanId= $_POST['vlan-id'];
 
+$puertosSel= "";
+foreach($_POST['checkbox'] as $value)
+ {
+    $puertosSel.= $value.',';
+ }
+
+$switchSel= $_POST['radioSwitch'];
+
+if(isset($_POST['formSubmit'])){
+			$API = new routeros_api();
+			$IP = $_SESSION[ 'ip' ];
+			$user = $_SESSION[ 'user' ];
+			$password = $_SESSION[ 'password' ];
+			if ($API->connect($IP, $user, $password)) {
+				$API->comm("/interface/ethernet/switch/vlan/add", array(
+         			 "vlan-id"     => $vlanId,
+          			"switch" => $switchSel,
+          			"ports" => $puertosSel,
+				));
+		}
+		
 }
+
+
+
+
+
+
+
+		
 ?>
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>			

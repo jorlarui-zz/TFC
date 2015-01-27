@@ -48,7 +48,6 @@ function random_color(){
 		//Estado Link
 		$valoresPar= json_encode(range(0, $numPorts-1));
 		$valores = substr($valoresPar, 1, -1);
-		echo $valores;
 
 		$API->write("/interface/ethernet/monitor",false);
 		$API->write("=numbers=".$valores,false);  

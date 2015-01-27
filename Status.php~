@@ -112,7 +112,6 @@
 
 		$valoresPar= json_encode(range(0, $numPorts-1));
 		$valores = substr($valoresPar, 1, -1);
-		echo $valores;
 
 
 		$API->write("/interface/ethernet/monitor",false);
@@ -167,9 +166,9 @@
             </ul>
             <ul class="nav navbar-nav navbar-right"  style="margin-right:70px;">
                 <li class="active"><a href="Status.php">Status</a></li>
-                <li><a href="Ports.php">Ports</a></li>
 		<li><a href="Switch.php">Switch</a></li>
-                <li><a href="Vlans.php">Vlans</a></li>
+		<li><a href="Vlans.php">Vlans</a></li>
+                <li><a href="Ports.php">Ports</a></li>
 		<li><a href="ACLs.php">ACLs</a></li>
             </ul>
         </div> 
@@ -292,6 +291,7 @@
 <?php
 		for ($cont = 0; $cont < $numPorts; $cont++){
 		if(isset($_POST['enablePort'.$cont])){
+			echo "Estoy Set".$cont;
 			$API = new routeros_api();
 			$IP = $_SESSION[ 'ip' ];
 			$user = $_SESSION[ 'user' ];
@@ -307,6 +307,7 @@
 
 		for ($cont = 0; $cont < $numPorts; $cont++){
 		if(isset($_POST['disablePort'.$cont])){
+			echo "Estoy Set".$cont;
 			$API = new routeros_api();
 			$IP = $_SESSION[ 'ip' ];
 			$user = $_SESSION[ 'user' ];

@@ -16,10 +16,10 @@
 		//Modelo
 		$modeloCom = $API->comm("/system/routerboard/print");
 		$modelo=$modeloCom[0]['model'];
-		//Estado Link
-
-		$valoresPar= json_encode(range(0, $numPorts-1));
-		$valores = substr($valoresPar, 1, -1);
+		
+		//Vlans
+		$vlans = $API->comm("/interface/ethernet/switch/vlan/print");
+		$numVlans = count($vlans);
 
 
 		$API->write("/interface/ethernet/monitor",false);
@@ -29,25 +29,23 @@
 		$statusPorts = $API->parse_response($READ);
 		$API->disconnect();}	
 				echo "<table>";
-					for ($cont = 0; $cont < $numPorts; $cont++){
-						echo "<tr>";
+					$contVlan=-1;
+				for ($cont = 0; $cont < $numVlans; $cont++){
 						
-						echo "<td>".$Ports[$cont]['name']."</td>";
-						if($statusPorts[$cont]['status']=='link-ok'){
-							echo "<td class='link-ok'>";			
-						}
-						else if($statusPorts[$cont]['status']=='no-link'){
-							echo "<td class='no-link'>";				
-						}
-				
-				
-						echo $statusPorts[$cont]['status']."</td>";
+						$contVlan=$contVlan+1;
+						echo "<tr>";
+						echo "<th style='border-bottom: 3px solid ".$colores[$contVlan].";'>Vlan ".$vlans[$cont]['vlan-id']."</th>";
 						echo "<td><form name='button$cont' method='post'>
-							<input type='button' name='enablePort$cont' value='&#10004' class='button'/>
-							<input type='button' name='disablePort$cont' value='X' class='button'/>
+							<input type='submit' name='disableVlan$cont' value='X' class='button'/>
 							</form></td>";
 						echo "</tr>";
-					}			
+						echo "<tr>";
+						echo "<td>".$vlans[$cont]['ports']."</td>";
+						
+						echo "</tr>";
+						
+					
+				}		
 				echo "</table>";
 		
 ?>

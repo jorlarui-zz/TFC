@@ -6,9 +6,13 @@
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosStatusImage.php').fadeIn("slow");
-			$('#refreshPorts').load('datosStatus.php').fadeIn("slow");
-			}, 2000);
+			$('#refreshImage').load('datosStatusImage.php').fadeIn("fast");
+			$('#refreshPorts').load('datosStatus.php').fadeIn("fast");
+			}, 3000);
+
+			var auto_refresh = setInterval(function (){
+			$('#info').load('datosCPU.php').fadeIn("fast");
+			}, 1000);
 		});		
 			
 
@@ -113,6 +117,8 @@
 		$valoresPar= json_encode(range(0, $numPorts-1));
 		$valores = substr($valoresPar, 1, -1);
 
+		//CPU
+		$cpuInfo = $API->comm("/system/resource/print");
 
 		$API->write("/interface/ethernet/monitor",false);
 		$API->write("=numbers=".$valores,false);  
@@ -132,6 +138,8 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
+	<link rel="stylesheet" href="css/styleStatus.css"/>
+
 	<?php
 		echo "<link rel='stylesheet' href='css/styleStatus$modelo.css'/>";
 	?>
@@ -203,8 +211,22 @@
 				?>
  				 </div> 
 				</div>
-			<div class="col-lg-2">INFO HERE</div>
-			<div class="col-lg-2"></div>		
+			<div class="col-lg-3" id="info">
+			<?php
+			echo "Model: ";
+				echo $modelo."</br>";
+				echo "CPU:  <div class='progress' style='margin-bottom: 0px;'>
+  					  <div class='progress-bar' role='progressbar' aria-valuenow='$cpuInfo[0]['cpu-load']' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width:".$cpuInfo[0]['cpu-load']."%'>".
+    						$cpuInfo[0]['cpu-load']."%
+ 					 </div>
+				
+				</div>";
+
+				echo "Uptime: ".$cpuInfo[0]['uptime'];
+			?>
+			</div>
+			
+			<div class="col-lg-1"></div>		
 		</div>
 	</div>
 

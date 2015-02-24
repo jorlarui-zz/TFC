@@ -17,16 +17,6 @@
 
 
 
-function random_color(){
-    mt_srand((double)microtime()*1000000);
-    $c = '';
-    while(strlen($c)<6){
-        $c .= sprintf("%02X", mt_rand(0, 255));
-    }
-    return $c;
-}
-
-
 
 		$API = new routeros_api();
 		$IP = $_SESSION[ 'ip' ];
@@ -48,7 +38,6 @@ function random_color(){
 		//Estado Link
 		$valoresPar= json_encode(range(0, $numPorts-1));
 		$valores = substr($valoresPar, 1, -1);
-		echo $valores;
 
 		$API->write("/interface/ethernet/monitor",false);
 		$API->write("=numbers=".$valores,false);  
@@ -78,6 +67,7 @@ function random_color(){
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
+	<link rel="stylesheet" href="css/styleSwitch.css"/>
 	<?php
 		echo "<link rel='stylesheet' href='css/styleSwitch$modelo.css'/>";
 	?>

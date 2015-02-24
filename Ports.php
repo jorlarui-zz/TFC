@@ -6,9 +6,13 @@
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosPortImage.php').fadeIn("slow");
-			$('#refreshPorts').load('datosPort.php').fadeIn("slow");
+			$('#refreshImage').load('datosPortImage.php').fadeIn("fast");
+			$('#refreshPorts').load('datosPort.php').fadeIn("fast");
 			}, 2000);
+
+			var auto_refresh = setInterval(function (){
+			$('#info').load('datosCPU.php').fadeIn("fast");
+			}, 1000);
 		});		
 			
 
@@ -16,79 +20,26 @@
 	
   </script>
 
-<!--Script para dibujar las graficas-->
-<script> 
-	var chart;
-	function requestDatta(interface) {
-		$.ajax({
-			url: 'datosGraficas.php?interface='+interface,
-			datatype: "json",
-			success: function(data) {
-				var midata = JSON.parse(data);
-				if( midata.length > 0 ) {
-					var TX=parseInt(midata[0].data);
-					var RX=parseInt(midata[1].data);
-					var x = (new Date()).getTime(); 
-					shift=chart.series[0].data.length > 19;
-					chart.series[0].addPoint([x, TX], true, shift);
-					chart.series[1].addPoint([x, RX], true, shift);
-					document.getElementById("trafico").innerHTML=TX + " / " + RX;
-				}else{
-					document.getElementById("trafico").innerHTML="- / -";
-				}
-			},
-			error: function(XMLHttpRequest, textStatus, errorThrown) { 
-				console.error("Status: " + textStatus + " request: " + XMLHttpRequest); console.error("Error: " + errorThrown); 
-			}       
-		});
-	}	
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("input[value=Access]:radio" ).change(function(){
+                $('#areaAccess').show("fast");
+		$('#areaTrunk').hide("fast");
+		$('#areaNoSwitchport').hide("fast");
+            });
 
-	$(document).ready(function() {
-			Highcharts.setOptions({
-				global: {
-					useUTC: false
-				}
-			});
-	
+	$("input[value=Trunk]:radio" ).change(function(){
+                $('#areaTrunk').show("fast");
+		$('#areaAccess').hide("fast");
+		$('#areaNoSwitchport').hide("fast");
+            });
 
-           chart = new Highcharts.Chart({
-			   chart: {
-				renderTo: 'container',
-				animation: Highcharts.svg,
-				type: 'spline',
-				events: {
-					load: function () {
-						setInterval(function () {
-							requestDatta(document.getElementById("interface").value);
-						}, 1000);
-					}				
-			}
-		 },
-		 title: {
-			text: ''
-		 },
-		 xAxis: {
-			type: 'datetime',
-				tickPixelInterval: 150,
-				maxZoom: 20 * 1000
-		 },
-		 yAxis: {
-			minPadding: 0.2,
-				maxPadding: 0.2,
-				title: {
-					text: 'Trafico Kbps',
-					margin: 80
-				}
-		 },
-            series: [{
-                name: 'TX',
-                data: []
-            }, {
-                name: 'RX',
-                data: []
-            }]
-	  });
-  });
+	$("input[value=NoSwitchport]:radio" ).change(function(){
+                $('#areaNoSwitchport').show("fast");
+		$('#areaTrunk').hide("fast");
+		$('#areaAccess').hide("fast");
+            });
+});
 </script>
 
 <?php
@@ -100,8 +51,6 @@
 		if ($API->connect($IP, $user, $password)) {
 
 		//Comprobamos interfaces
-		$ARRAY = $API->comm("/interface/print");
-		$interfaces = count($ARRAY);
 		$Ports = $API->comm("/interface/ethernet/print");
 		$numPorts = count($Ports);
 
@@ -113,6 +62,12 @@
 		$valoresPar= json_encode(range(0, $numPorts-1));
 		$valores = substr($valoresPar, 1, -1);
 
+		//Switch
+		$switches = $API->comm("/interface/ethernet/switch/print");
+		$numSwitches = count($switches);
+
+		//CPU
+		$cpuInfo = $API->comm("/system/resource/print");
 
 		$API->write("/interface/ethernet/monitor",false);
 		$API->write("=numbers=".$valores,false);  
@@ -132,13 +87,13 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
+	<link rel='stylesheet' href='css/stylePorts.css'/>
 	<?php
 		echo "<link rel='stylesheet' href='css/stylePorts$modelo.css'/>";
 	?>
 		
 
-	
-<!--Script para dibujar las graficas-->
+
 
 
 
@@ -203,24 +158,39 @@
 				?>
  				 </div> 
 				</div>
-			<div class="col-lg-2">INFO HERE</div>
-			<div class="col-lg-2"></div>		
+			<div class="col-lg-3" id="info">
+			<?php
+			echo "Model: ";
+				echo $modelo."</br>";
+				echo "CPU:  <div class='progress' style='margin-bottom: 0px;'>
+  					  <div class='progress-bar' role='progressbar' aria-valuenow='$cpuInfo[0]['cpu-load']' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width:".$cpuInfo[0]['cpu-load']."%'>".
+    						$cpuInfo[0]['cpu-load']."%
+ 					 </div>
+				
+				</div>";
+
+				echo "Uptime: ".$cpuInfo[0]['uptime'];
+			?>
+			</div>
+			<div class="col-lg-1"></div>		
 		</div>
 	</div>
 
 	<div class="row">
 		<div class="col-lg-12 info-box">
-			<div class="col-lg-6">
+			<div class="col-lg-2"></div>
+			<div class="col-lg-4"></div>
+			<div class="col-lg-4">
 					<?php
 			//Creamos un formulario que actualiza la gráfica en función de la interfaz seleccionada
-			echo "<form action=Status.php method=post>";
+			echo "<form method=post>";
 			echo "Selecciona interfaz:   ";
 			echo "<select name='interfaces' size='1' onchange='this.form.submit()'>";
 			echo "<option value>Interfaz</option>";
 			
-			for ($cont = 0; $cont < $interfaces; $cont++){
+			for ($cont = 0; $cont < $numPorts; $cont++){
 			
-				$interfazSel = $ARRAY[$cont]['name'];
+				$interfazSel = $Ports[$cont]['name'];
 				echo "<option value=$interfazSel>$interfazSel</option>";
 			
 			}		
@@ -230,65 +200,61 @@
 		 
 			echo $_POST['interfaces'];
 
-			$interfaz =  $_POST['interfaces'];
-			$_SESSION[ 'interfaz' ]=$interfaz;
-	
+			echo "<form method=post action='#' name='formPorts'>";
+
+			echo "Access <input type='radio' name='form' value='Access'/>
+				Trunk <input type='radio' name='form' value='Trunk'/>
+				No Switchport<input type='radio' name='form' value='NoSwitchport'/>
+
+				</form>";
+			
+			if(isset($_POST['Access'])){
+				echo "Access";
+
+			}
+			else if(isset($_POST['Trunk'])){
+				echo "Trunk";
+
+			}
+			else if(isset($_POST['NoSwitchport'])){
+				echo "NoSwitchport";
+
+			}
 			
 			?>
-				<div class='graphics'>
-				<div id="container" style="max-width: 80%; height: 200px; margin: 0 auto"></div>
-				<input name="interface" id="interface" type="text" value="rb_inalambricos" />
-				</div>
+			<div style='display: none' id='areaAccess'>Access
+				<form method=post>
+					Access Vlan: <input name='AccessVlan-id' type='number' min='0' max='4095' placeholder='100'/></br>
+					<?php
+						for ($cont = 0; $cont < $numSwitches; $cont++){
+								echo "<input type='radio' name='radioSwitch' value='".$switches[$cont]['name']."'/>".$switches[$cont]['name'];  						}
+					?>
+				
+					</br><input type='submit' name='formSubmit' value='Submit' />
+				</form>	
+			</div>	
+
+			<div style='display: none' id='areaTrunk'>Trunk
+				<form method=post>
+					Allowed Vlans: <input name='TrunkVlans-id' type='text' placeholder='100,110,120'/>
+					</br>
+					<input type='submit' name='formSubmit' value='Submit' />
+				</form>
+			</div>	
+			<div style='display: none' id='areaNoSwitchport'>No Switchport	
+				<form method=post>
+					Ip Address: <input name='TrunkVlans-id' type='text' placeholder='192.168.100.10'/>
+					</br>
+					<input type='submit' name='formSubmit' value='Submit' />
+				</form>
+			
 			</div>
-
-
-			<div class="col-lg-6">
-				<table>
-				<td>
-					 <table id="refreshPorts">
-          
-           
-
-				<?php
-					for ($cont = 0; $cont < $numPorts; $cont++){
-						
-						echo "<tr>";
-						echo "<td>".$Ports[$cont]['name']."</td>";
-						if($statusPorts[$cont]['status']=='link-ok'){
-							echo "<td class='link-ok'>";			
-						}
-						else if($statusPorts[$cont]['status']=='no-link'){
-							echo "<td class='no-link'>";				
-						}
-						echo $statusPorts[$cont]['status']."</td>";
-						}			
-						echo "</tr>";
-				?>
-					</table>
-				</td>
-				<td>
-				<table id="PortsButtons">
-				 
-
-				<?php
-					for ($cont = 0; $cont < $numPorts; $cont++){
-						echo "<tr>";
-						echo "<td><form name='button$cont' method='post' action='Ports.php'>
-							<input type='submit' name='enablePort$cont' value='&#10004' class='button'/>
-							<input type='submit' name='disablePort$cont' value='X' class='button'/>
-							</form></td>";
-						echo "</tr>";
-					}	
-				?>
-				</table>
-				</td>
-			</table>
-			</div>
-			</div>
+			<div class="col-lg-2"></div>
 			
 	</div>
 
 <?php
+
 		for ($cont = 0; $cont < $numPorts; $cont++){
 		if(isset($_POST['enablePort'.$cont])){
 			$API = new routeros_api();
@@ -324,13 +290,6 @@
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>	
 
-
-			
-<!-- Dibujamos las graficas-->
-
-
-<script type="text/javascript" src="highchart/js/highcharts.js"></script>
-<script type="text/javascript" src="highchart/js/themes/gray2.js"></script>
 
 </body>
 </html>

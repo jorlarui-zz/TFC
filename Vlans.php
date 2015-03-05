@@ -119,6 +119,7 @@
                <li ><a href="Switch.php">Switch</a></li>
 		<li class="active"><a href="Vlans.php">Vlans</a></li>
                 <li><a href="Ports.php">Ports</a></li>
+		<li><a href="Routing.php">Routing</a></li>
 		<li><a href="ACLs.php">ACLs</a></li>
             </ul>
         </div> 

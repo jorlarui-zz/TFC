@@ -1,12 +1,13 @@
 <?php ob_start(); session_start(); require('routeros_api.class.php'); ?>
 <?php error_reporting (E_ALL ^ E_NOTICE); ?>
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosSwitchImage.php').fadeIn("slow");
-			$('#refreshPorts').load('datosSwitch.php').fadeIn("slow");
-			}, 2000);
+			$('#refreshImage').load('datosSwitchImage.php').fadeIn("fast");
+			$('#refreshPorts').load('datosSwitch.php').fadeIn("fast");
+			}, 3000);
 
 			var auto_refresh = setInterval(function (){
 			$('#info').load('datosCPU.php').fadeIn("fast");

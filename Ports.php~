@@ -26,18 +26,21 @@
                 $('#areaAccess').show("fast");
 		$('#areaTrunk').hide("fast");
 		$('#areaNoSwitchport').hide("fast");
+		$('input[name=submitButton]').show("fast");
             });
 
 	$("input[value=Trunk]:radio" ).change(function(){
                 $('#areaTrunk').show("fast");
 		$('#areaAccess').hide("fast");
 		$('#areaNoSwitchport').hide("fast");
+		$('input[name=submitButton]').show("fast");
             });
 
 	$("input[value=NoSwitchport]:radio" ).change(function(){
                 $('#areaNoSwitchport').show("fast");
 		$('#areaTrunk').hide("fast");
 		$('#areaAccess').hide("fast");
+		$('input[name=submitButton]').show("fast");
             });
 });
 </script>
@@ -68,6 +71,10 @@
 
 		//CPU
 		$cpuInfo = $API->comm("/system/resource/print");
+		//RB o CS
+		$routeroSwitch = $cpuInfo[0]['board-name'];
+		//Saber iniciales Router o Switch
+		$identidadRS = substr($routeroSwitch,0,2);
 
 		$API->write("/interface/ethernet/monitor",false);
 		$API->write("=numbers=".$valores,false);  
@@ -93,8 +100,7 @@
 	?>
 		
 
-	
-<!--Script para dibujar las graficas-->
+
 
 
 
@@ -125,6 +131,7 @@
               <li><a href="Switch.php">Switch</a></li>
 		<li><a href="Vlans.php">Vlans</a></li>
                 <li class="active"><a href="Ports.php">Ports</a></li>
+		<li><a href="Routing.php">Routing</a></li>
 		<li><a href="ACLs.php">ACLs</a></li>
             </ul>
         </div> 
@@ -182,12 +189,11 @@
 			<div class="col-lg-2"></div>
 			<div class="col-lg-4"></div>
 			<div class="col-lg-4">
-					<?php
-			//Creamos un formulario que actualiza la gráfica en función de la interfaz seleccionada
-			echo "<form method=post>";
-			echo "Selecciona interfaz:   ";
-			echo "<select name='interfaces' size='1' onchange='this.form.submit()'>";
-			echo "<option value>Interfaz</option>";
+				<form method='post' action='#' name='formPorts'>
+				Select interfaces:
+				<select name='interfaces'>
+				<option value>Interfaz</option>
+			<?php
 			
 			for ($cont = 0; $cont < $numPorts; $cont++){
 			
@@ -195,96 +201,113 @@
 				echo "<option value=$interfazSel>$interfazSel</option>";
 			
 			}		
-			echo "</select></form>";
-		
-			echo "Interfaz:";
-		 
-			echo $_POST['interfaces'];
-
-			echo "<form method=post action='#' name='formPorts'>";
-
-			echo "Access <input type='radio' name='form' value='Access'/>
-				Trunk <input type='radio' name='form' value='Trunk'/>
-				No Switchport<input type='radio' name='form' value='NoSwitchport'/>
-
-				</form>";
-			
-			if(isset($_POST['Access'])){
-				echo "Access";
-
-			}
-			else if(isset($_POST['Trunk'])){
-				echo "Trunk";
-
-			}
-			else if(isset($_POST['NoSwitchport'])){
-				echo "NoSwitchport";
-
-			}
-			
+			echo "</select>";
+			$interfaz = $_POST['interfaces'];
 			?>
-			<div style='display: none' id='areaAccess'>Access
-				<form method=post>
-					Access Vlan: <input name='AccessVlan-id' type='number' min='0' max='4095' placeholder='100'/></br>
+
+			</br>
+			Access <input type='radio' name='form' value='Access'/>
+			Trunk <input type='radio' name='form' value='Trunk'/>
+			No Switchport<input type='radio' name='form' value='NoSwitchport'/>
+
+			<div style='display: none' id='areaAccess'>
+					Access Vlan: <input name='accessVlanID' type='number' min='0' max='4095' placeholder='100'/></br>
 					<?php
+		//OJOOOOOOOOOOOOOOOOOOOOOOO CR ESTE
+						if(strcmp($identidadRS,"CR") == 0 ){
 						for ($cont = 0; $cont < $numSwitches; $cont++){
-								echo "<input type='radio' name='radioSwitch' value='".$switches[$cont]['name']."'/>".$switches[$cont]['name'];  						}
+								echo "<input type='radio' name='radioSwitch' value='".$switches[$cont]['name']."'/>".$switches[$cont]['name'];  						}}
 					?>
 				
-					</br><input type='submit' name='formSubmit' value='Submit' />
-				</form>	
+					</br>
+				
 			</div>	
 
-			<div style='display: none' id='areaTrunk'>Trunk
-				<form method=post>
-					Allowed Vlans: <input name='TrunkVlans-id' type='text' placeholder='100,110,120'/>
+			<div style='display: none' id='areaTrunk'>
+					<?php
+						if(strcmp($identidadRS,"RB") == 0 ){
+							echo "Native Vlan: <input name='nativeVLAN' type='number' min='0' max='4095' placeholder='100'/>";
+						}
+						else{
+							echo "Allowed Vlans: <input name='trunkVlans-id' type='text' placeholder='100,110,120'/>";}
+						?>
 					</br>
-					<input type='submit' name='formSubmit' value='Submit' />
-				</form>
+					
+				
 			</div>	
-			<div style='display: none' id='areaNoSwitchport'>No Switchport	
-				<form method=post>
-					Ip Address: <input name='TrunkVlans-id' type='text' placeholder='192.168.100.10'/>
+			<div style='display: none' id='areaNoSwitchport'>
+					Ip Address: <input name='noSwitchportIP' type='text' placeholder='192.168.100.10/24'/>
 					</br>
-					<input type='submit' name='formSubmit' value='Submit' />
-				</form>
-			
+					
 			</div>
+			<input type='submit' name='submitButton' value='Submit' style='display: none'/>
+			</form>
+			
 			<div class="col-lg-2"></div>
 			
 	</div>
 
 <?php
 
-		for ($cont = 0; $cont < $numPorts; $cont++){
-		if(isset($_POST['enablePort'.$cont])){
-			$API = new routeros_api();
-			$IP = $_SESSION[ 'ip' ];
-			$user = $_SESSION[ 'user' ];
-			$password = $_SESSION[ 'password' ];
-			if ($API->connect($IP, $user, $password)) {
-				$API->write("/interface/ethernet/set",false);
-				$API->write("=disabled=no",false);
-				$API->write("=.id=".$Ports[$cont]['name']);
-				$ARRAY = $API->read();
+$modoPuerto = $_POST['form'];
+$accessVlanID = $_POST['accessVlanID'];
+$noSwitchportIP = $_POST['noSwitchportIP'];
+$nativeVLAN = $_POST['nativeVLAN'];
+
+	if(isset($_POST['submitButton'])){
+		if($modoPuerto == "NoSwitchport"){
+			if(strcmp($identidadRS,"RB") == 0 ){
+				$API = new routeros_api();
+				if ($API->connect($IP, $user, $password)) {
+				$API->comm("/interface/ethernet/switch/port/set", array(
+         			 ".id"     => $interfaz,
+          			"vlan-mode" => "disabled",
+          			"vlan-header" => "leave-as-is",
+				"default-vlan-id" => "0",
+				));
+
+				$API->comm("/ip/address/add", array(
+					"address"=> $noSwitchportIP, 
+					"interface"=> $interfaz,
+				));
 				$API->disconnect();
-		}}
+				}}
+			
+		}
+			//FALTA SWITCHPORT CRS
+
+
+		if($modoPuerto == "Access"){
+			if(strcmp($identidadRS,"RB") == 0 ){
+				$API = new routeros_api();
+				if ($API->connect($IP, $user, $password)) {
+				$API->comm("/interface/ethernet/switch/port/set", array(
+         			 ".id"     => $interfaz,
+          			"vlan-mode" => "secure",
+          			"vlan-header" => "always-strip",
+				"default-vlan-id" => $accessVlanID
+				));
+				$API->disconnect();
+				}
+			}
 		}
 
-		for ($cont = 0; $cont < $numPorts; $cont++){
-		if(isset($_POST['disablePort'.$cont])){
-			$API = new routeros_api();
-			$IP = $_SESSION[ 'ip' ];
-			$user = $_SESSION[ 'user' ];
-			$password = $_SESSION[ 'password' ];
-			if ($API->connect($IP, $user, $password)) {
-				$API->write("/interface/ethernet/set",false);
-				$API->write("=disabled=yes",false);
-				$API->write("=.id=".$Ports[$cont]['name']);
-				$ARRAY = $API->read();
+		if($modoPuerto == "Trunk"){
+			if(strcmp($identidadRS,"RB") == 0 ){
+				$API = new routeros_api();
+				if ($API->connect($IP, $user, $password)) {
+				$API->comm("/interface/ethernet/switch/port/set", array(
+         			 ".id"     => $interfaz,
+          			"vlan-mode" => "secure",
+          			"vlan-header" => "add-if-missing",
+				"default-vlan-id" => $nativeVLAN
+				));
 				$API->disconnect();
-		}}
+				}
+			}
 		}
+	}
+		
 
 
 ?>

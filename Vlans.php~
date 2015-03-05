@@ -5,8 +5,8 @@
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosVlansImage.php').fadeIn("slow");
-			$('#refreshVlans').load('datosVlans.php').fadeIn("slow");
+			$('#refreshImage').load('datosVlansImage.php').fadeIn("fast");
+			$('#refreshVlans').load('datosVlans.php').fadeIn("fast");
 			}, 2000);
 			
 			var auto_refresh = setInterval(function (){

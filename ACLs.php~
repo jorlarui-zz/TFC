@@ -4,8 +4,8 @@
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosSwitchImage.php').fadeIn("fast");
-			$('#refreshPorts').load('datosSwitch.php').fadeIn("fast");
+			$('#refreshImage').load('datosStatusImage.php').fadeIn("fast");
+			$('#refreshRules').load('datosRules.php').fadeIn("fast");
 			}, 2000);
 
 			var auto_refresh = setInterval(function (){
@@ -38,6 +38,10 @@
 		//Modelo
 		$modeloCom = $API->comm("/system/routerboard/print");
 		$modelo=$modeloCom[0]['model'];
+
+		//Firewall rules
+		$firewall = $API->comm("/ip/firewall/filter/print");
+		$numFirewall=count($firewall);
 		
 		//Estado Link
 		$valoresPar= json_encode(range(0, $numPorts-1));
@@ -45,6 +49,10 @@
 
 		//CPU
 		$cpuInfo = $API->comm("/system/resource/print");
+		//RB o CS
+		$routeroSwitch = $cpuInfo[0]['board-name'];
+		//Saber iniciales Router o Switch
+		$identidadRS = substr($routeroSwitch,0,2);
 
 		$API->write("/interface/ethernet/monitor",false);
 		$API->write("=numbers=".$valores,false);  
@@ -58,6 +66,8 @@
 			,"#eee117","#b80000","#00137a","#AA0078","#3333FF","#99FF00","#FFCC00","#CC0000","#587498","#E86850"
 			,"#FFD800","##00FF00","#FF0000","#0000FF","#FF6600","#A16B23","#C9341C","#ECC5A8","#A3CBF1","#79BFA1"
 			,"#FB7374","#FF9900","#4FD5D6","#D6E3B5","#FFD197","#FFFF66","#FFC3CE","#21B6A8","#CDFFFF",""];
+
+		
 		
 		$API->disconnect();
 		}
@@ -110,6 +120,7 @@
                <li><a href="Switch.php">Switch</a></li>
 		<li><a href="Vlans.php">Vlans</a></li>
                 <li><a href="Ports.php">Ports</a></li>
+		<li><a href="Routing.php">Routing</a></li>
 		<li class="active"><a href="ACLs.php">ACLs</a></li>
             </ul>
         </div> 
@@ -184,90 +195,119 @@
 	<div class="row">
 		<div class="col-lg-12 info-box">
 			<div class="col-lg-2"></div>
-			<div class="col-lg-4">
-			<div id="refreshPorts">
+			<div class="col-lg-8">	
+				<form method='post' action='#' name='formACL'>
+
+				Permit/Deny: 
+				<select name='permitDeny'>
+					<option value='accept'>Permit</option>
+					<option value='drop'>Deny</option>
+				</select>
+
+				Source IP: <input name='sourceIP' type='text' placeholder='192.168.80.10-192.168.80.0/24'/>
+				Destination IP: <input name='destinationIP' type='text' placeholder='192.168.90.10-192.168.90.0/24'/>
+
+				</br>Protocol: 
+				<select name='protocol'>
+					<option value='tcp'>TCP</option>
+					<option value='udp'>UDP</option>
+					<option value='icmp'>ICMP</option>
+				</select>
+
+				Src. Port: <input name='srcPort' type='number' min='0' max='65535' placeholder='23'/>
+				Dst. Port: <input name='dstPort' type='number' min='0' max='65535' placeholder='23'/>
+
+				</br><input type='submit' name='submitButton' value='Submit'/>
+				</form>
+
+			
+			</div>	
+			<div class="col-lg-2"></div>
+		
+	
+		<div class="col-lg-12 firewallRules">
+			<div class="col-lg-2"></div>
+			<div class="col-lg-8">	
+				<div id="refreshRules">
+				</br>RULES
 				<table>
+				<tr>
+					<th>#</th>
+					<th>Action</th>
+					<th>Src. Address</th>
+					<th>Dst. Address</th>
+					<th>Protocol</th>
+					<th>Src. Port</th>
+					<th>Dst. Port</th>
+				</tr>
 				<?php
-				$contSwitch=-1;
-				for ($cont = 0; $cont < $numPorts; $cont++){
-						
-						if($Ports[$cont]['master-port']=='none'){
-							$contSwitch=$contSwitch+1;
-							echo "<tr>";
-							echo "<th style='border-bottom: 3px solid ".$colores[$contSwitch].";'>Switch ".$contSwitch."</th></tr>";
-							echo "<tr>";
-							echo "<td id='master-port'>".$Ports[$cont]['name']." (Master-port)</td>";
-							for($cont2 = 0; $cont2 < $numPorts; $cont2++){
-								if($Ports[$cont]['name']==$Ports[$cont2]['master-port']){
-									echo "<tr><td>".$Ports[$cont2]['name']."</td></tr>";
-								}
-
-							}
-						
-
-						}
+				
+				for ($cont = 0; $cont < $numFirewall; $cont++){
+					echo "<tr>";
+					echo "<td>$cont</td>";	
+					echo "<td>".$firewall[$cont]['action']."</td>";
+					echo "<td>".$firewall[$cont]['src-address']."</td>";		
+					echo "<td>".$firewall[$cont]['dst-address']."</td>";		
+					echo "<td>".$firewall[$cont]['protocol']."</td>";
+					echo "<td>".$firewall[$cont]['src-port']."</td>";
+					echo "<td>".$firewall[$cont]['dst-port']."</td>";
+					echo "<td><form name='button$cont' method='post'>
+							<input type='submit' name='disableRule$cont' value='X' class='button'/>
+							</form></td>";		
+					echo "</tr>";	
 					
 				}
 						
 				?>
 				</table>
+				</div>
 			</div>
-			</div>
-			<div class="col-lg-6">
-				<table>
-				<td>
-				<table>
-				<?php
-					for ($cont = 0; $cont < $numPorts; $cont++){
-						
-						echo "<tr>";
-						echo "<td>".$Ports[$cont]['name']."</td>";
-						echo "<td>";
-						echo "<form action=Switch.php method=post>";
-						echo "<select name='formMaster$cont' onchange='this.form.submit()'>
-  							<option value=''>Master Port</option>";
-								echo "<option value='none'>none</option>";
-							for ($cont2 = 0; $cont2 < $numPorts; $cont2++){
-								echo "<option value='".$Ports[$cont2]['name']."'>".$Ports[$cont2]['name']."</option>";  								
-								
-							}
-
-						echo "</select></form>";	
-						echo "</td>";
-									
-						echo "</tr>";
-					}
-				?>
-					</table>
-				</td>
-				<td>
-				
-			
-			</div>		
+		<div class="col-lg-2"></div>
 		</div>
 	</div>
 
-</div>
-
 <?php
-		for ($cont = 0; $cont < $numPorts; $cont++){
-			if(isset($_POST['formMaster'.$cont])){
-			$seleccion= $_POST['formMaster'.$cont];
 
+$permitDeny = $_POST['permitDeny'];
+$sourceIP= $_POST['sourceIP'];
+$destinationIP= $_POST['destinationIP'];
+$protocol = $_POST['protocol'];
+$srcPort = $_POST['srcPort'];
+$dstPort = $_POST['dstPort'];
+
+	if(isset($_POST['submitButton'])){
+		$API = new routeros_api();
+			if ($API->connect($IP, $user, $password)) {
+				$API->comm("/ip/firewall/filter/add", array(
+				"chain" => "forward",
+         			"action"     => $permitDeny,
+          			"src-address" => $sourceIP,
+          			"dst-address" => $destinationIP,
+				"protocol" => $protocol,
+				"src-port" => $srcPort,
+				"dst-port" => $dstPort,
+			));
+
+			
+			$API->disconnect();
+			}
+		
+	}
+
+for ($cont = 0; $cont < $numFirewall; $cont++){
+		if(isset($_POST['disableRule'.$cont])){
 			$API = new routeros_api();
 			$IP = $_SESSION[ 'ip' ];
 			$user = $_SESSION[ 'user' ];
 			$password = $_SESSION[ 'password' ];
 			if ($API->connect($IP, $user, $password)) {
-				$API->write("/interface/ethernet/set",false);
-				$API->write("=master-port=".$seleccion,false);
-				$API->write("=.id=".$Ports[$cont]['name']);
-				$ARRAY = $API->read();
+				$API->write("/ip/firewall/filter/remove",false);
+				$API->write("=.id=".$cont);
+				$Ports = $API->read();
 				$API->disconnect();
-			}
-			}
+		}}
+		}
 
-}
 ?>
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>			

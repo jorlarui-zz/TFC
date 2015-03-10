@@ -187,16 +187,13 @@
 				?>
 				</br>VLAN ID: <input name='VlanID' type='number' min='0' max='4095' placeholder='100'/>
 				</br>VLAN Name: <input name='VlanName' type='text' placeholder='Management VLAN'/>
-				</br>IP Address: <input name='VlanAddress' type='text' placeholder='192.168.100.1'/>
+				</br>IP Address: <input name='VlanAddress' type='text' placeholder='192.168.100.1/24'/>
 
 				</br><input type='submit' name='submitButton' value='Submit'/>
 				</form>
 
 			</div>	
 
-			
-			<input type='submit' name='submitButton' value='Submit' style='display: none'/>
-			</form>
 			
 			<div class="col-lg-2"></div>
 			
@@ -211,6 +208,7 @@ $VlanAddress = $_POST['VlanAddress'];
 
 	if(isset($_POST['submitButton'])){
 		if(strcmp($identidadRS,"RB") == 0 ){
+			echo $interfaz;
 			$API = new routeros_api();
 			if ($API->connect($IP, $user, $password)) {
 			$API->comm("/interface/vlan/add", array(

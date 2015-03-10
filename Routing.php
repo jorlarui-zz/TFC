@@ -195,9 +195,6 @@
 			</div>	
 
 			
-			<input type='submit' name='submitButton' value='Submit' style='display: none'/>
-			</form>
-			
 			<div class="col-lg-2"></div>
 			
 	</div>

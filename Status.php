@@ -2,6 +2,7 @@
 <?php error_reporting (E_ALL ^ E_NOTICE); ?>
 
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
 
 <script type="text/javascript">
   $(document).ready(function(){
@@ -65,7 +66,7 @@
 					load: function () {
 						setInterval(function () {
 							requestDatta(document.getElementById("interface").value);
-						}, 1000);
+						}, 1500);
 					}				
 			}
 		 },
@@ -74,7 +75,7 @@
 		 },
 		 xAxis: {
 			type: 'datetime',
-				tickPixelInterval: 150,
+				tickPixelInterval: 300,
 				maxZoom: 20 * 1000
 		 },
 		 yAxis: {
@@ -82,7 +83,7 @@
 				maxPadding: 0.2,
 				title: {
 					text: 'Trafico Kbps',
-					margin: 80
+					margin: 10
 				}
 		 },
             series: [{
@@ -154,7 +155,7 @@
 <body>
 
 
-	
+<!-- Barra de Menu-->
     <nav class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
         <div class="navbar-header">
@@ -170,9 +171,9 @@
         <div id="navbar" class="collapse navbar-collapse">
 
 	    <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Log Out&nbsp&nbsp&nbsp</a></li>
+                <li><a id="logOut" href="Status.php?logOut=yes">Log Out&nbsp&nbsp&nbsp</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right"  style="margin-right:70px;">
+            <ul class="nav navbar-nav navbar-center">
                 <li class="active"><a href="Status.php">Status</a></li>
 		<li><a href="Switch.php">Switch</a></li>
 		<li><a href="Vlans.php">Vlans</a></li>
@@ -185,7 +186,7 @@
     </nav>
 
 
-
+<!-- Imagen Equipo con color de Puertos segun el estado -->
 <div class="container" style="margin-top:50px;">
 
       	<div class="row">
@@ -197,14 +198,26 @@
 				<?php
 				for ($cont = 0; $cont < $numPorts; $cont++){
 				
-				if($statusPorts[$cont]['status']=='link-ok'){
-					
+				if($statusPorts[$cont]['status']=='link-ok' && $Ports[$cont]['master-port']!='none'){
 					echo "<svg version='1.1' id='etherGreen$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
-	 				width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
+	 				width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve'>
 					<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
 					</svg>";
 					}
-				else if($statusPorts[$cont]['status']=='no-link'){			
+				else if($statusPorts[$cont]['status']=='link-ok' && $Ports[$cont]['master-port']=='none'){	
+					echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve'>
+<style type='text/css'>
+<![CDATA[
+	.st0{font-size:9px;}
+	.st2{font-family:'Open Sans';}
+	.st3{fill:#127018;}
+]]>
+</style>
+
+	<polygon class='st1' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+<text transform='matrix(1.0151 0 0 1 3.375 10.2891)' class='st3 st2 st0'>m</text>
+</svg>";
+							
 					}
 				
 				}
@@ -212,18 +225,25 @@
 				?>
  				 </div> 
 				</div>
+
+<!-- Informacion del equipo (Modelo, CPU, Tiempo de vida)-->
+
 			<div class="col-lg-3" id="info">
 			<?php
-			echo "Model: ";
-				echo $modelo."</br>";
-				echo "CPU:  <div class='progress' style='margin-bottom: 0px;'>
+			echo "<div id='model'>
+				<p class='infoBold'>Model: </p>";
+				echo "<p>".$modelo."</p>
+			</div></br>";
+				echo "<div id='cpu'>
+					<div id='cpu2'><p class='infoBold'>CPU: </p></div>
+					<div class='progress' style='margin-bottom: 0px;'>
   					  <div class='progress-bar' role='progressbar' aria-valuenow='$cpuInfo[0]['cpu-load']' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width:".$cpuInfo[0]['cpu-load']."%'>".
     						$cpuInfo[0]['cpu-load']."%
  					 </div>
-				
+				</div>
 				</div>";
 
-				echo "Uptime: ".$cpuInfo[0]['uptime'];
+				echo "<div id='uptime'><p class='infoBold'>Uptime: </p><p>".$cpuInfo[0]['uptime']."</p></div>";
 			?>
 			</div>
 			
@@ -233,13 +253,15 @@
 
 	<div class="row">
 		<div class="col-lg-12 info-box">
-			<div class="col-lg-6">
+			<div class="col-lg-2"></div>
+			<div class="col-lg-4">
 					<?php
-			//Creamos un formulario que actualiza la gráfica en función de la interfaz seleccionada
-			echo "<form method=post>";
-			echo "Selecciona interfaz:   ";
-			echo "<select name='interfaces' size='1' onchange='this.form.submit()'>";
-			echo "<option value>Interfaz</option>";
+//Creamos un formulario que actualiza la gráfica en función de la interfaz seleccionada
+			echo "<form method=post>
+				<b>Select interface:</b>  ".$_POST['interfaces']."
+				<div class='styled-select'>
+					<select name='interfaces' size='1' onchange='this.form.submit()'>
+					<option value>Interface</option>";
 			
 			for ($cont = 0; $cont < $numPorts; $cont++){
 			
@@ -247,11 +269,11 @@
 				echo "<option value=$interfazSel>$interfazSel</option>";
 			
 			}		
-			echo "</select></form>";
+			echo "</select></div></form>";
 		
-			echo "Interfaz:";
+			
 		 
-			echo $_POST['interfaces'];
+			
 
 			$interfaz =  $_POST['interfaces'];
 			$_SESSION[ 'interfaz' ]=$interfaz;
@@ -265,9 +287,12 @@
 			</div>
 
 
-			<div class="col-lg-6">
+			<div class="col-lg-4">
 				<table>
 				<td>
+
+<!-- Información del puerto (link ok, no link)-->
+
 					 <table id="refreshPorts">
           
            
@@ -292,14 +317,15 @@
 				<td>
 				<table id="PortsButtons">
 				 
+<!-- Formulario para activar, desactivar puertos -->
 
 				<?php
 					for ($cont = 0; $cont < $numPorts; $cont++){
 						echo "<tr>";
-						echo "<td><form name='button$cont' method='post'>
-							<input type='submit' name='enablePort$cont' value='&#10004' class='button'/>
-							<input type='submit' name='disablePort$cont' value='X' class='button'/>
-							</form></td>";
+						echo "<form name='button$cont' method='post'>
+							<td><input type='submit' name='enablePort$cont' value='&#10004' class='buttonGreen'/></td>
+							<td><input type='submit' name='disablePort$cont' value='X' class='buttonRed'/></td>
+							</form>";
 						echo "</tr>";
 					}	
 				?>
@@ -308,7 +334,7 @@
 			</table>
 			</div>
 			</div>
-			
+			<div class="col-lg-2"></div>
 	</div>
 
 <?php
@@ -342,6 +368,15 @@
 		}}
 		}
 
+
+?>
+<!--Boton cerrar sesión-->
+
+<?php
+	if($_GET['logOut'] == 'yes'){
+		session_destroy();
+		header( 'Location:Login.php'); 
+}
 
 ?>
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>

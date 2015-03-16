@@ -1,15 +1,39 @@
 body{
 	background-color:#DDD;
 }
+
+/* Menu Bar */
+.navbar{
+	background-color: #080808;
+	font-family: "Open Sans";
+	text-transform: Uppercase;
+	letter-spacing: 1.25px;
+	font-size: 12px;
+}
 .navbar-text img{
 	width:85px; 
 	height:20px;
-	margin-left:70px;
+	margin-left:20px;
 }
+.navbar-center{
+	margin-left:10%;
+}
+
+.navbar-center li{
+	margin-right:6px;
+}
+.active a{
+	color: #de0000 !important;
+}
+
+
+/* Image Switch or Router */
+
 .switch-box{
 	padding-top:40px;
+	padding-bottom:20px;
 	margin-top:10px;
-	background-color:#fff;
+	background-color:#ffffff;
 	border:1px solid #b1b1b1;
 }
 
@@ -17,6 +41,62 @@ body{
 	width:100%;
 }
 
+/* Info CPU, model, uptime */
+#model {
+	
+	margin-bottom: -10px !important;
+}
+#model p{
+	display:inline;
+}
+
+#cpu div{
+	display:inline-block;
+}
+
+
+#cpu .progress{
+	width:80% !important;
+}
+
+#cpu .progress-bar{
+	background-color:#de0000;
+}
+#uptime p{
+	display:inline;
+}
+
+.infoBold{
+	font-weight:bold;
+}
+
+/* Interface Selection*/
+
+.styled-select select {
+   background: transparent;
+   width: 218px;	
+   font-size:13px;
+   border: 0;
+   border-radius: 0;
+   height: 34px;
+   -webkit-appearance: none;
+   }
+
+.styled-select {
+   width: 200px;
+   height: 34px;
+   overflow: hidden;
+   border: 1px solid #ccc;
+   background-color:rgba(0,0,0,0.1);
+   }
+
+.graphics #container{
+	
+	max-width:100% !important;
+}
+#highcharts-0{
+	margin-left:-40px;
+}
 .info-box{
 	padding-top:20px;
 	padding-bottom:30px;
@@ -24,6 +104,58 @@ body{
 	background-color:#fff;
 	border:1px solid #b1b1b1;
 }
+
+.ports-box{
+	padding-top:20px;
+	padding-bottom:30px;
+	margin-top:10px;
+	background-color:#fff;
+}
+
+
+table{
+	 margin-left:auto; 
+    	margin-right:auto;
+	border-collapse: collapse; 
+}
+#refreshPorts{
+	margin-right:10px;
+}
+
+#refreshPorts td{
+	padding-top: 6px;
+}
+
+form{
+	margin-bottom:0px;
+	}
+
+.link-ok{
+	padding-left:20px;
+	margin-bottom:2px;
+	color:green;
+}
+
+.no-link{
+	padding-left:20px;
+	margin-bottom:2px;
+	color:#DE0000;
+}
+#refreshPorts{
+	font-size:14px;
+}
+
+input[type=submit] {
+	font-size:14px;
+	margin-top:3px;
+	margin-right:8px;
+	padding:0.5px 5px; 
+	background-color:rgba(0,0,0,0.1);
+	 border:1px solid #ccc;
+	cursor:pointer;
+	 }
+
+
 
 #interface{
 	display:none;

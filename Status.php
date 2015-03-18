@@ -4,6 +4,7 @@
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
 
+<!--Script para actualizar imagenes y contenido automaticamente-->
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
@@ -139,10 +140,9 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
-	<link rel="stylesheet" href="css/styleStatus.css"/>
-
+	<link rel="stylesheet" href="css/style.css"/>
 	<?php
-		echo "<link rel='stylesheet' href='css/styleStatus$modelo.css'/>";
+		echo "<link rel='stylesheet' href='css/style$modelo.css'/>";
 	?>
 		
 
@@ -206,17 +206,17 @@
 					}
 				else if($statusPorts[$cont]['status']=='link-ok' && $Ports[$cont]['master-port']=='none'){	
 					echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve'>
-<style type='text/css'>
-<![CDATA[
-	.st0{font-size:9px;}
-	.st2{font-family:'Open Sans';}
-	.st3{fill:#127018;}
-]]>
-</style>
+						<style type='text/css'>
+						<![CDATA[
+						.st0{font-size:9px;}
+						.st2{font-family:'Open Sans';}
+						.st3{fill:#127018;}
+						]]>
+						</style>
 
-	<polygon class='st1' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
-<text transform='matrix(1.0151 0 0 1 3.375 10.2891)' class='st3 st2 st0'>m</text>
-</svg>";
+						<polygon class='st1' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+						<text transform='matrix(1.0151 0 0 1 3.375 10.2891)' class='st3 st2 st0'>m</text>
+						</svg>";
 							
 					}
 				

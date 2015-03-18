@@ -30,12 +30,15 @@
 		if ($API->connect($IP, $user, $password)) {
 
 		//Comprobamos interfaces
-		$ARRAY = $API->comm("/interface/print");
-		$interfaces = count($ARRAY);
+		
 		$Ports = $API->comm("/interface/ethernet/print");
 		$numPorts = count($Ports);
 
-		//Ports VLAN (incluse switchcpu)
+		//Estado Link
+		$valoresPar= json_encode(range(0, $numPorts-1));
+		$valores = substr($valoresPar, 1, -1);
+
+		//Ports VLAN (incluye switchcpu)
 
 		$PortsVlans = $API->comm("/interface/ethernet/switch/port/print");
 		$numPortsVlans = count($PortsVlans);
@@ -83,9 +86,9 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
-	<link rel="stylesheet" href="css/styleVlans.css"/>
+	<link rel="stylesheet" href="css/style.css"/>
 	<?php
-		echo "<link rel='stylesheet' href='css/styleSwitch$modelo.css'/>";
+		echo "<link rel='stylesheet' href='css/style$modelo.css'/>";
 	?>
 		
 
@@ -112,9 +115,9 @@
         <div id="navbar" class="collapse navbar-collapse">
 
 	    <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Log Out&nbsp&nbsp&nbsp</a></li>
+                <li><a id="logOut" href="Status.php?logOut=yes">Log Out&nbsp&nbsp&nbsp</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right"  style="margin-right:70px;">
+            <ul class="nav navbar-nav navbar-center">
                 <li><a href="Status.php">Status</a></li>
                <li ><a href="Switch.php">Switch</a></li>
 		<li class="active"><a href="Vlans.php">Vlans</a></li>
@@ -137,54 +140,57 @@
 				 <div id="refreshImage">
 				
 				<?php
-				$contSwitchImg=-1;
+			
+				for ($cont = 0; $cont < $numVlans; $cont++){
+			//Concatenamos todos los puertos de vlan
+				$puertosVlan = ($vlans[$cont]['ports'].(",").$puertosVlan);}
+			//Eliminamos la ultima coma
+				$rest = substr($puertosVlan, 0, -1);
+			//Separamos cada puerto en una string delimitando la coma
+				$tags = explode(',', $rest);
+			//Elegimos el primer puerto y eliminamos a los repetidos
+				$result = array_unique($tags);
 				for ($cont = 0; $cont < $numPorts; $cont++){
-					if($Ports[$cont]['master-port']=='none'){
-
-						$contSwitchImg=$contSwitchImg+1;
-				
-						if($statusPorts[$cont]['status']=='link-ok'){
-						echo "<svg version='1.1' id='etherGreen$cont' style='fill:$colores[$contSwitchImg]' xmlns='http://www.w3.org/2000/svg' 
-						xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
-	 					width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
-						<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
-						</svg>";
-						
+					for($cont1=0;$cont1<count($tags);$cont1++){
+						if($Ports[$cont]['name']==$result[$cont1]){
 							
-						}
-					}	
+					echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#ffffff'; enable-background:new 0 0 15 11;' xml:space='preserve'>
+								<style type='text/css'>
+								<![CDATA[
+								.st0{font-size:5px;}
+								.st2{font-family:'Open Sans';}
+								.st3{fill:#000;}
+								]]>
+								</style>
 
-					else{
-						if($statusPorts[$cont]['status']=='link-ok'){
-						echo "<svg version='1.1' id='etherGreen$cont' style='fill:$colores[$contSwitchImg]' xmlns='http://www.w3.org/2000/svg' 
-									xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
-	 								width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
-									<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
-									</svg>";
-						
-							
-						}	
-					
-					
-					}
-				
+								<polygon class='st1' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+								<text transform='matrix(1.0151 0 0 1 1.375 9.2891)' class='st3 st2 st0'>VLAN</text>
+								</svg>";}
+					}				
+
 				}
+				
+				
 				echo "<img src='images/$modelo.png'>";			
 				?>
 			</div>
 			</div>
 			<div class="col-lg-3" id="info">
 			<?php
-			echo "Model: ";
-				echo $modelo."</br>";
-				echo "CPU:  <div class='progress' style='margin-bottom: 0px;'>
+			echo "<div id='model'>
+				<p class='infoBold'>Model: </p>";
+				echo "<p>".$modelo."</p>
+			</div></br>";
+				echo "<div id='cpu'>
+					<div id='cpu2'><p class='infoBold'>CPU: </p></div>
+					<div class='progress' style='margin-bottom: 0px;'>
   					  <div class='progress-bar' role='progressbar' aria-valuenow='$cpuInfo[0]['cpu-load']' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width:".$cpuInfo[0]['cpu-load']."%'>".
     						$cpuInfo[0]['cpu-load']."%
  					 </div>
-				
+				</div>
 				</div>";
 
-				echo "Uptime: ".$cpuInfo[0]['uptime'];
+				echo "<div id='uptime'><p class='infoBold'>Uptime: </p><p>".$cpuInfo[0]['uptime']."</p></div>";
 			?>
 			</div>
 			<div class="col-lg-1"></div>		
@@ -196,7 +202,7 @@
 			<div class="col-lg-2"></div>
 			<div class="col-lg-4">
 			<div id="refreshVlans">
-				<table>
+				<table class="vlanTable">
 				<?php
 				$contVlan=-1;
 				for ($cont = 0; $cont < $numVlans; $cont++){
@@ -205,7 +211,7 @@
 						echo "<tr>";
 						echo "<th style='border-bottom: 3px solid ".$colores[$contVlan].";'>Vlan ".$vlans[$cont]['vlan-id']." ".$vlans[$cont]['name']."</th>";
 						echo "<td><form name='button$cont' method='post'>
-							<input type='submit' name='disableVlan$cont' value='X' class='button'/>
+							<input type='submit' name='disableVlan$cont' value='X' class='buttonDisable'/>
 							</form></td>";
 						echo "</tr>";
 						echo "<tr>";
@@ -228,21 +234,21 @@
 			<div class="col-lg-6">
 				<table>
 				<td>
-				<table>
+				<table class="vlanTable">
 				<?php
 					
 						echo "<tr>";
 						echo "<form action=Vlans.php method=post>";
-						echo "<td><tr>VLAN-ID: <input name='vlan-id' type='number' min='0' max='4095' value='0'/></tr>
+						echo "<td><tr><font size='2'>VLAN-ID:</font> <input name='vlan-id' style='font-size:13px' type='number' min='0' max='4095' value='0'/></tr>
 							
 						
 						</td>";
 						echo "<td>";
 						
 						
-  							for ($cont = 0; $cont < $numPortsVlans; $cont++){
-								echo "<input type='checkbox' name='checkbox[]' value='".$PortsVlans[$cont]['name']."'/>".$PortsVlans[$cont]['name']."</br>";  								}
-						echo "</br></br>";
+  							for ($cont = 0; $cont < $numPorts; $cont++){
+								echo "<input type='checkbox' name='checkbox[]' value='".$Ports[$cont]['name']."'/>".$Ports[$cont]['name']."</br>";  								}
+						echo "</br>";
 							for ($cont = 0; $cont < $numSwitches; $cont++){
 								echo "<input type='radio' name='radioSwitch' value='".$switches[$cont]['name']."'/>".$switches[$cont]['name']."</br>";  						}
 						echo "</br><input type='submit' name='formSubmit' value='Submit' /></form>";	
@@ -312,6 +318,16 @@ if(isset($_POST['formSubmit'])){
 
 
 		
+?>
+
+<!--Boton cerrar sesión-->
+
+<?php
+	if($_GET['logOut'] == 'yes'){
+		session_destroy();
+		header( 'Location:Login.php'); 
+}
+
 ?>
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>			

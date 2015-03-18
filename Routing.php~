@@ -73,10 +73,10 @@
 	<title>Mikrotik Web Controller</title>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
-	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
-	<link rel='stylesheet' href='css/stylePorts.css'/>
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>xs
+	<link rel="stylesheet" href="css/style.css"/>
 	<?php
-		echo "<link rel='stylesheet' href='css/stylePorts$modelo.css'/>";
+		echo "<link rel='stylesheet' href='css/style$modelo.css'/>";
 	?>
 		
 
@@ -104,9 +104,9 @@
         <div id="navbar" class="collapse navbar-collapse">
 
 	    <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Log Out&nbsp&nbsp&nbsp</a></li>
+                <li><a id="logOut" href="Status.php?logOut=yes">Log Out&nbsp&nbsp&nbsp</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right"  style="margin-right:70px;">
+            <ul class="nav navbar-nav navbar-center">
                 <li><a href="Status.php">Status</a></li>
               <li><a href="Switch.php">Switch</a></li>
 		<li><a href="Vlans.php">Vlans</a></li>
@@ -148,16 +148,20 @@
 				</div>
 			<div class="col-lg-3" id="info">
 			<?php
-			echo "Model: ";
-				echo $modelo."</br>";
-				echo "CPU:  <div class='progress' style='margin-bottom: 0px;'>
+			echo "<div id='model'>
+				<p class='infoBold'>Model: </p>";
+				echo "<p>".$modelo."</p>
+			</div></br>";
+				echo "<div id='cpu'>
+					<div id='cpu2'><p class='infoBold'>CPU: </p></div>
+					<div class='progress' style='margin-bottom: 0px;'>
   					  <div class='progress-bar' role='progressbar' aria-valuenow='$cpuInfo[0]['cpu-load']' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width:".$cpuInfo[0]['cpu-load']."%'>".
     						$cpuInfo[0]['cpu-load']."%
  					 </div>
-				
+				</div>
 				</div>";
 
-				echo "Uptime: ".$cpuInfo[0]['uptime'];
+				echo "<div id='uptime'><p class='infoBold'>Uptime: </p><p>".$cpuInfo[0]['uptime']."</p></div>";
 			?>
 			</div>
 			<div class="col-lg-1"></div>		
@@ -208,7 +212,6 @@ $VlanAddress = $_POST['VlanAddress'];
 
 	if(isset($_POST['submitButton'])){
 		if(strcmp($identidadRS,"RB") == 0 ){
-			echo $interfaz;
 			$API = new routeros_api();
 			if ($API->connect($IP, $user, $password)) {
 			$API->comm("/interface/vlan/add", array(

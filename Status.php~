@@ -4,6 +4,7 @@
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
 
+<!--Script para actualizar imagenes y contenido automaticamente-->
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
@@ -139,10 +140,9 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
-	<link rel="stylesheet" href="css/styleStatus.css"/>
-
+	<link rel="stylesheet" href="css/style.css"/>
 	<?php
-		echo "<link rel='stylesheet' href='css/styleStatus$modelo.css'/>";
+		echo "<link rel='stylesheet' href='css/style$modelo.css'/>";
 	?>
 		
 

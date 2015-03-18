@@ -34,7 +34,7 @@
 		$READ = $API->read(false);
 		$statusPorts = $API->parse_response($READ);
 		$API->disconnect();}	
-				echo "<table>";
+				echo "<table class='vlanTable'>";
 					$contVlan=-1;
 				for ($cont = 0; $cont < $numVlans; $cont++){
 						
@@ -42,7 +42,7 @@
 						echo "<tr>";
 						echo "<th style='border-bottom: 3px solid ".$colores[$contVlan].";'>Vlan ".$vlans[$cont]['vlan-id']."</th>";
 						echo "<td><form name='button$cont' method='post'>
-							<input type='submit' name='disableVlan$cont' value='X' class='button'/>
+							<input type='submit' name='disableVlan$cont' value='X' class='buttonDisable'/>
 							</form></td>";
 						echo "</tr>";
 						echo "<tr>";

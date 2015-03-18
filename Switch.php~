@@ -2,6 +2,7 @@
 <?php error_reporting (E_ALL ^ E_NOTICE); ?>
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 
+<!--Script para actualizar imagenes y contenido automaticamente-->
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
@@ -74,9 +75,9 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
-	<link rel="stylesheet" href="css/styleSwitch.css"/>
+	<link rel="stylesheet" href="css/style.css"/>
 	<?php
-		echo "<link rel='stylesheet' href='css/styleSwitch$modelo.css'/>";
+		echo "<link rel='stylesheet' href='css/style$modelo.css'/>";
 	?>
 		
 
@@ -87,7 +88,7 @@
 <body>
 
 
-	
+<!-- Barra de Menu-->
     <nav class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
         <div class="navbar-header">
@@ -103,13 +104,14 @@
         <div id="navbar" class="collapse navbar-collapse">
 
 	    <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Log Out&nbsp&nbsp&nbsp</a></li>
+                <li><a id="logOut" href="Status.php?logOut=yes">Log Out&nbsp&nbsp&nbsp</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right"  style="margin-right:70px;">
+            <ul class="nav navbar-nav navbar-center">
                 <li><a href="Status.php">Status</a></li>
                <li  class="active"><a href="Switch.php">Switch</a></li>
 		<li><a href="Vlans.php">Vlans</a></li>
                 <li><a href="Ports.php">Ports</a></li>
+		<li><a href="Routing.php">Routing</a></li>
 		<li><a href="ACLs.php">ACLs</a></li>
             </ul>
         </div> 
@@ -117,7 +119,7 @@
     </nav>
 
 
-
+<!-- Imagen Equipo con color de Puertos segun Switch -->
 <div class="container" style="margin-top:50px;">
 
       	<div class="row">
@@ -131,50 +133,58 @@
 				for ($cont = 0; $cont < $numPorts; $cont++){
 					if($Ports[$cont]['master-port']=='none'){
 
-						$contSwitchImg=$contSwitchImg+1;
-				
-						if($statusPorts[$cont]['status']=='link-ok'){
-						echo "<svg version='1.1' id='etherGreen$cont' style='fill:$colores[$contSwitchImg]' xmlns='http://www.w3.org/2000/svg' 
-						xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
-	 					width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
-						<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
-						</svg>";
-						
+					$contSwitchImg=$contSwitchImg+1;
+
+						if($statusPorts[$cont]['status']=='link-ok'){	
+							echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:$colores[$contSwitchImg]; enable-background:new 0 0 15 11;' xml:space='preserve'>
+								<style type='text/css'>
+								<![CDATA[
+								.st0{font-size:9px;}
+								.st2{font-family:'Open Sans';}
+								.st3{fill:#000;}
+								]]>
+								</style>
+
+								<polygon class='st1' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+								<text transform='matrix(1.0151 0 0 1 3.375 10.2891)' class='st3 st2 st0'>m</text>
+								</svg>";
 							
 						}
-					}	
-
-					else{
-						if($statusPorts[$cont]['status']=='link-ok'){
-						echo "<svg version='1.1' id='etherGreen$cont' style='fill:$colores[$contSwitchImg]' xmlns='http://www.w3.org/2000/svg' 
-									xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
-	 								width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
-									<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
-									</svg>";
-						
-							
-						}	
-					
-					
-					}
 				
+					}
+					else{
+
+						if($statusPorts[$cont]['status']=='link-ok'){
+						echo "<svg version='1.1' id='etherGreen$cont' style='fill:$colores[$contSwitchImg]' xmlns='http://www.w3.org/2000/svg'
+						xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
+						width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
+						<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+						</svg>";
+					}
+						}
 				}
-				echo "<img src='images/$modelo.png'>";			
+
+				echo "<img src='images/$modelo.png'>"; 			
 				?>
+
 			</div>
 			</div>
 			<div class="col-lg-3" id="info">
 			<?php
-			echo "Model: ";
-				echo $modelo."</br>";
-				echo "CPU:  <div class='progress' style='margin-bottom: 0px;'>
+			echo "<div id='model'>
+				<p class='infoBold'>Model: </p>";
+				echo "<p>".$modelo."</p>
+			</div></br>";
+				echo "<div id='cpu'>
+					<div id='cpu2'><p class='infoBold'>CPU: </p></div>
+					<div class='progress' style='margin-bottom: 0px;'>
   					  <div class='progress-bar' role='progressbar' aria-valuenow='$cpuInfo[0]['cpu-load']' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width:".$cpuInfo[0]['cpu-load']."%'>".
     						$cpuInfo[0]['cpu-load']."%
  					 </div>
-				
+				</div>
 				</div>";
 
-				echo "Uptime: ".$cpuInfo[0]['uptime'];
+				echo "<div id='uptime'><p class='infoBold'>Uptime: </p><p>".$cpuInfo[0]['uptime']."</p></div>";
 			?>
 			</div>
 			<div class="col-lg-1"></div>		
@@ -186,7 +196,7 @@
 			<div class="col-lg-2"></div>
 			<div class="col-lg-4">
 			<div id="refreshPorts">
-				<table>
+				<table class="SwitchTable">
 				<?php
 				$contSwitch=-1;
 				for ($cont = 0; $cont < $numPorts; $cont++){
@@ -216,15 +226,15 @@
 			<div class="col-lg-6">
 				<table>
 				<td>
-				<table>
+				<table class="SwitchTable">
 				<?php
 					for ($cont = 0; $cont < $numPorts; $cont++){
 						
-						echo "<tr>";
-						echo "<td>".$Ports[$cont]['name']."</td>";
-						echo "<td>";
-						echo "<form action=Switch.php method=post>";
-						echo "<select name='formMaster$cont' onchange='this.form.submit()'>
+						echo "<tr>
+						<td>".$Ports[$cont]['name']."</td>
+						<td>
+						<form action=Switch.php method=post>";
+						echo "<div class='styled-selectSwitch'><select name='formMaster$cont' onchange='this.form.submit()'>
   							<option value=''>Master Port</option>";
 								echo "<option value='none'>none</option>";
 							for ($cont2 = 0; $cont2 < $numPorts; $cont2++){
@@ -232,7 +242,7 @@
 								
 							}
 
-						echo "</select></form>";	
+						echo "</select</div>></form>";	
 						echo "</td>";
 									
 						echo "</tr>";
@@ -268,6 +278,16 @@
 			}
 
 }
+?>
+
+<!--Boton cerrar sesión-->
+
+<?php
+	if($_GET['logOut'] == 'yes'){
+		session_destroy();
+		header( 'Location:Login.php'); 
+}
+
 ?>
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>			

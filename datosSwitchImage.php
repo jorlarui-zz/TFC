@@ -38,33 +38,36 @@
 				for ($cont = 0; $cont < $numPorts; $cont++){
 					if($Ports[$cont]['master-port']=='none'){
 
-						$contSwitchImg=$contSwitchImg+1;
-				
-						if($statusPorts[$cont]['status']=='link-ok'){
-						echo "<svg version='1.1' id='etherGreen$cont' style='fill:$colores[$contSwitchImg]' xmlns='http://www.w3.org/2000/svg' 
-						xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
-	 					width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
-						<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
-						</svg>";
-						
+					$contSwitchImg=$contSwitchImg+1;
+
+						if($statusPorts[$cont]['status']=='link-ok'){	
+							echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:$colores[$contSwitchImg]; enable-background:new 0 0 15 11;' xml:space='preserve'>
+								<style type='text/css'>
+								<![CDATA[
+								.st0{font-size:9px;}
+								.st2{font-family:'Open Sans';}
+								.st3{fill:#000;}
+								]]>
+								</style>
+
+								<polygon class='st1' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+								<text transform='matrix(1.0151 0 0 1 3.375 10.2891)' class='st3 st2 st0'>m</text>
+								</svg>";
 							
 						}
-					}	
-
-					else{
-						if($statusPorts[$cont]['status']=='link-ok'){
-						echo "<svg version='1.1' id='etherGreen$cont' style='fill:$colores[$contSwitchImg]' xmlns='http://www.w3.org/2000/svg' 
-									xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
-	 								width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
-									<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
-									</svg>";
-						
-							
-						}	
-					
-					
-					}
 				
+					}
+					else{
+
+						if($statusPorts[$cont]['status']=='link-ok'){
+						echo "<svg version='1.1' id='etherGreen$cont' style='fill:$colores[$contSwitchImg]' xmlns='http://www.w3.org/2000/svg'
+						xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
+						width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
+						<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+						</svg>";
+					}
+						}
 				}
-				echo "<img src='images/$modelo.png'>";				
+
+				echo "<img src='images/$modelo.png'>"; 				
 ?>

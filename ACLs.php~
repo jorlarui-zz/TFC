@@ -60,12 +60,6 @@
 		$READ = $API->read(false);
 		$statusPorts = $API->parse_response($READ);
 
-		//Array Colores,
-		$colores=["#00fff9","#ff00e7","#a3ff00","#ffdc0b","#ff4400","#7c00ff","#3377ff","#ff7468","#20e523","#fcc512"
-			 ,"#9f0d0d","#bc9ad4","#79addd","#e7d1e5","#7bcf5a","#cc8324","#b80f12","#0da9b0","#eea7b9","#1e7352"
-			,"#eee117","#b80000","#00137a","#AA0078","#3333FF","#99FF00","#FFCC00","#CC0000","#587498","#E86850"
-			,"#FFD800","##00FF00","#FF0000","#0000FF","#FF6600","#A16B23","#C9341C","#ECC5A8","#A3CBF1","#79BFA1"
-			,"#FB7374","#FF9900","#4FD5D6","#D6E3B5","#FFD197","#FFFF66","#FFC3CE","#21B6A8","#CDFFFF",""];
 
 		
 		
@@ -84,9 +78,9 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
-	<link rel="stylesheet" href="css/styleSwitch.css"/>
+	<link rel="stylesheet" href="css/style.css"/>
 	<?php
-		echo "<link rel='stylesheet' href='css/styleSwitch$modelo.css'/>";
+		echo "<link rel='stylesheet' href='css/style$modelo.css'/>";
 	?>
 		
 
@@ -113,9 +107,9 @@
         <div id="navbar" class="collapse navbar-collapse">
 
 	    <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Log Out&nbsp&nbsp&nbsp</a></li>
+                <li><a id="logOut" href="Status.php?logOut=yes">Log Out&nbsp&nbsp&nbsp</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right"  style="margin-right:70px;">
+            <ul class="nav navbar-nav navbar-center">
                 <li><a href="Status.php">Status</a></li>
                <li><a href="Switch.php">Switch</a></li>
 		<li><a href="Vlans.php">Vlans</a></li>
@@ -176,16 +170,20 @@
 			</div>
 			<div class="col-lg-3" id="info">
 			<?php
-			echo "Model: ";
-				echo $modelo."</br>";
-				echo "CPU:  <div class='progress' style='margin-bottom: 0px;'>
+			echo "<div id='model'>
+				<p class='infoBold'>Model: </p>";
+				echo "<p>".$modelo."</p>
+			</div></br>";
+				echo "<div id='cpu'>
+					<div id='cpu2'><p class='infoBold'>CPU: </p></div>
+					<div class='progress' style='margin-bottom: 0px;'>
   					  <div class='progress-bar' role='progressbar' aria-valuenow='$cpuInfo[0]['cpu-load']' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width:".$cpuInfo[0]['cpu-load']."%'>".
     						$cpuInfo[0]['cpu-load']."%
  					 </div>
-				
+				</div>
 				</div>";
 
-				echo "Uptime: ".$cpuInfo[0]['uptime'];
+				echo "<div id='uptime'><p class='infoBold'>Uptime: </p><p>".$cpuInfo[0]['uptime']."</p></div>";
 			?>
 			</div>
 			<div class="col-lg-1"></div>		

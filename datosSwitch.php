@@ -36,7 +36,7 @@
 
 
 		$API->disconnect();}	
-				echo "<table>";
+				echo "<table class='SwitchTable'>";
 				$contSwitch=-1;
 				for ($cont = 0; $cont < $numPorts; $cont++){
 						
@@ -45,7 +45,7 @@
 							echo "<tr>";
 							echo "<th style='border-bottom: 3px solid ".$colores[$contSwitch].";'>Switch ".$contSwitch."</th></tr>";
 							echo "<tr>";
-							echo "<td id='master-port'>".$Ports[$cont]['name']." (Master-port)</td>";
+							echo "<td id='master-port'>".$Ports[$cont]['name']." <b>(Master-port)</b></td>";
 							for($cont2 = 0; $cont2 < $numPorts; $cont2++){
 								if($Ports[$cont]['name']==$Ports[$cont2]['master-port']){
 									echo "<tr><td>".$Ports[$cont2]['name']."</td></tr>";

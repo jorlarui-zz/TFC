@@ -67,7 +67,7 @@
 					load: function () {
 						setInterval(function () {
 							requestDatta(document.getElementById("interface").value);
-						}, 1500);
+						}, 1000);
 					}				
 			}
 		 },
@@ -76,7 +76,7 @@
 		 },
 		 xAxis: {
 			type: 'datetime',
-				tickPixelInterval: 300,
+				tickPixelInterval: 200,
 				maxZoom: 20 * 1000
 		 },
 		 yAxis: {

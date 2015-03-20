@@ -28,8 +28,8 @@
 		$READ = $API->read(false);
 		$statusPorts = $API->parse_response($READ);
 		$API->disconnect();}	
-				echo "</br>RULES
-				<table>
+				echo "
+				<table class='ACLRules'>
 				<tr>
 					<th>#</th>
 					<th>Action</th>

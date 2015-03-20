@@ -191,44 +191,51 @@
 	</div>
 
 	<div class="row">
-		<div class="col-lg-12 info-box">
-			<div class="col-lg-2"></div>
-			<div class="col-lg-8">	
+		<div class="col-lg-12 info-box ACLBox">
+				<table class='ACLTable'>
+				<tr>
 				<form method='post' action='#' name='formACL'>
-
-				Permit/Deny: 
+				<td>	
+				Permit/Deny: 	
+				<div class='styled-selectACL'>
 				<select name='permitDeny'>
 					<option value='accept'>Permit</option>
 					<option value='drop'>Deny</option>
 				</select>
-
-				Source IP: <input name='sourceIP' type='text' placeholder='192.168.80.10-192.168.80.0/24'/>
-				Destination IP: <input name='destinationIP' type='text' placeholder='192.168.90.10-192.168.90.0/24'/>
-
-				</br>Protocol: 
+				</div>
+				</td>
+				
+				<td>Source IP: <input name='sourceIP' type='text' placeholder='192.168.80.10-192.168.80.0/24'/></td>
+				<td>Destination IP: <input name='destinationIP' type='text' placeholder='192.168.90.10-192.168.90.0/24'/></td>
+				
+				<tr>
+				<td>Protocol: 
+				<div class='styled-selectACL'>
 				<select name='protocol'>
 					<option value='tcp'>TCP</option>
 					<option value='udp'>UDP</option>
 					<option value='icmp'>ICMP</option>
 				</select>
+				</div></td>
 
-				Src. Port: <input name='srcPort' type='number' min='0' max='65535' placeholder='23'/>
-				Dst. Port: <input name='dstPort' type='number' min='0' max='65535' placeholder='23'/>
+				<td>Src. Port: <input name='srcPort' type='number' min='0' max='65535' placeholder='23'/></td>
+				<td>Dst. Port: <input name='dstPort' type='number' min='0' max='65535' placeholder='23'/></td>
+				</tr>
+				</table>
 
-				</br><input type='submit' name='submitButton' value='Submit'/>
+				<div class='buttonACL'>
+					<input type='submit' name='submitButton' value='Submit'/>
+				     </div>
 				</form>
 
 			
-			</div>	
-			<div class="col-lg-2"></div>
 		
 	
 		<div class="col-lg-12 firewallRules">
 			<div class="col-lg-2"></div>
 			<div class="col-lg-8">	
 				<div id="refreshRules">
-				</br>RULES
-				<table>
+				<table class="ACLRules">
 				<tr>
 					<th>#</th>
 					<th>Action</th>

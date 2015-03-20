@@ -69,5 +69,5 @@
 						}
 				}
 
-				echo "<img src='images/$modelo.png'>"; 				
+				echo "<div>"; 				
 ?>

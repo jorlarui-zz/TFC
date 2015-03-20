@@ -207,3 +207,58 @@ input[class=buttonDisable] {
 	font-size:10px !important;
 	 }
 
+/*-----------------Ports.php-----------------*/
+
+
+.portsBox form{
+	font-size:13px;
+}
+
+.tablePorts td{
+	font-size:13px;
+	padding-left: 30px;
+}
+
+/*-----------------Routing.php-----------------*/
+
+.ACLBox form{
+	font-size: 13px;
+}
+
+.styled-selectACL select {
+   background: transparent;
+   width: 118px;	
+   font-size:13px;
+   border: 0;
+   border-radius: 0;
+   height: 24px;
+   -webkit-appearance: none;
+   }
+
+.styled-selectACL {
+   display: inline-block;
+   width: 100px;
+   height: 24px;
+   overflow: hidden;
+   border: 1px solid #ccc;
+   background-color:rgba(0,0,0,0.1);
+   }
+.buttonACL{
+	text-align:center;
+	margin-top:10px;
+}
+
+.ACLTable td{
+	font-size:13px;
+	padding-left:15px;
+	padding-right:15px;
+}
+.ACLRules {
+	margin-top:20px;
+}
+
+.ACLRules td,th{
+	font-size:13px;
+	padding-right:5px;
+	padding-left: 5px;
+}

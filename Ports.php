@@ -69,6 +69,9 @@
 		$switches = $API->comm("/interface/ethernet/switch/print");
 		$numSwitches = count($switches);
 
+		//puerto Acceso, Trunk, NoSwitchport
+		$estadoPort = $API->comm("/interface/ethernet/switch/port/print");
+
 		//CPU
 		$cpuInfo = $API->comm("/system/resource/print");
 		//RB o CS
@@ -152,16 +155,51 @@
 				for ($cont = 0; $cont < $numPorts; $cont++){
 				
 				if($statusPorts[$cont]['status']=='link-ok'){
+					if($identidadRS == 'RB'){
+						if($estadoPort[$cont]['vlan-mode']!='disabled' and $estadoPort[$cont]['vlan-header']=='always-strip'){
+								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#00fff9; enable-background:new 0 0 15 11;' xml:space='preserve'>
+								<style type='text/css'>
+								<![CDATA[
+								.st0{font-size:9px;}
+								.st2{font-family:'Open Sans';}
+								.st3{fill:#000;}
+								]]>
+								</style>
+
+								<polygon class='st1' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+								<text transform='matrix(1.0151 0 0 1 4.375 10.2891)' class='st3 st2 st0'>A</text>
+								</svg>";
+							}
+							else if($estadoPort[$cont]['vlan-mode']!='disabled' and $estadoPort[$cont]['vlan-header']=='add-if-missing'){
+								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#ff00e7; enable-background:new 0 0 15 11;' xml:space='preserve'>
+								<style type='text/css'>
+								<![CDATA[
+								.st0{font-size:9px;}
+								.st2{font-family:'Open Sans';}
+								.st3{fill:#000;}
+								]]>
+								</style>
+
+								<polygon class='st1' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+								<text transform='matrix(1.0151 0 0 1 3.375 10.2891)' class='st3 st2 st0'>T</text>
+								</svg>";
+							}
+							else{
+								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#a3ff00; enable-background:new 0 0 15 11;' xml:space='preserve'>
+								<style type='text/css'>
+								<![CDATA[
+								.st0{font-size:9px;}
+								.st2{font-family:'Open Sans';}
+								.st3{fill:#000;}
+								]]>
+								</style>
+
+								<polygon class='st1' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+								<text transform='matrix(1.0151 0 0 1 2.375 10.2891)' class='st3 st2 st0'>NS</text>
+								</svg>";
+							}
 					
-					echo "<svg version='1.1' id='etherGreen$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
-	 				width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
-					<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
-					</svg>";
-					}
-				else if($statusPorts[$cont]['status']=='no-link'){			
-					}
-				
-				}
+					}}}
 				echo "<img src='images/$modelo.png'>";			
 				?>
  				 </div> 
@@ -191,10 +229,35 @@
 	<div class="row">
 		<div class="col-lg-12 info-box">
 			<div class="col-lg-2"></div>
-			<div class="col-lg-4"></div>
 			<div class="col-lg-4">
+				<table class='tablePorts'>
+				<?php
+				for ($cont = 0; $cont < $numPorts; $cont++){
+						echo '<tr><td><b>'.$estadoPort[$cont]['name'].'</b></td>';
+						echo "<td>";
+//Detectar Si es Vlan, Trunk, No Switchport En RB
+						if($identidadRS == 'RB'){
+							if($estadoPort[$cont]['vlan-mode']!='disabled' and $estadoPort[$cont]['vlan-header']=='always-strip'){
+								echo "Access Vlan: ".$estadoPort[$cont]['default-vlan-id'];
+							}
+							else if($estadoPort[$cont]['vlan-mode']!='disabled' and $estadoPort[$cont]['vlan-header']=='add-if-missing'){
+								echo "Trunk";
+							}
+							else{
+								echo "No Switchport";
+							}
+						}
+
+						echo '</td></tr>';
+				}
+				?>
+				</table>
+
+			</div>
+			<div class="col-lg-4  portsBox">
 				<form method='post' action='#' name='formPorts'>
 				Select interfaces:
+				<div class='styled-select'>
 				<select name='interfaces'>
 				<option value>Interfaz</option>
 			<?php
@@ -205,7 +268,7 @@
 				echo "<option value=$interfazSel>$interfazSel</option>";
 			
 			}		
-			echo "</select>";
+			echo "</select></div>";
 			?>
 
 			</br>

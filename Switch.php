@@ -6,12 +6,12 @@
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosSwitchImage.php').fadeIn("fast");
-			$('#refreshPorts').load('datosSwitch.php').fadeIn("fast");
+			$('#refreshImage').load('datosSwitchImage.php');
+			$('#refreshPorts').load('datosSwitch.php');
 			}, 3000);
 
 			var auto_refresh = setInterval(function (){
-			$('#info').load('datosCPU.php').fadeIn("fast");
+			$('#info').load('datosCPU.php');
 			}, 1000);
 		});		
 			
@@ -61,11 +61,7 @@
 			,"#FB7374","#FF9900","#4FD5D6","#D6E3B5","#FFD197","#FFFF66","#FFC3CE","#21B6A8","#CDFFFF",""];
 		
 		$API->disconnect();
-		}
-		else {
-			header( 'Location:Login.php?notLogin=true' );
-
-		}
+		
 
 ?>
 
@@ -126,6 +122,7 @@
 		<div class="col-lg-12 switch-box">
 			<div class="col-lg-2"></div>
 			<div class="col-lg-6">
+				<div>
 				 <div id="refreshImage">
 				
 				<?php
@@ -164,7 +161,7 @@
 						}
 				}
 
-				echo "<img src='images/$modelo.png'>"; 			
+				echo "</div><img src='images/$modelo.png'>"; 			
 				?>
 
 			</div>
@@ -294,4 +291,10 @@
 			
 
 </body>
+<?php 
+}
+		else {
+			header( 'Location:Login.php?notLogin=true' );
+
+		}?>
 </html>

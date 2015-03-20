@@ -171,12 +171,13 @@
 	<div class="row">
 		<div class="col-lg-12 info-box">
 			<div class="col-lg-2"></div>
-			<div class="col-lg-4"></div>
-			<div class="col-lg-4">
+			<div class="col-lg-5"></div>
+			<div class="col-lg-3 routingBox">
 					
 			<div>
 				<form method='post' action='#' name='formRouting'>
 				Interface: 
+				<div class='styled-select'>
 				<select name='interfaces'>
 				<option value>Interface</option>
 				<?php
@@ -187,11 +188,11 @@
 				echo "<option value=$interfazSel>$interfazSel</option>";
 			
 				}		
-				echo "</select>";
+				echo "</select></div>";
 				?>
-				</br>VLAN ID: <input name='VlanID' type='number' min='0' max='4095' placeholder='100'/>
-				</br>VLAN Name: <input name='VlanName' type='text' placeholder='Management VLAN'/>
-				</br>IP Address: <input name='VlanAddress' type='text' placeholder='192.168.100.1/24'/>
+				</br>VLAN ID:</br> <input name='VlanID' type='number' min='0' max='4095' placeholder='100'/></br>
+				</br>VLAN Name:</br> <input name='VlanName' type='text' placeholder='Management VLAN'/></br>
+				</br>IP Address:</br> <input name='VlanAddress' type='text' placeholder='192.168.100.1/24'/></br>
 
 				</br><input type='submit' name='submitButton' value='Submit'/>
 				</form>
@@ -199,7 +200,7 @@
 			</div>	
 
 			
-			<div class="col-lg-2"></div>
+			<div class="col-lg-1"></div>
 			
 	</div>
 

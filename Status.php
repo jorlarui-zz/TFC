@@ -8,12 +8,12 @@
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosStatusImage.php').fadeIn("fast");
-			$('#refreshPorts').load('datosStatus.php').fadeIn("fast");
+			$('#refreshImage').load('datosStatusImage.php');
+			$('#refreshPorts').load('datosStatus.php');
 			}, 3000);
 
 			var auto_refresh = setInterval(function (){
-			$('#info').load('datosCPU.php').fadeIn("fast");
+			$('#info').load('datosCPU.php');
 			}, 1000);
 		});		
 			

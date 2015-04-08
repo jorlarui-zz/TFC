@@ -161,7 +161,7 @@
 						}
 				}
 
-				echo "</div><img src='images/$modelo.png'>"; 			
+				echo "<img src='images/$modelo.png'></div>"; 			
 				?>
 
 			</div>

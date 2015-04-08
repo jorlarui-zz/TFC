@@ -6,8 +6,8 @@
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosPortImage.php').fadeIn("fast");
-			$('#refreshPorts').load('datosPort.php').fadeIn("fast");
+			$('#refreshImage').load('datosPortsImage.php');
+			$('#refreshPorts').load('datosPorts.php');
 			}, 2000);
 
 			var auto_refresh = setInterval(function (){
@@ -156,7 +156,7 @@
 				
 				if($statusPorts[$cont]['status']=='link-ok'){
 					if($identidadRS == 'RB'){
-						if($estadoPort[$cont]['vlan-mode']!='disabled' and $estadoPort[$cont]['vlan-header']=='always-strip'){
+						if($estadoPort[$cont+1]['vlan-mode']!='disabled' and $estadoPort[$cont+1]['vlan-header']=='always-strip'){
 								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#00fff9; enable-background:new 0 0 15 11;' xml:space='preserve'>
 								<style type='text/css'>
 								<![CDATA[
@@ -170,7 +170,7 @@
 								<text transform='matrix(1.0151 0 0 1 4.375 10.2891)' class='st3 st2 st0'>A</text>
 								</svg>";
 							}
-							else if($estadoPort[$cont]['vlan-mode']!='disabled' and $estadoPort[$cont]['vlan-header']=='add-if-missing'){
+							else if($estadoPort[$cont+1]['vlan-mode']!='disabled' and $estadoPort[$cont+1]['vlan-header']=='add-if-missing'){
 								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#ff00e7; enable-background:new 0 0 15 11;' xml:space='preserve'>
 								<style type='text/css'>
 								<![CDATA[
@@ -230,6 +230,7 @@
 		<div class="col-lg-12 info-box">
 			<div class="col-lg-2"></div>
 			<div class="col-lg-4">
+			<div id="refreshPorts">
 				<table class='tablePorts'>
 				<?php
 				for ($cont = 0; $cont < $numPorts; $cont++){
@@ -252,7 +253,7 @@
 				}
 				?>
 				</table>
-
+			</div>
 			</div>
 			<div class="col-lg-4  portsBox">
 				<form method='post' action='#' name='formPorts'>

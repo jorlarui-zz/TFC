@@ -5,6 +5,8 @@
 		$IP = $_SESSION[ 'ip' ];
 		$user = $_SESSION[ 'user' ];
 		$password = $_SESSION[ 'password' ];
+		//Comprobamos conexion API
+		if ($API->connect($IP, $user, $password)) {
 
 		//Comprobamos interfaces
 		
@@ -31,7 +33,7 @@
 			,"#eee117","#b80000","#00137a","#AA0078","#3333FF","#99FF00","#FFCC00","#CC0000","#587498","#E86850"
 			,"#FFD800","##00FF00","#FF0000","#0000FF","#FF6600","#A16B23","#C9341C","#ECC5A8","#A3CBF1","#79BFA1"
 			,"#FB7374","#FF9900","#4FD5D6","#D6E3B5","#FFD197","#FFFF66","#FFC3CE","#21B6A8","#CDFFFF",""];
-			
+		$API->disconnect();}	
 				$contSwitchImg=-1;
 				for ($cont = 0; $cont < $numPorts; $cont++){
 					if($Ports[$cont]['master-port']=='none'){

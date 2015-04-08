@@ -55,7 +55,7 @@
 					for($cont1=0;$cont1<count($tags);$cont1++){
 						if($Ports[$cont]['name']==$result[$cont1]){
 							
-					echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#ffffff'; enable-background:new 0 0 15 11;' xml:space='preserve'>
+					echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#ffffff; enable-background:new 0 0 15 11;' xml:space='preserve'>
 								<style type='text/css'>
 								<![CDATA[
 								.st0{font-size:5px;}

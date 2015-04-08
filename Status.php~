@@ -8,8 +8,8 @@
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosStatusImage.php').fadeIn("fast");
-			$('#refreshPorts').load('datosStatus.php').fadeIn("fast");
+			$('#refreshImage').load('datosStatusImage.php');
+			$('#refreshPorts').load('datosStatus.php');
 			}, 3000);
 
 			var auto_refresh = setInterval(function (){
@@ -76,7 +76,7 @@
 		 },
 		 xAxis: {
 			type: 'datetime',
-				tickPixelInterval: 300,
+				tickPixelInterval: 200,
 				maxZoom: 20 * 1000
 		 },
 		 yAxis: {

@@ -5,10 +5,10 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
-			var auto_refresh = setInterval(function (){
+			/*var auto_refresh = setInterval(function (){
 			$('#refreshImage').load('datosPortsImage.php');
 			$('#refreshPorts').load('datosPorts.php');
-			}, 2000);
+			}, 2000);*/
 
 			var auto_refresh = setInterval(function (){
 			$('#info').load('datosCPU.php').fadeIn("fast");
@@ -69,8 +69,19 @@
 		$switches = $API->comm("/interface/ethernet/switch/print");
 		$numSwitches = count($switches);
 
-		//puerto Acceso, Trunk, NoSwitchport
+		//Ports Switch
+		$portsSwitch = $API->comm("/interface/ethernet/switch/port/print");
+		$numPortsSwitch = count($portsSwitch);
+
+		//puerto Acceso, Trunk, NoSwitchport de RB
 		$estadoPort = $API->comm("/interface/ethernet/switch/port/print");
+
+		//puerto Trunk CS
+		$estadoTrunkCS = $API->comm("/interface/ethernet/switch/egress-vlan-tag/print");
+
+		//puerto Acceso CS
+		$estadoAccessCS = $API->comm("/interface/ethernet/switch/ingress-vlan-translation/print");
+
 
 		//CPU
 		$cpuInfo = $API->comm("/system/resource/print");
@@ -199,7 +210,56 @@
 								</svg>";
 							}
 					
-					}}}
+					}
+
+
+					if($identidadRS == 'CR'){
+						if($estadoPort[$cont+1]['vlan-mode']!='disabled' and $estadoPort[$cont+1]['vlan-header']=='always-strip'){
+								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#00fff9; enable-background:new 0 0 15 11;' xml:space='preserve'>
+								<style type='text/css'>
+								<![CDATA[
+								.st0{font-size:9px;}
+								.st2{font-family:'Open Sans';}
+								.st3{fill:#000;}
+								]]>
+								</style>
+
+								<polygon class='st1' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+								<text transform='matrix(1.0151 0 0 1 4.375 10.2891)' class='st3 st2 st0'>A</text>
+								</svg>";
+							}
+							else if($estadoPort[$cont+1]['vlan-mode']!='disabled' and $estadoPort[$cont+1]['vlan-header']=='add-if-missing'){
+								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#ff00e7; enable-background:new 0 0 15 11;' xml:space='preserve'>
+								<style type='text/css'>
+								<![CDATA[
+								.st0{font-size:9px;}
+								.st2{font-family:'Open Sans';}
+								.st3{fill:#000;}
+								]]>
+								</style>
+
+								<polygon class='st1' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+								<text transform='matrix(1.0151 0 0 1 3.375 10.2891)' class='st3 st2 st0'>T</text>
+								</svg>";
+							}
+							else{
+								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#a3ff00; enable-background:new 0 0 15 11;' xml:space='preserve'>
+								<style type='text/css'>
+								<![CDATA[
+								.st0{font-size:9px;}
+								.st2{font-family:'Open Sans';}
+								.st3{fill:#000;}
+								]]>
+								</style>
+
+								<polygon class='st1' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+								<text transform='matrix(1.0151 0 0 1 2.375 10.2891)' class='st3 st2 st0'>NS</text>
+								</svg>";
+							}
+					
+					}
+				}
+			}
 				echo "<img src='images/$modelo.png'>";			
 				?>
  				 </div> 
@@ -231,8 +291,11 @@
 			<div class="col-lg-2"></div>
 			<div class="col-lg-4">
 			<div id="refreshPorts">
-				<table class='tablePorts'>
-				<?php
+<!--TABLA RB-->
+			<?php
+				if(strcmp($identidadRS,"RB") == 0 ){
+				echo "<table class='tablePorts'>";
+				
 				for ($cont = 0; $cont < $numPorts; $cont++){
 						echo '<tr><td><b>'.$estadoPort[$cont]['name'].'</b></td>';
 						echo "<td>";
@@ -251,8 +314,54 @@
 
 						echo '</td></tr>';
 				}
-				?>
-				</table>
+				
+				echo "</table>";
+				}				
+			?>
+
+<!--TABLA CR-->
+			<?php
+
+				if(strcmp($identidadRS,"CR") == 0 ){
+					echo "Access
+						<table class='tablePortsCR'>
+					";
+					echo '<tr><td>Ports</td>';
+					echo '<td>VLAN</td></tr>';
+					for ($cont = 0; $cont < count($estadoAccessCS); $cont++){
+						echo '<tr><td>'.$estadoAccessCS[$cont]['ports'].'</td>';
+						echo '<td>'.$estadoAccessCS[$cont]['new-customer-vid'].'</td>';
+						echo "<td><form name='button$cont' method='post'>
+							<input type='submit' name='disableAccessCR$cont' value='X' class='buttonDisable'/>
+							</form></td>";
+			
+
+						echo '</tr>';
+					}
+				
+					echo "</table>";
+							
+					echo "Trunk
+						<table class='tablePortsCR'>
+					";
+					echo '<tr><td>VLAN</td>';
+					echo '<td>Ports</td></tr>';
+					for ($cont = 0; $cont < count($estadoTrunkCS); $cont++){
+						echo '<tr><td>'.$estadoTrunkCS[$cont]['vlan-id'].'</td>';
+						echo '<td>'.$estadoTrunkCS[$cont]['tagged-ports'].'</td>';
+						echo "<td><form name='button$cont' method='post'>
+							<input type='submit' name='disableTrunkCR$cont' value='X' class='buttonDisable'/>
+							</form></td>";
+			
+
+						echo '</tr>';
+					}
+				
+					echo "</table>";
+
+
+				}
+			?>
 			</div>
 			</div>
 			<div class="col-lg-4  portsBox">
@@ -262,13 +371,28 @@
 				<select name='interfaces'>
 				<option value>Interfaz</option>
 			<?php
+
+//SI ES RB se cogen puertos sin switch-cpu y si es CR se cogen con switch-cpu
+
+			if(strcmp($identidadRS,"RB") == 0 ){
+				for ($cont = 0; $cont < $numPorts; $cont++){
 			
-			for ($cont = 0; $cont < $numPorts; $cont++){
+					$interfazSel = $Ports[$cont]['name'];
+					echo "<option value=$interfazSel>$interfazSel</option>";
 			
-				$interfazSel = $Ports[$cont]['name'];
-				echo "<option value=$interfazSel>$interfazSel</option>";
+				}		
+			}
+
+			else if(strcmp($identidadRS,"CR") == 0 ){
+				for ($cont = 0; $cont < $numPortsSwitch; $cont++){
 			
-			}		
+					$interfazSel = $portsSwitch[$cont]['name'];
+					echo "<option value=$interfazSel>$interfazSel</option>";
+			
+				}		
+			}
+
+			
 			echo "</select></div>";
 			?>
 
@@ -279,12 +403,7 @@
 
 			<div style='display: none' id='areaAccess'>
 					Access Vlan: <input name='accessVlanID' type='number' min='0' max='4095' placeholder='100'/></br>
-					<?php
-		//OJOOOOOOOOOOOOOOOOOOOOOOO CR ESTE
-						if(strcmp($identidadRS,"CR") == 0 ){
-						for ($cont = 0; $cont < $numSwitches; $cont++){
-								echo "<input type='radio' name='radioSwitch' value='".$switches[$cont]['name']."'/>".$switches[$cont]['name'];  						}}
-					?>
+					
 				
 					</br>
 				
@@ -296,7 +415,14 @@
 							echo "Native Vlan: <input name='nativeVLAN' type='number' min='0' max='4095' placeholder='100'/>";
 						}
 						else{
-							echo "Allowed Vlans: <input name='trunkVlans-id' type='text' placeholder='100,110,120'/>";}
+							echo "Vlan ID: <input name='trunkVlansID' type='number' min='0' max='4095' placeholder='100'/>";
+								echo "<br>";
+								for ($cont = 0; $cont < $numPortsSwitch; $cont++){
+								
+								echo "<input type='checkbox' name='checkbox[]' value='".$portsSwitch[$cont]['name']."'/>".$portsSwitch[$cont]['name']."</br>";  								
+								}
+					
+							}
 						?>
 					</br>
 					
@@ -320,6 +446,14 @@ $modoPuerto = $_POST['form'];
 $accessVlanID = $_POST['accessVlanID'];
 $noSwitchportIP = $_POST['noSwitchportIP'];
 $nativeVLAN = $_POST['nativeVLAN'];
+$trunkVlansID = $_POST['trunkVlansID'];
+$puertosSelTrunk= "";
+foreach($_POST['checkbox'] as $value)
+ {
+    $puertosSelTrunk.= $value.',';
+ }
+
+
 
 	if(isset($_POST['submitButton'])){
 		if($modoPuerto == "NoSwitchport"){
@@ -341,7 +475,27 @@ $nativeVLAN = $_POST['nativeVLAN'];
 				}}
 			
 		}
-			//FALTA SWITCHPORT CRS
+
+		/*if($modoPuerto == "NoSwitchport"){
+			if(strcmp($identidadRS,"CR") == 0 ){
+				$API = new routeros_api();
+				if ($API->connect($IP, $user, $password)) {
+				$API->comm("/interface/ethernet/switch/port/set", array(
+         			 ".id"     => $interfaz,
+          			"vlan-mode" => "disabled",
+          			"vlan-header" => "leave-as-is",
+				"default-vlan-id" => "0",
+				));
+
+				$API->comm("/ip/address/add", array(
+					"address"=> $noSwitchportIP, 
+					"interface"=> $interfaz,
+				));
+				$API->disconnect();
+				}}
+			
+		}*/
+			
 
 
 		if($modoPuerto == "Access"){
@@ -353,6 +507,21 @@ $nativeVLAN = $_POST['nativeVLAN'];
           			"vlan-mode" => "secure",
           			"vlan-header" => "always-strip",
 				"default-vlan-id" => $accessVlanID
+				));
+				$API->disconnect();
+				}
+			}
+		
+
+		
+			else if(strcmp($identidadRS,"CR") == 0 ){
+				$API = new routeros_api();
+				if ($API->connect($IP, $user, $password)) {
+				$API->comm("/interface/ethernet/switch/ingress-vlan-translation/add", array(
+         			 "ports"     => $interfaz,
+          			"sa-learning" => "yes",
+          			"customer-vid" => "0",
+				"new-customer-vid" => $accessVlanID
 				));
 				$API->disconnect();
 				}
@@ -372,9 +541,55 @@ $nativeVLAN = $_POST['nativeVLAN'];
 				$API->disconnect();
 				}
 			}
+
+			else if(strcmp($identidadRS,"CR") == 0 ){
+				$API = new routeros_api();
+				if ($API->connect($IP, $user, $password)) {
+				$API->comm("/interface/ethernet/switch/egress-vlan-tag/add", array(
+         			 "tagged-ports"     => $puertosSelTrunk,
+          			"vlan-id" => $trunkVlansID
+				));
+				$API->disconnect();
+				}
+			}
 		}
 	}
 		
+
+	
+
+
+?>
+
+<!-- Eliminar Access o Trunk-->
+<?php
+for ($cont = 0; $cont < count($estadoAccessCS); $cont++){
+		if(isset($_POST['disableAccessCR'.$cont])){
+			$API = new routeros_api();
+			$IP = $_SESSION[ 'ip' ];
+			$user = $_SESSION[ 'user' ];
+			$password = $_SESSION[ 'password' ];
+			if ($API->connect($IP, $user, $password)) {
+				$API->write("/interface/ethernet/switch/ingress-vlan-translation/remove",false);
+				$API->write("=.id=".$cont);
+				$Ports = $API->read();
+				$API->disconnect();
+		}}
+		}
+
+for ($cont = 0; $cont < count($estadoTrunkCS); $cont++){
+		if(isset($_POST['disableTrunkCR'.$cont])){
+			$API = new routeros_api();
+			$IP = $_SESSION[ 'ip' ];
+			$user = $_SESSION[ 'user' ];
+			$password = $_SESSION[ 'password' ];
+			if ($API->connect($IP, $user, $password)) {
+				$API->write("/interface/ethernet/switch/egress-vlan-tag/remove",false);
+				$API->write("=.id=".$cont);
+				$Ports = $API->read();
+				$API->disconnect();
+		}}
+		}
 
 
 ?>

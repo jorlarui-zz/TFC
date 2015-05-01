@@ -219,6 +219,11 @@ input[class=buttonDisable] {
 	padding-left: 30px;
 }
 
+.tablePortsCR td{
+	font-size:13px;
+	padding-left: 30px;
+}
+
 /*-----------------Routing.php-----------------*/
 
 .ACLBox form{

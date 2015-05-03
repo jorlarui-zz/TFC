@@ -9,7 +9,6 @@
 		if ($API->connect($IP, $user, $password)) {
 
 		//Comprobamos interfaces
-		
 		$Ports = $API->comm("/interface/ethernet/print");
 		$numPorts = count($Ports);
 
@@ -25,8 +24,19 @@
 		$switches = $API->comm("/interface/ethernet/switch/print");
 		$numSwitches = count($switches);
 
-		//puerto Acceso, Trunk, NoSwitchport
+		//Ports Switch
+		$portsSwitch = $API->comm("/interface/ethernet/switch/port/print");
+		$numPortsSwitch = count($portsSwitch);
+
+		//puerto Acceso, Trunk, NoSwitchport de RB
 		$estadoPort = $API->comm("/interface/ethernet/switch/port/print");
+
+		//puerto Trunk CR
+		$estadoTrunkCR = $API->comm("/interface/ethernet/switch/egress-vlan-tag/print");
+
+		//puerto Acceso CR
+		$estadoAccessCR = $API->comm("/interface/ethernet/switch/ingress-vlan-translation/print");
+
 
 		//CPU
 		$cpuInfo = $API->comm("/system/resource/print");
@@ -60,7 +70,7 @@
 							}
 						}
 
-						echo '</td></tr></table>';
+						echo '</td></tr>';
 				}
-		
+				echo '</table>';
 ?>

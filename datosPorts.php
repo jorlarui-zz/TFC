@@ -9,7 +9,6 @@
 		if ($API->connect($IP, $user, $password)) {
 
 		//Comprobamos interfaces
-		
 		$Ports = $API->comm("/interface/ethernet/print");
 		$numPorts = count($Ports);
 
@@ -25,8 +24,19 @@
 		$switches = $API->comm("/interface/ethernet/switch/print");
 		$numSwitches = count($switches);
 
-		//puerto Acceso, Trunk, NoSwitchport
+		//Ports Switch
+		$portsSwitch = $API->comm("/interface/ethernet/switch/port/print");
+		$numPortsSwitch = count($portsSwitch);
+
+		//puerto Acceso, Trunk, NoSwitchport de RB
 		$estadoPort = $API->comm("/interface/ethernet/switch/port/print");
+
+		//puerto Trunk CR
+		$estadoTrunkCR = $API->comm("/interface/ethernet/switch/egress-vlan-tag/print");
+
+		//puerto Acceso CR
+		$estadoAccessCR = $API->comm("/interface/ethernet/switch/ingress-vlan-translation/print");
+
 
 		//CPU
 		$cpuInfo = $API->comm("/system/resource/print");
@@ -43,7 +53,11 @@
 		$READ = $API->read(false);
 		$statusPorts = $API->parse_response($READ);
 		$API->disconnect();}	
+				?>
+<?php
+				if(strcmp($identidadRS,"RB") == 0 ){
 				echo "<table class='tablePorts'>";
+				
 				for ($cont = 0; $cont < $numPorts; $cont++){
 						echo '<tr><td><b>'.$estadoPort[$cont]['name'].'</b></td>';
 						echo "<td>";
@@ -62,5 +76,51 @@
 
 						echo '</td></tr>';
 				}
-				echo '</table>';
-?>
+				
+				echo "</table>";
+				}				
+			?>
+
+<!--TABLA CR-->
+			<?php
+				
+				if(strcmp($identidadRS,"CR") == 0 ){
+					echo "Access
+						<table class='tablePortsCR'>
+					";
+					echo '<tr><td>Ports</td>';
+					echo '<td>VLAN</td></tr>';
+					for ($cont = 0; $cont < count($estadoAccessCR); $cont++){
+						echo '<tr><td>'.$estadoAccessCR[$cont]['ports'].'</td>';
+						echo '<td>'.$estadoAccessCR[$cont]['new-customer-vid'].'</td>';
+						echo "<td><form name='button$cont' method='post'>
+							<input type='submit' name='disableAccessCR$cont' value='X' class='buttonDisable'/>
+							</form></td>";
+			
+
+						echo '</tr>';
+					}
+				
+					echo "</table>";
+							
+					echo "Trunk
+						<table class='tablePortsCR'>
+					";
+					echo '<tr><td>VLAN</td>';
+					echo '<td>Ports</td></tr>';
+					for ($cont = 0; $cont < count($estadoTrunkCR); $cont++){
+						echo '<tr><td>'.$estadoTrunkCR[$cont]['vlan-id'].'</td>';
+						echo '<td>'.$estadoTrunkCR[$cont]['tagged-ports'].'</td>';
+						echo "<td><form name='button$cont' method='post'>
+							<input type='submit' name='disableTrunkCR$cont' value='X' class='buttonDisable'/>
+							</form></td>";
+			
+
+						echo '</tr>';
+					}
+				
+					echo "</table>";
+
+
+				}
+			?>

@@ -5,10 +5,10 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
-			/*var auto_refresh = setInterval(function (){
+			var auto_refresh = setInterval(function (){
 			$('#refreshImage').load('datosPortsImage.php');
 			$('#refreshPorts').load('datosPorts.php');
-			}, 2000);*/
+			}, 3000);
 
 			var auto_refresh = setInterval(function (){
 			$('#info').load('datosCPU.php').fadeIn("fast");
@@ -76,16 +76,16 @@
 		//puerto Acceso, Trunk, NoSwitchport de RB
 		$estadoPort = $API->comm("/interface/ethernet/switch/port/print");
 
-		//puerto Trunk CS
-		$estadoTrunkCS = $API->comm("/interface/ethernet/switch/egress-vlan-tag/print");
+		//puerto Trunk CR
+		$estadoTrunkCR = $API->comm("/interface/ethernet/switch/egress-vlan-tag/print");
 
-		//puerto Acceso CS
-		$estadoAccessCS = $API->comm("/interface/ethernet/switch/ingress-vlan-translation/print");
+		//puerto Acceso CR
+		$estadoAccessCR = $API->comm("/interface/ethernet/switch/ingress-vlan-translation/print");
 
 
 		//CPU
 		$cpuInfo = $API->comm("/system/resource/print");
-		//RB o CS
+		//RB o CR
 		$routeroSwitch = $cpuInfo[0]['board-name'];
 		//Saber iniciales Router o Switch
 		$identidadRS = substr($routeroSwitch,0,2);
@@ -163,10 +163,25 @@
 				 <div id="refreshImage">
     
 				<?php
+
+//Sacar valores String TRUNK CR
+			for ($cont = 0; $cont < count($estadoTrunkCR); $cont++){
+			//Concatenamos todos los puertos de trunk
+				$puertosTrunk = ($estadoTrunkCR[$cont]['tagged-ports'].(",").$puertosTrunk);}
+			//Eliminamos la ultima coma
+				$rest = substr($puertosTrunk, 0, -1);
+			//Separamos cada puerto en una string delimitando la coma
+				$tags = explode(',', $rest);
+			//Elegimos el primer puerto y eliminamos a los repetidos
+				$resultTrunk = array_unique($tags);
+
+
+
+
 				for ($cont = 0; $cont < $numPorts; $cont++){
 				
 				if($statusPorts[$cont]['status']=='link-ok'){
-					if($identidadRS == 'RB'){
+					if(strcmp($identidadRS,"RB") == 0 ){
 						if($estadoPort[$cont+1]['vlan-mode']!='disabled' and $estadoPort[$cont+1]['vlan-header']=='always-strip'){
 								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#00fff9; enable-background:new 0 0 15 11;' xml:space='preserve'>
 								<style type='text/css'>
@@ -213,9 +228,10 @@
 					}
 
 
-					if($identidadRS == 'CR'){
-						if($estadoPort[$cont+1]['vlan-mode']!='disabled' and $estadoPort[$cont+1]['vlan-header']=='always-strip'){
-								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#00fff9; enable-background:new 0 0 15 11;' xml:space='preserve'>
+					else if(strcmp($identidadRS,"CR") == 0 ){
+//DIBUJAMOS NS EN TODOS LOS SWITCHPORTS						
+						
+								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#a3ff00; enable-background:new 0 0 15 11;' xml:space='preserve'>
 								<style type='text/css'>
 								<![CDATA[
 								.st0{font-size:9px;}
@@ -225,10 +241,14 @@
 								</style>
 
 								<polygon class='st1' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
-								<text transform='matrix(1.0151 0 0 1 4.375 10.2891)' class='st3 st2 st0'>A</text>
+								<text transform='matrix(1.0151 0 0 1 2.375 10.2891)' class='st3 st2 st0'>NS</text>
 								</svg>";
-							}
-							else if($estadoPort[$cont+1]['vlan-mode']!='disabled' and $estadoPort[$cont+1]['vlan-header']=='add-if-missing'){
+							
+
+//DIBUJAR TRUNK CR		
+						for($cont1 = 0; $cont1 < count($resultTrunk); $cont1++){
+							if($resultTrunk[$cont1]==$Ports[$cont]['name']){
+								
 								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#ff00e7; enable-background:new 0 0 15 11;' xml:space='preserve'>
 								<style type='text/css'>
 								<![CDATA[
@@ -242,8 +262,14 @@
 								<text transform='matrix(1.0151 0 0 1 3.375 10.2891)' class='st3 st2 st0'>T</text>
 								</svg>";
 							}
-							else{
-								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#a3ff00; enable-background:new 0 0 15 11;' xml:space='preserve'>
+						}
+
+//DIBUJAR ACCESS CR
+						for($cont1 = 0; $cont1 < count($estadoAccessCR); $cont1++){
+							if($estadoAccessCR[$cont1]['ports']==$Ports[$cont]['name']){
+								
+								if($estadoAccessCR[$cont1]['new-customer-vid']!= 4095){	
+								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#00fff9; enable-background:new 0 0 15 11;' xml:space='preserve'>
 								<style type='text/css'>
 								<![CDATA[
 								.st0{font-size:9px;}
@@ -253,10 +279,11 @@
 								</style>
 
 								<polygon class='st1' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
-								<text transform='matrix(1.0151 0 0 1 2.375 10.2891)' class='st3 st2 st0'>NS</text>
+								<text transform='matrix(1.0151 0 0 1 4.375 10.2891)' class='st3 st2 st0'>A</text>
 								</svg>";
-							}
-					
+							}}
+						}
+						
 					}
 				}
 			}
@@ -321,16 +348,16 @@
 
 <!--TABLA CR-->
 			<?php
-
+				
 				if(strcmp($identidadRS,"CR") == 0 ){
 					echo "Access
 						<table class='tablePortsCR'>
 					";
 					echo '<tr><td>Ports</td>';
 					echo '<td>VLAN</td></tr>';
-					for ($cont = 0; $cont < count($estadoAccessCS); $cont++){
-						echo '<tr><td>'.$estadoAccessCS[$cont]['ports'].'</td>';
-						echo '<td>'.$estadoAccessCS[$cont]['new-customer-vid'].'</td>';
+					for ($cont = 0; $cont < count($estadoAccessCR); $cont++){
+						echo '<tr><td>'.$estadoAccessCR[$cont]['ports'].'</td>';
+						echo '<td>'.$estadoAccessCR[$cont]['new-customer-vid'].'</td>';
 						echo "<td><form name='button$cont' method='post'>
 							<input type='submit' name='disableAccessCR$cont' value='X' class='buttonDisable'/>
 							</form></td>";
@@ -346,9 +373,9 @@
 					";
 					echo '<tr><td>VLAN</td>';
 					echo '<td>Ports</td></tr>';
-					for ($cont = 0; $cont < count($estadoTrunkCS); $cont++){
-						echo '<tr><td>'.$estadoTrunkCS[$cont]['vlan-id'].'</td>';
-						echo '<td>'.$estadoTrunkCS[$cont]['tagged-ports'].'</td>';
+					for ($cont = 0; $cont < count($estadoTrunkCR); $cont++){
+						echo '<tr><td>'.$estadoTrunkCR[$cont]['vlan-id'].'</td>';
+						echo '<td>'.$estadoTrunkCR[$cont]['tagged-ports'].'</td>';
 						echo "<td><form name='button$cont' method='post'>
 							<input type='submit' name='disableTrunkCR$cont' value='X' class='buttonDisable'/>
 							</form></td>";
@@ -474,18 +501,12 @@ foreach($_POST['checkbox'] as $value)
 				$API->disconnect();
 				}}
 			
-		}
+		
 
-		/*if($modoPuerto == "NoSwitchport"){
-			if(strcmp($identidadRS,"CR") == 0 ){
+		
+			else if(strcmp($identidadRS,"CR") == 0 ){
 				$API = new routeros_api();
 				if ($API->connect($IP, $user, $password)) {
-				$API->comm("/interface/ethernet/switch/port/set", array(
-         			 ".id"     => $interfaz,
-          			"vlan-mode" => "disabled",
-          			"vlan-header" => "leave-as-is",
-				"default-vlan-id" => "0",
-				));
 
 				$API->comm("/ip/address/add", array(
 					"address"=> $noSwitchportIP, 
@@ -494,7 +515,7 @@ foreach($_POST['checkbox'] as $value)
 				$API->disconnect();
 				}}
 			
-		}*/
+		}
 			
 
 
@@ -563,7 +584,7 @@ foreach($_POST['checkbox'] as $value)
 
 <!-- Eliminar Access o Trunk-->
 <?php
-for ($cont = 0; $cont < count($estadoAccessCS); $cont++){
+for ($cont = 0; $cont < count($estadoAccessCR); $cont++){
 		if(isset($_POST['disableAccessCR'.$cont])){
 			$API = new routeros_api();
 			$IP = $_SESSION[ 'ip' ];
@@ -577,7 +598,7 @@ for ($cont = 0; $cont < count($estadoAccessCS); $cont++){
 		}}
 		}
 
-for ($cont = 0; $cont < count($estadoTrunkCS); $cont++){
+for ($cont = 0; $cont < count($estadoTrunkCR); $cont++){
 		if(isset($_POST['disableTrunkCR'.$cont])){
 			$API = new routeros_api();
 			$IP = $_SESSION[ 'ip' ];

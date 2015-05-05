@@ -12,6 +12,10 @@
 		$Ports = $API->comm("/interface/ethernet/print");
 		$numPorts = count($Ports);
 
+		//Todas Interfaces
+		$Interfaces= $API->comm("/interface/print");
+		$numInterfaces = count($Interfaces);
+
 		//Modelo
 		$modeloCom = $API->comm("/system/routerboard/print");
 		$modelo=$modeloCom[0]['model'];
@@ -24,28 +28,17 @@
 		$switches = $API->comm("/interface/ethernet/switch/print");
 		$numSwitches = count($switches);
 
-		//Ports Switch
-		$portsSwitch = $API->comm("/interface/ethernet/switch/port/print");
-		$numPortsSwitch = count($portsSwitch);
+		//Interfaz VLAN
+		$interfazVlan = $API->comm('/interface/vlan/print');		
 
-		//puerto Acceso, Trunk, NoSwitchport de RB
-		$estadoPort = $API->comm("/interface/ethernet/switch/port/print");
-
-		//puerto Trunk CR
-		$estadoTrunkCR = $API->comm("/interface/ethernet/switch/egress-vlan-tag/print");
-
-		//puerto Acceso CR
-		$estadoAccessCR = $API->comm("/interface/ethernet/switch/ingress-vlan-translation/print");
-
-
+		//IP addresses
+		$ipAddress = $API->comm('/ip/address/print');		
 		//CPU
 		$cpuInfo = $API->comm("/system/resource/print");
 		//RB o CS
 		$routeroSwitch = $cpuInfo[0]['board-name'];
 		//Saber iniciales Router o Switch
 		$identidadRS = substr($routeroSwitch,0,2);
-
-
 
 		$API->write("/interface/ethernet/monitor",false);
 		$API->write("=numbers=".$valores,false);  
@@ -55,35 +48,31 @@
 		$API->disconnect();}	
 				?>
 <?php
-				if(strcmp($identidadRS,"RB") == 0 ){
-				echo "<table class='tablePorts'>";
+				echo "<table class='tableRouting'>
+						<tr><th>Name</th>
+							<th>VLAN ID</th>
+							<th>Interface</th>
+							<th>IP Address</th></tr>";
+					for ($cont = 0; $cont < count($interfazVlan); $cont++){
+						echo '<tr>
+							<td>'.$interfazVlan[$cont]['name'].'</td>';
+						echo '<td>'.$interfazVlan[$cont]['vlan-id'].'</td>';
+						echo '<td>'.$interfazVlan[$cont]['interface'].'</td>';
+
+						for($cont1 = 0; $cont1 < count($ipAddress); $cont1++){
+							
+							if($interfazVlan[$cont]['name'] == $ipAddress[$cont1]['interface']){
+								echo '<td>'.$ipAddress[$cont1]['address'].'</td>';
+						}}
+						echo "<td><form name='button$cont' method='post'>
+							<input type='submit' name='disableInterface$cont' value='X' class='buttonDisable'/>
+							</form></td>";
+			
+
+						echo '</tr>';
+					}
 				
-				for ($cont = 0; $cont < count($estadoPort); $cont++){
-						echo '<tr><td><b>'.$estadoPort[$cont]['name'].'</b></td>';
-						echo "<td>";
-//Detectar Si es Vlan, Trunk, No Switchport En RB
-						if($identidadRS == 'RB'){
-							if($estadoPort[$cont]['vlan-mode']!='disabled' and $estadoPort[$cont]['vlan-header']=='always-strip'){
-								echo "Access Vlan: ".$estadoPort[$cont]['default-vlan-id'];
-							}
-							else if($estadoPort[$cont]['vlan-mode']!='disabled' and $estadoPort[$cont]['vlan-header']=='add-if-missing'){
-								echo "Trunk";
-							}
-
-							else if($estadoPort[$cont]['vlan-mode']=='fallback'){
-								echo "Fallback";
-							}
-
-							else{
-								echo "No Switchport";
-							}
-						}
-
-						echo '</td></tr>';
-				}
-				
-				echo "</table>";
-				}				
+					echo "</table>";
 			?>
 
 <!--TABLA CR-->

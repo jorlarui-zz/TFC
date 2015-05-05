@@ -53,8 +53,12 @@
 		$READ = $API->read(false);
 		$statusPorts = $API->parse_response($READ);
 		$API->disconnect();}	
+				?>
+<?php
+				if(strcmp($identidadRS,"RB") == 0 ){
 				echo "<table class='tablePorts'>";
-				for ($cont = 0; $cont < $numPorts; $cont++){
+				
+				for ($cont = 0; $cont < count($estadoPort); $cont++){
 						echo '<tr><td><b>'.$estadoPort[$cont]['name'].'</b></td>';
 						echo "<td>";
 //Detectar Si es Vlan, Trunk, No Switchport En RB
@@ -65,6 +69,11 @@
 							else if($estadoPort[$cont]['vlan-mode']!='disabled' and $estadoPort[$cont]['vlan-header']=='add-if-missing'){
 								echo "Trunk";
 							}
+
+							else if($estadoPort[$cont]['vlan-mode']=='secure'){
+								echo "Secure";
+							}
+
 							else{
 								echo "No Switchport";
 							}
@@ -72,5 +81,51 @@
 
 						echo '</td></tr>';
 				}
-				echo '</table>';
-?>
+				
+				echo "</table>";
+				}				
+			?>
+
+<!--TABLA CR-->
+			<?php
+				
+				if(strcmp($identidadRS,"CR") == 0 ){
+					echo "Access
+						<table class='tablePortsCR'>
+					";
+					echo '<tr><td>Ports</td>';
+					echo '<td>VLAN</td></tr>';
+					for ($cont = 0; $cont < count($estadoAccessCR); $cont++){
+						echo '<tr><td>'.$estadoAccessCR[$cont]['ports'].'</td>';
+						echo '<td>'.$estadoAccessCR[$cont]['new-customer-vid'].'</td>';
+						echo "<td><form name='button$cont' method='post'>
+							<input type='submit' name='disableAccessCR$cont' value='X' class='buttonDisable'/>
+							</form></td>";
+			
+
+						echo '</tr>';
+					}
+				
+					echo "</table>";
+							
+					echo "Trunk
+						<table class='tablePortsCR'>
+					";
+					echo '<tr><td>VLAN</td>';
+					echo '<td>Ports</td></tr>';
+					for ($cont = 0; $cont < count($estadoTrunkCR); $cont++){
+						echo '<tr><td>'.$estadoTrunkCR[$cont]['vlan-id'].'</td>';
+						echo '<td>'.$estadoTrunkCR[$cont]['tagged-ports'].'</td>';
+						echo "<td><form name='button$cont' method='post'>
+							<input type='submit' name='disableTrunkCR$cont' value='X' class='buttonDisable'/>
+							</form></td>";
+			
+
+						echo '</tr>';
+					}
+				
+					echo "</table>";
+
+
+				}
+			?>

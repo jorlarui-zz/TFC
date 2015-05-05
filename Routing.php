@@ -6,12 +6,12 @@
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosPortImage.php').fadeIn("fast");
-			$('#refreshPorts').load('datosPort.php').fadeIn("fast");
-			}, 2000);
+			$('#refreshImage').load('datosStatusImage.php');
+			$('#refreshPorts').load('datosRouting.php');
+			}, 3000);
 
 			var auto_refresh = setInterval(function (){
-			$('#info').load('datosCPU.php').fadeIn("fast");
+			$('#info').load('datosCPU.php');
 			}, 1000);
 		});		
 			
@@ -49,6 +49,11 @@
 		$switches = $API->comm("/interface/ethernet/switch/print");
 		$numSwitches = count($switches);
 
+		//Interfaz VLAN
+		$interfazVlan = $API->comm('/interface/vlan/print');		
+
+		//IP addresses
+		$ipAddress = $API->comm('/ip/address/print');		
 		//CPU
 		$cpuInfo = $API->comm("/system/resource/print");
 		//RB o CS
@@ -131,14 +136,26 @@
 				<?php
 				for ($cont = 0; $cont < $numPorts; $cont++){
 				
-				if($statusPorts[$cont]['status']=='link-ok'){
-					
+				if($statusPorts[$cont]['status']=='link-ok' && $Ports[$cont]['master-port']!='none'){
 					echo "<svg version='1.1' id='etherGreen$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
-	 				width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
+	 				width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve'>
 					<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
 					</svg>";
 					}
-				else if($statusPorts[$cont]['status']=='no-link'){			
+				else if($statusPorts[$cont]['status']=='link-ok' && $Ports[$cont]['master-port']=='none'){	
+					echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve'>
+						<style type='text/css'>
+						<![CDATA[
+						.st0{font-size:9px;}
+						.st2{font-family:'Open Sans';}
+						.st3{fill:#127018;}
+						]]>
+						</style>
+
+						<polygon class='st1' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+						<text transform='matrix(1.0151 0 0 1 3.375 10.2891)' class='st3 st2 st0'>m</text>
+						</svg>";
+							
 					}
 				
 				}
@@ -171,7 +188,41 @@
 	<div class="row">
 		<div class="col-lg-12 info-box">
 			<div class="col-lg-2"></div>
-			<div class="col-lg-5"></div>
+			<div class="col-lg-5">
+				<div id="refreshPorts">
+				<?php
+			
+					echo "<table class='tableRouting'>
+						<tr><th>Name</th>
+							<th>VLAN ID</th>
+							<th>Interface</th>
+							<th>IP Address</th></tr>";
+					for ($cont = 0; $cont < count($interfazVlan); $cont++){
+						echo '<tr>
+							<td>'.$interfazVlan[$cont]['name'].'</td>';
+						echo '<td>'.$interfazVlan[$cont]['vlan-id'].'</td>';
+						echo '<td>'.$interfazVlan[$cont]['interface'].'</td>';
+
+						for($cont1 = 0; $cont1 < count($ipAddress); $cont1++){
+							
+							if($interfazVlan[$cont]['name'] == $ipAddress[$cont1]['interface']){
+								echo '<td>'.$ipAddress[$cont1]['address'].'</td>';
+						}}
+						echo "<td><form name='button$cont' method='post'>
+							<input type='submit' name='disableInterface$cont' value='X' class='buttonDisable'/>
+							</form></td>";
+			
+
+						echo '</tr>';
+					}
+				
+					echo "</table>";
+							
+
+				?>
+				</div>
+
+			</div>
 			<div class="col-lg-3 routingBox">
 					
 			<div>
@@ -232,9 +283,38 @@ $VlanAddress = $_POST['VlanAddress'];
 
 
 ?>
+<!-- Eliminar Interfaz-->
+<?php
 
+
+for ($cont = 0; $cont < count($interfazVlan); $cont++){
+	if(isset($_POST['disableInterface'.$cont])){
+			$API = new routeros_api();
+			$IP = $_SESSION[ 'ip' ];
+			$user = $_SESSION[ 'user' ];
+			$password = $_SESSION[ 'password' ];
+			if ($API->connect($IP, $user, $password)) {
+				$API->write("/interface/vlan/remove",false);
+				$API->write("=.id=".$cont);
+				$Ports = $API->read();
+				$API->disconnect();
+				for ($cont1 = 0; $cont1 < count($ipAddress); $cont1++){
+				
+					if($interfazVlan[$cont]['name'] == $ipAddress[$cont1]['interface']){
+						if ($API->connect($IP, $user, $password)) {
+							$API->write("/ip/address/remove",false);
+							$API->write("=.id=".$cont1);
+							$Ports = $API->read();
+							$API->disconnect();
+						}		
+					}
+				}			
+		}
+	}
+}
+
+?>
 <!--Boton cerrar sesión-->
-
 <?php
 	if($_GET['logOut'] == 'yes'){
 		session_destroy();

@@ -323,7 +323,7 @@
 				if(strcmp($identidadRS,"RB") == 0 ){
 				echo "<table class='tablePorts'>";
 				
-				for ($cont = 0; $cont < $numPorts; $cont++){
+				for ($cont = 0; $cont < count($estadoPort); $cont++){
 						echo '<tr><td><b>'.$estadoPort[$cont]['name'].'</b></td>';
 						echo "<td>";
 //Detectar Si es Vlan, Trunk, No Switchport En RB
@@ -334,6 +334,11 @@
 							else if($estadoPort[$cont]['vlan-mode']!='disabled' and $estadoPort[$cont]['vlan-header']=='add-if-missing'){
 								echo "Trunk";
 							}
+
+							else if($estadoPort[$cont]['vlan-mode']=='fallback'){
+								echo "Fallback";
+							}
+
 							else{
 								echo "No Switchport";
 							}
@@ -402,9 +407,9 @@
 //SI ES RB se cogen puertos sin switch-cpu y si es CR se cogen con switch-cpu
 
 			if(strcmp($identidadRS,"RB") == 0 ){
-				for ($cont = 0; $cont < $numPorts; $cont++){
+				for ($cont = 0; $cont < count($estadoPort); $cont++){
 			
-					$interfazSel = $Ports[$cont]['name'];
+					$interfazSel = $estadoPort[$cont]['name'];
 					echo "<option value=$interfazSel>$interfazSel</option>";
 			
 				}		
@@ -439,7 +444,8 @@
 			<div style='display: none' id='areaTrunk'>
 					<?php
 						if(strcmp($identidadRS,"RB") == 0 ){
-							echo "Native Vlan: <input name='nativeVLAN' type='number' min='0' max='4095' placeholder='100'/>";
+							echo "Native Vlan: <input name='nativeVLAN' type='number' min='0' max='4095' placeholder='100'/></br>";
+							echo "Switch CPU Fallback: <input name='cpuFallback' type='checkbox'/>";
 						}
 						else{
 							echo "Vlan ID: <input name='trunkVlansID' type='number' min='0' max='4095' placeholder='100'/>";
@@ -474,6 +480,7 @@ $accessVlanID = $_POST['accessVlanID'];
 $noSwitchportIP = $_POST['noSwitchportIP'];
 $nativeVLAN = $_POST['nativeVLAN'];
 $trunkVlansID = $_POST['trunkVlansID'];
+$cpuFallback = $_POST['cpuFallback'];
 $puertosSelTrunk= "";
 foreach($_POST['checkbox'] as $value)
  {
@@ -483,6 +490,7 @@ foreach($_POST['checkbox'] as $value)
 
 
 	if(isset($_POST['submitButton'])){
+	
 		if($modoPuerto == "NoSwitchport"){
 			if(strcmp($identidadRS,"RB") == 0 ){
 				$API = new routeros_api();
@@ -550,7 +558,7 @@ foreach($_POST['checkbox'] as $value)
 		}
 
 		if($modoPuerto == "Trunk"){
-			if(strcmp($identidadRS,"RB") == 0 ){
+			if(strcmp($identidadRS,"RB") == 0 and $cpuFallback == null){
 				$API = new routeros_api();
 				if ($API->connect($IP, $user, $password)) {
 				$API->comm("/interface/ethernet/switch/port/set", array(
@@ -561,6 +569,17 @@ foreach($_POST['checkbox'] as $value)
 				));
 				$API->disconnect();
 				}
+			}
+			else if(strcmp($identidadRS,"RB") == 0 and $cpuFallback == 'on'){
+				$API = new routeros_api();
+				if ($API->connect($IP, $user, $password)) {
+				$API->comm("/interface/ethernet/switch/port/set", array(
+         			 ".id"     => $interfaz,
+          			"vlan-mode" => "fallback"
+				));
+				$API->disconnect();
+				}
+
 			}
 
 			else if(strcmp($identidadRS,"CR") == 0 ){

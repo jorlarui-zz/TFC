@@ -224,7 +224,20 @@ input[class=buttonDisable] {
 	padding-left: 30px;
 }
 
+
 /*-----------------Routing.php-----------------*/
+
+
+.tableRouting td,th{
+	font-size:13px;
+	padding-left: 30px;
+	padding-left:25px;
+	padding-top:2px;
+	padding-bottom:2px;
+	text-align:center;
+}  
+
+/*-----------------ACL.php-----------------*/
 
 .ACLBox form{
 	font-size: 13px;
@@ -267,3 +280,5 @@ input[class=buttonDisable] {
 	padding-right:7px;
 	padding-left: 7px;
 }
+
+

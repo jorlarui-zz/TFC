@@ -266,6 +266,15 @@
 	top:-22%;
 }
 
+#etherGreen24 {
+	fill:#00e90f;
+	min-height: 100%;
+    	height: 100%;
+	position:absolute;
+	left:86.5%;
+	top:10%;
+}
+
 
 #etherMaster0 {
 	fill:#00e90f;
@@ -531,6 +540,17 @@
 	left:79%;
 	top:-22%;
 }
+
+#etherMaster24 	 {
+	fill:#00e90f;
+	min-height: 100%;
+    	height: 100%;
+	position:absolute;
+	left:86.5%;
+	top:10%;
+}
+
+
 
 
 

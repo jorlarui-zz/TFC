@@ -251,8 +251,8 @@
 						echo "<td>";
 						
 						
-  							for ($cont = 0; $cont < $numPorts; $cont++){
-								echo "<input type='checkbox' name='checkbox[]' value='".$Ports[$cont]['name']."'/>".$Ports[$cont]['name']."</br>";  								}
+  							for ($cont = 0; $cont < $numPortsVlans; $cont++){
+								echo "<input type='checkbox' name='checkbox[]' value='".$PortsVlans[$cont]['name']."'/>".$PortsVlans[$cont]['name']."</br>";  								}
 						echo "</br>";
 							if($identidadRS == 'RB'){
 							for ($cont = 0; $cont < $numSwitches; $cont++){

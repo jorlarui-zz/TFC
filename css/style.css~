@@ -227,12 +227,10 @@ input[class=buttonDisable] {
 
 /*-----------------Routing.php-----------------*/
 
-.tableRouting td{
-	font-size:13px;
-	padding-left: 30px;
-}
 
 .tableRouting td,th{
+	font-size:13px;
+	padding-left: 30px;
 	padding-left:25px;
 	padding-top:2px;
 	padding-bottom:2px;
@@ -283,4 +281,46 @@ input[class=buttonDisable] {
 	padding-left: 7px;
 }
 
+
+/*-----------------Help.index-----------------*/
+
+.help-box{
+	padding-top:40px;
+	padding-bottom:20px;
+	margin-top:10px;
+	background-color:#ffffff;
+	border:1px solid #b1b1b1;
+}
+
+.help-box div{
+	margin-top:30px;
+}
+
+.three{
+	margin-left: 3%;
+	font-size:12px;
+	border:1px solid #b1b1b1;
+	width:200px;
+}
+
+.help-box img{
+	 display: block;
+	margin: 0 auto;
+}
+
+.tabulated{
+	text-indent: 5em;
+}
+
+.dobleTabulated{
+	text-indent: 10em;
+}
+.underline{
+	text-decoration: underline;
+}
+
+.logo{
+	display: inline;
+	margin:0 !important;
+}
 

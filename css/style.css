@@ -282,3 +282,45 @@ input[class=buttonDisable] {
 }
 
 
+/*-----------------Help.index-----------------*/
+
+.help-box{
+	padding-top:40px;
+	padding-bottom:20px;
+	margin-top:10px;
+	background-color:#ffffff;
+	border:1px solid #b1b1b1;
+}
+
+.help-box div{
+	margin-top:30px;
+}
+
+.three{
+	margin-left: 3%;
+	font-size:12px;
+	border:1px solid #b1b1b1;
+	width:200px;
+}
+
+.help-box img{
+	 display: block;
+	margin: 0 auto;
+}
+
+.tabulated{
+	text-indent: 5em;
+}
+
+.dobleTabulated{
+	text-indent: 10em;
+}
+.underline{
+	text-decoration: underline;
+}
+
+.logo{
+	display: inline !important;
+	margin:0 !important;
+}
+

@@ -36,7 +36,7 @@
 					var TX=parseInt(midata[0].data);
 					var RX=parseInt(midata[1].data);
 					var x = (new Date()).getTime(); 
-					shift=chart.series[0].data.length > 19;
+					shift=chart.series[0].data.length > 8;
 					chart.series[0].addPoint([x, TX], true, shift);
 					chart.series[1].addPoint([x, RX], true, shift);
 					document.getElementById("trafico").innerHTML=TX + " / " + RX;
@@ -77,7 +77,7 @@
 		 xAxis: {
 			type: 'datetime',
 				tickPixelInterval: 200,
-				maxZoom: 20 * 1000
+				maxZoom: 20 * 400
 		 },
 		 yAxis: {
 			minPadding: 0.2,

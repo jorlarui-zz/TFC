@@ -63,7 +63,7 @@
 	if( $buttonClick){
 		if ($API->connect($IP, $user, $password)) {
 
-   			header( 'Location:Overview.php') ;}
+   			header( 'Location:Status.php') ;}
 
 	
 		else {
@@ -73,5 +73,11 @@
 }
 
 ?>
+
+ <footer>
+  <p>Posted by: Hege Refsnes</p>
+  <p>Contact information: <a href="mailto:someone@example.com">
+  someone@example.com</a>.</p>
+</footer> 
 </body>
 </html>

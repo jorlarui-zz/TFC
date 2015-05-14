@@ -7,8 +7,8 @@
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
 			$('#refreshImage').load('datosPortsImage.php');
-			$('#refreshPorts').load('datosPorts.php');
-			}, 3000);
+			//$('#refreshPorts').load('datosPorts.php');
+			//}, 3000);
 
 			var auto_refresh = setInterval(function (){
 			$('#info').load('datosCPU.php').fadeIn("fast");
@@ -319,38 +319,50 @@
 			<div class="col-lg-4">
 			<div id="refreshPorts">
 <!--TABLA RB-->
-			<?php
+
+<?php
+				
 				if(strcmp($identidadRS,"RB") == 0 ){
-				echo "<table class='tablePorts'>";
+					echo "Access
+						<table class='tablePortsCR'>
+					";
+					echo '<tr><td>Ports</td>';
+					echo '<td>VLAN</td></tr>';
+					for ($cont = 0; $cont < count($estadoPort); $cont++){
+						if($estadoPort[$cont]['vlan-mode']!='disabled' and $estadoPort[$cont]['vlan-header']=='always-strip'){
+						echo '<tr><td>'.$estadoPort[$cont]['name'].'</td>';
+						echo '<td>'.$estadoPort[$cont]['default-vlan-id'].'</td>';
+						echo "<td><form name='button$cont' method='post'>
+							<input type='submit' name='disableAccessRB$cont' value='X' class='buttonDisable'/>
+							</form></td>";
+			
+
+						echo '</tr>';}
+					}
 				
-				for ($cont = 0; $cont < count($estadoPort); $cont++){
-						echo '<tr><td><b>'.$estadoPort[$cont]['name'].'</b></td>';
-						echo "<td>";
-//Detectar Si es Vlan, Trunk, No Switchport En RB
-						if($identidadRS == 'RB'){
-							if($estadoPort[$cont]['vlan-mode']!='disabled' and $estadoPort[$cont]['vlan-header']=='always-strip'){
-								echo "Access Vlan: ".$estadoPort[$cont]['default-vlan-id'];
-							}
-							else if($estadoPort[$cont]['vlan-mode']!='disabled' and $estadoPort[$cont]['vlan-header']=='add-if-missing'){
-								echo "Trunk";
-							}
+					echo "</table>";
+							
+					echo "Trunk
+						<table class='tablePortsCR'>
+					";
+					echo '<tr><td>Ports</td>';
+					echo '<td>Native VLAN</td></tr>';
+					for ($cont = 0; $cont < count($estadoPort); $cont++){
+						if($estadoPort[$cont]['vlan-mode']!='disabled' and $estadoPort[$cont]['vlan-header']=='add-if-missing'){
+						echo '<tr><td>'.$estadoPort[$cont]['name'].'</td>';
+						echo '<td>'.$estadoPort[$cont]['default-vlan-id'].'</td>';
+						echo "<td><form name='button$cont' method='post'>
+							<input type='submit' name='disableAccessCR$cont' value='X' class='buttonDisable'/>
+							</form></td>";
+			
 
-							else if($estadoPort[$cont]['vlan-mode']=='fallback'){
-								echo "Fallback";
-							}
+						echo '</tr>';}
+					}
+					echo "</table>";
 
-							else{
-								echo "No Switchport";
-							}
-						}
 
-						echo '</td></tr>';
 				}
-				
-				echo "</table>";
-				}				
 			?>
-
 <!--TABLA CR-->
 			<?php
 				
@@ -490,13 +502,7 @@ foreach($_POST['checkbox'] as $value)
 
 
 	if(isset($_POST['submitButton'])){
-
-if($cpuFallback == null){
-
-	echo "NO PULSADO";
-}
-else if(){
-	echo "PULSADO";}	
+	
 		if($modoPuerto == "NoSwitchport"){
 			if(strcmp($identidadRS,"RB") == 0 ){
 				$API = new routeros_api();
@@ -609,6 +615,23 @@ else if(){
 
 <!-- Eliminar Access o Trunk-->
 <?php
+$interfaz = $_POST['interfaces'];
+for ($cont = 0; $cont < count($estadoPort); $cont++){
+		if(isset($_POST['disableAccessRB'.$cont])){
+			$API = new routeros_api();
+				if ($API->connect($IP, $user, $password)) {
+				$API->comm("/interface/ethernet/switch/port/set", array(
+
+         			 ".id"     => $cont,
+          			"vlan-mode" => "disabled",
+          			"vlan-header" => "leave-as-is",
+				"default-vlan-id" => "0",
+				));
+				}
+		}
+	}
+
+
 for ($cont = 0; $cont < count($estadoAccessCR); $cont++){
 		if(isset($_POST['disableAccessCR'.$cont])){
 			$API = new routeros_api();

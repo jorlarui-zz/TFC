@@ -1,5 +1,11 @@
 body{font-family:"Open Sans";}
-
+footer {
+    clear: both;
+    position: relative;
+    z-index: 10;
+    height: 3em;
+    margin-top: -3em;
+}
 #logo{	width:300px;
 	display: block;
     	margin-left: auto;
@@ -40,7 +46,7 @@ td,tr{
 	background-color: #de0000;}
 
 
-.error{	width:150px;
+.error{	width:200px;
 	margin-left:auto;
 	margin-right:auto;
 	color:red;

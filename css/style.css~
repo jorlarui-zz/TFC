@@ -2,6 +2,8 @@ body{
 	background-color:#DDD;
 }
 
+
+
 /* Menu Bar */
 .navbar{
 	background-color: #080808;
@@ -283,7 +285,10 @@ input[class=buttonDisable] {
 
 
 /*-----------------Help.index-----------------*/
-
+.jumbotron iframe{
+	display:block;
+	margin: 0 auto;
+}
 .help-box{
 	padding-top:40px;
 	padding-bottom:20px;
@@ -320,7 +325,7 @@ input[class=buttonDisable] {
 }
 
 .logo{
-	display: inline;
+	display: inline !important;
 	margin:0 !important;
 }
 

@@ -73,15 +73,14 @@
 		$portsSwitch = $API->comm("/interface/ethernet/switch/port/print");
 		$numPortsSwitch = count($portsSwitch);
 
-		//puerto Acceso, Trunk, NoSwitchport de RB
-		$estadoPort = $API->comm("/interface/ethernet/switch/port/print");
-
 		//puerto Trunk CR
 		$estadoTrunkCR = $API->comm("/interface/ethernet/switch/egress-vlan-tag/print");
 
 		//puerto Acceso CR
 		$estadoAccessCR = $API->comm("/interface/ethernet/switch/ingress-vlan-translation/print");
 
+		//VLANS
+		$vlans = $API->comm("/interface/ethernet/switch/vlan/print");
 
 		//CPU
 		$cpuInfo = $API->comm("/system/resource/print");
@@ -176,13 +175,11 @@
 				$resultTrunk = array_unique($tags);
 
 
-
-
 				for ($cont = 0; $cont < $numPorts; $cont++){
 				
 				if($statusPorts[$cont]['status']=='link-ok'){
 					if(strcmp($identidadRS,"RB") == 0 ){
-						if($estadoPort[$cont+1]['vlan-mode']!='disabled' and $estadoPort[$cont+1]['vlan-header']=='always-strip'){
+						if($portsSwitch[$cont+1]['vlan-mode']!='disabled' and $portsSwitch[$cont+1]['vlan-header']=='always-strip'){
 								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#00fff9; enable-background:new 0 0 15 11;' xml:space='preserve'>
 								<style type='text/css'>
 								<![CDATA[
@@ -196,7 +193,7 @@
 								<text transform='matrix(1.0151 0 0 1 4.375 10.2891)' class='st3 st2 st0'>A</text>
 								</svg>";
 							}
-							else if($estadoPort[$cont+1]['vlan-mode']!='disabled' and $estadoPort[$cont+1]['vlan-header']=='add-if-missing'){
+							else if($portsSwitch[$cont+1]['vlan-mode']!='disabled' and $portsSwitch[$cont+1]['vlan-header']=='add-if-missing'){
 								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#ff00e7; enable-background:new 0 0 15 11;' xml:space='preserve'>
 								<style type='text/css'>
 								<![CDATA[
@@ -328,10 +325,10 @@
 					";
 					echo '<tr><td>Ports</td>';
 					echo '<td>VLAN</td></tr>';
-					for ($cont = 0; $cont < count($estadoPort); $cont++){
-						if($estadoPort[$cont]['vlan-mode']!='disabled' and $estadoPort[$cont]['vlan-header']=='always-strip'){
-						echo '<tr><td>'.$estadoPort[$cont]['name'].'</td>';
-						echo '<td>'.$estadoPort[$cont]['default-vlan-id'].'</td>';
+					for ($cont = 0; $cont < count($portsSwitch); $cont++){
+						if($portsSwitch[$cont]['vlan-mode']!='disabled' and $portsSwitch[$cont]['vlan-header']=='always-strip'){
+						echo '<tr><td>'.$portsSwitch[$cont]['name'].'</td>';
+						echo '<td>'.$portsSwitch[$cont]['default-vlan-id'].'</td>';
 						echo "<td><form name='button$cont' method='post'>
 							<input type='submit' name='disableAccessRB$cont' value='X' class='buttonDisable'/>
 							</form></td>";
@@ -347,10 +344,10 @@
 					";
 					echo '<tr><td>Ports</td>';
 					echo '<td>Native VLAN</td></tr>';
-					for ($cont = 0; $cont < count($estadoPort); $cont++){
-						if($estadoPort[$cont]['vlan-mode']!='disabled' and $estadoPort[$cont]['vlan-header']=='add-if-missing'){
-						echo '<tr><td>'.$estadoPort[$cont]['name'].'</td>';
-						echo '<td>'.$estadoPort[$cont]['default-vlan-id'].'</td>';
+					for ($cont = 0; $cont < count($portsSwitch); $cont++){
+						if($portsSwitch[$cont]['vlan-mode']!='disabled' and $portsSwitch[$cont]['vlan-header']=='add-if-missing'){
+						echo '<tr><td>'.$portsSwitch[$cont]['name'].'</td>';
+						echo '<td>'.$portsSwitch[$cont]['default-vlan-id'].'</td>';
 						echo "<td><form name='button$cont' method='post'>
 							<input type='submit' name='disableTrunkRB$cont' value='X' class='buttonDisable'/>
 							</form></td>";
@@ -419,9 +416,9 @@
 //SI ES RB se cogen puertos sin switch-cpu y si es CR se cogen con switch-cpu
 
 			if(strcmp($identidadRS,"RB") == 0 ){
-				for ($cont = 0; $cont < count($estadoPort); $cont++){
+				for ($cont = 0; $cont < count($Ports); $cont++){
 			
-					$interfazSel = $estadoPort[$cont]['name'];
+					$interfazSel = $Ports[$cont]['name'];
 					echo "<option value=$interfazSel>$interfazSel</option>";
 			
 				}		
@@ -455,19 +452,16 @@
 
 			<div style='display: none' id='areaTrunk'>
 					<?php
+						echo "Allowed VLANS: <input name='trunkVlansID' type='number' min='0' max='4095' placeholder='100'/></br>";
+
 						if(strcmp($identidadRS,"RB") == 0 ){
 							echo "Native Vlan: <input name='nativeVLAN' type='number' min='0' max='4095' placeholder='100'/></br>";
-							echo "Switch CPU Fallback: <input name='cpuFallback' type='checkbox'/>";
+							//echo "Switch CPU Fallback: <input name='cpuFallback' type='checkbox'/>";
 						}
-						else{
-							echo "Vlan ID: <input name='trunkVlansID' type='number' min='0' max='4095' placeholder='100'/>";
-								echo "<br>";
-								for ($cont = 0; $cont < $numPortsSwitch; $cont++){
+						
+							
 								
-								echo "<input type='checkbox' name='checkbox[]' value='".$portsSwitch[$cont]['name']."'/>".$portsSwitch[$cont]['name']."</br>";  								
-								}
 					
-							}
 						?>
 					</br>
 					
@@ -494,12 +488,16 @@ $nativeVLAN = $_POST['nativeVLAN'];
 $trunkVlansID = $_POST['trunkVlansID'];
 $cpuFallback = $_POST['cpuFallback'];
 $puertosSelTrunk= "";
+
+
+$contadorVlans = 0;
 foreach($_POST['checkbox'] as $value)
  {
     $puertosSelTrunk.= $value.',';
  }
 
-
+//////// NO SWITCHPORT ////////
+///// RB /////
 
 	if(isset($_POST['submitButton'])){
 	
@@ -521,8 +519,8 @@ foreach($_POST['checkbox'] as $value)
 				$API->disconnect();
 				}}
 			
-		
-
+//////// NO SWITCHPORT ////////		
+///// CR /////
 		
 			else if(strcmp($identidadRS,"CR") == 0 ){
 				$API = new routeros_api();
@@ -538,11 +536,102 @@ foreach($_POST['checkbox'] as $value)
 		}
 			
 
-
+//////// ACCESS ////////
+///// RB /////
 		if($modoPuerto == "Access"){
 			if(strcmp($identidadRS,"RB") == 0 ){
+
+			
+				for($cont = 0;$cont < count($vlans); $cont++){
+					//Check if PORT exist in another VLAN, if exist DELETE PORT and create in NEW
+					$pos= strpos($vlans[$cont]['ports'], $interfaz);
+					
+					
+					if(pos !== false){
+					
+						//Get Actual Port to delelte
+						$actualPort = $interfaz;
+						//Get all ports of VLAN
+						$previousPort = $vlans[$cont]['ports'];
+						//Delete port from previousPort
+						$finalPort = str_replace($actualPort,"",$previousPort);
+						//Replace ,, to , if the port is deleted in the middle of string
+						$finalPort = str_replace(',,',",",$finalPort);
+						//Delete the last comma
+						if ($finalPort[strlen($finalPort)-1] == ","){
+					
+							$finalPort = rtrim($finalPort,',');
+						}
+
+						//DELETE VLAN if last PORT
+						if($previousPort == $actualPort){
+							$API = new routeros_api();
+							if ($API->connect($IP, $user, $password)) {
+							$API->comm("/interface/ethernet/switch/vlan/remove", array(
+		 					".id"     => $cont
+							));
+							$API->disconnect();
+							}
+						}
+						//Delete Port from VLAN
+						$API = new routeros_api();
+						if ($API->connect($IP, $user, $password)) {
+							$API->comm("/interface/ethernet/switch/vlan/set", array(
+		 					".id"     => $cont,
+							"ports" => $finalPort,
+							));
+							$API->disconnect();
+						
+						}
+						}
+
+					
+
+					//Check if VLAN exist, if exist $contadorVlans is increased
+					if($vlans[$cont]['vlan-id'] == $accessVlanID){
+						$contadorVlans++;
+					}
+
+				}
+				
 				$API = new routeros_api();
 				if ($API->connect($IP, $user, $password)) {
+				//If VLAN dont exist, a new VLAN is created
+					//GET Switch per Port to create VLAN
+					$switchPerPort;
+					for($cont2=0; $cont2<$numPortsSwitch; $cont2++){
+						if($portsSwitch[$cont2]['name'] == $interfaz) {
+							$switchPerPort = $portsSwitch[$cont2]['switch'];
+							
+						}
+					}
+					if($contadorVlans==0){
+						$API->comm("/interface/ethernet/switch/vlan/add", array(
+         				 	"ports"     => $interfaz,
+          					"switch" => $switchPerPort,
+						"vlan-id" => $accessVlanID
+					));
+					}
+				
+				//If VLAN exist, edit VLAN and add ports
+					if($contadorVlans!=0){
+						for($cont = 0; $cont < count($vlans); $cont++){
+							if($vlans[$cont]['vlan-id'] == $accessVlanID){
+								$previousPort = $vlans[$cont]['ports'];
+								$actualPort = $previousPort.",".$interfaz;
+								$API->comm("/interface/ethernet/switch/vlan/set", array(
+         				 				".id"     => $cont,
+          								"ports" => $actualPort,
+									));
+							}
+
+						}
+										
+					
+						
+					}
+
+				//Set PORT mode ACCESS
 				$API->comm("/interface/ethernet/switch/port/set", array(
          			 ".id"     => $interfaz,
           			"vlan-mode" => "secure",
@@ -554,7 +643,8 @@ foreach($_POST['checkbox'] as $value)
 			}
 		
 
-		
+//////// ACCESS ////////
+///// CR /////		
 			else if(strcmp($identidadRS,"CR") == 0 ){
 				$API = new routeros_api();
 				if ($API->connect($IP, $user, $password)) {
@@ -569,10 +659,101 @@ foreach($_POST['checkbox'] as $value)
 			}
 		}
 
+//////// TRUNK ////////
+///// RB /////
+
 		if($modoPuerto == "Trunk"){
-			if(strcmp($identidadRS,"RB") == 0 and $cpuFallback == null){
+			if(strcmp($identidadRS,"RB") == 0 ){
+				for($cont = 0;$cont < count($vlans); $cont++){
+					//Check if PORT exist in another VLAN, if exist DELETE PORT and create in NEW
+					$pos = strpos($vlans[$cont]['ports'], $interfaz);
+					
+
+					if(pos !== false){
+					
+						//Get Actual Port to delelte
+						$actualPort = $interfaz;
+						//Get all ports of VLAN
+						$previousPort = $vlans[$cont]['ports'];
+						//Delete port from previousPort
+						$finalPort = str_replace($actualPort,"",$previousPort);
+						//Replace ,, to , if the port is deleted in the middle of string
+						$finalPort = str_replace(',,',",",$finalPort);
+						//Delete the last comma
+						if ($finalPort[strlen($finalPort)-1] == ","){
+					
+							$finalPort = rtrim($finalPort,',');
+						}
+
+						//DELETE VLAN if last PORT
+						if($previousPort == $actualPort){
+							$API = new routeros_api();
+							if ($API->connect($IP, $user, $password)) {
+							$API->comm("/interface/ethernet/switch/vlan/remove", array(
+		 					".id"     => $cont
+							));
+							$API->disconnect();
+							}
+						}
+						//Delete Port from VLAN
+						$API = new routeros_api();
+						if ($API->connect($IP, $user, $password)) {
+							$API->comm("/interface/ethernet/switch/vlan/set", array(
+		 					".id"     => $cont,
+							"ports" => $finalPort,
+							));
+							$API->disconnect();
+						
+						}
+						}
+			}
+
+			//Check if VLAN exist, if exist $contadorVlans is increased
+				for($cont = 0;$cont < count($vlans); $cont++){
+					if($vlans[$cont]['vlan-id'] == $accessVlanID){
+						$contadorVlans++;
+					}
+
+				}
+				
 				$API = new routeros_api();
 				if ($API->connect($IP, $user, $password)) {
+				//If VLAN dont exist, a new VLAN is created
+					//GET Switch per Port to create VLAN
+					$switchPerPort;
+					for($cont2=0; $cont2<$numPortsSwitch; $cont2++){
+						if($portsSwitch[$cont2]['name'] == $interfaz) {
+							$switchPerPort = $portsSwitch[$cont2]['switch'];
+							
+						}
+					}
+					if($contadorVlans==0){
+						$API->comm("/interface/ethernet/switch/vlan/add", array(
+         				 	"ports"     => $interfaz,
+          					"switch" => $switchPerPort,
+						"vlan-id" => $nativeVLAN
+					));
+					}
+				
+				//If VLAN exist, edit VLAN and add ports
+					if($contadorVlans!=0){
+						for($cont = 0; $cont < count($vlans); $cont++){
+							if($vlans[$cont]['vlan-id'] == $accessVlanID){
+								$previousPort = $vlans[$cont]['ports'];
+								$actualPort = $previousPort.",".$interfaz;
+								$API->comm("/interface/ethernet/switch/vlan/set", array(
+         				 				".id"     => $cont,
+          								"ports" => $actualPort,
+									));
+							}
+
+						}
+										
+					
+						
+					}
+
+				//Set PORT mode TRUNK
 				$API->comm("/interface/ethernet/switch/port/set", array(
          			 ".id"     => $interfaz,
           			"vlan-mode" => "secure",
@@ -582,17 +763,10 @@ foreach($_POST['checkbox'] as $value)
 				$API->disconnect();
 				}
 			}
-			else if(strcmp($identidadRS,"RB") == 0 and $cpuFallback == 'on'){
-				$API = new routeros_api();
-				if ($API->connect($IP, $user, $password)) {
-				$API->comm("/interface/ethernet/switch/port/set", array(
-         			 ".id"     => $interfaz,
-          			"vlan-mode" => "fallback"
-				));
-				$API->disconnect();
-				}
-
-			}
+		
+//////// TRUNK ////////
+///// CR /////
+			
 
 			else if(strcmp($identidadRS,"CR") == 0 ){
 				$API = new routeros_api();
@@ -613,11 +787,59 @@ foreach($_POST['checkbox'] as $value)
 
 ?>
 
-<!-- Eliminar Access o Trunk-->
+
+<!--------------------------- Eliminar Access o Trunk----------------------------->
 <?php
-for ($cont = 0; $cont < count($estadoPort); $cont++){
+
+//////// DELETE ACCESS ////////
+///// RB /////
+
+
+for ($cont = 0; $cont < count($portsSwitch); $cont++){
 		if(isset($_POST['disableAccessRB'.$cont])){
-			$API = new routeros_api();
+
+			//Delete determinated port
+			for($cont2 = 0; $cont2 < count($vlans); $cont2++){
+			if($portsSwitch[$cont]['default-vlan-id'] == $vlans[$cont2]['vlan-id']){
+				//Get Actual Port to delelte
+				$actualPort = $portsSwitch[$cont]['name'];
+				//Get all ports of VLAN
+				$previousPort = $vlans[$cont2]['ports'];
+				//Delete port from previousPort
+				$finalPort = str_replace($actualPort,"",$previousPort);
+				//Replace ,, to , if the port is deleted in the middle of string
+				$finalPort = str_replace(',,',",",$finalPort);
+				//Delete the last comma
+				if ($finalPort[strlen($finalPort)-1] == ","){
+					
+					$finalPort = rtrim($finalPort,',');
+				}
+
+			//DELETE VLAN if last PORT
+				if($previousPort == $actualPort){
+					$API = new routeros_api();
+					if ($API->connect($IP, $user, $password)) {
+					$API->comm("/interface/ethernet/switch/vlan/remove", array(
+		 				".id"     => $cont2
+						));
+					$API->disconnect();
+					}
+				}
+			//Delete Port from VLAN
+				$API = new routeros_api();
+				if ($API->connect($IP, $user, $password)) {
+				$API->comm("/interface/ethernet/switch/vlan/set", array(
+		 				".id"     => $cont2,
+						"ports" => $finalPort,
+						));
+				$API->disconnect();
+				}
+			}
+			}
+
+
+				//Set port to No Switchport
+				$API = new routeros_api();
 				if ($API->connect($IP, $user, $password)) {
 				$API->comm("/interface/ethernet/switch/port/set", array(
 
@@ -626,26 +848,82 @@ for ($cont = 0; $cont < count($estadoPort); $cont++){
           			"vlan-header" => "leave-as-is",
 				"default-vlan-id" => "0",
 				));
-				}
+				$API->disconnect();
+				}	
 		}
-	}
+}
 
-for ($cont = 0; $cont < count($estadoPort); $cont++){
-		if(isset($_POST['disableTrunkRB'.$cont])){
-			$API = new routeros_api();
+
+
+
+
+
+
+//////// DELETE TRUNK////////
+///// RB /////
+
+
+
+for ($cont = 0; $cont < count($portsSwitch); $cont++){
+	if(isset($_POST['disableTrunkRB'.$cont])){
+
+			//Delete determinated port
+			for($cont2 = 0; $cont2 < count($vlans); $cont2++){
+			if($portsSwitch[$cont]['default-vlan-id'] == $vlans[$cont2]['vlan-id']){
+				//Get Actual Port to delelte
+				$actualPort = $portsSwitch[$cont]['name'];
+				//Get all ports of VLAN
+				$previousPort = $vlans[$cont2]['ports'];
+				//Delete port from previousPort
+				$finalPort = str_replace($actualPort,"",$previousPort);
+				//Replace ,, to , if the port is deleted in the middle of string
+				$finalPort = str_replace(',,',",",$finalPort);
+				//Delete the last comma
+				if ($finalPort[strlen($finalPort)-1] == ","){
+					
+					$finalPort = rtrim($finalPort,',');
+				}
+
+			//DELETE VLAN if last PORT
+				if($previousPort == $actualPort){
+					$API = new routeros_api();
+					if ($API->connect($IP, $user, $password)) {
+					$API->comm("/interface/ethernet/switch/vlan/remove", array(
+		 				".id"     => $cont2
+						));
+					$API->disconnect();
+					}
+				}
+			//Delete Port from VLAN
+				$API = new routeros_api();
+				if ($API->connect($IP, $user, $password)) {
+				$API->comm("/interface/ethernet/switch/vlan/set", array(
+		 				".id"     => $cont2,
+						"ports" => $finalPort,
+						));
+				$API->disconnect();
+				}
+			}
+			}
+
+
+				//Set port to No Switchport
+				$API = new routeros_api();
 				if ($API->connect($IP, $user, $password)) {
 				$API->comm("/interface/ethernet/switch/port/set", array(
+
          			 ".id"     => $cont,
           			"vlan-mode" => "disabled",
           			"vlan-header" => "leave-as-is",
 				"default-vlan-id" => "0",
 				));
-				}
+				$API->disconnect();
+				}	
 		}
-	}
+}
 
-
-
+//////// DELETE ACCESS ////////
+///// CR /////
 for ($cont = 0; $cont < count($estadoAccessCR); $cont++){
 		if(isset($_POST['disableAccessCR'.$cont])){
 			$API = new routeros_api();
@@ -660,6 +938,9 @@ for ($cont = 0; $cont < count($estadoAccessCR); $cont++){
 		}}
 		}
 
+
+//////// DELETE TRUNK ////////
+///// CR /////
 for ($cont = 0; $cont < count($estadoTrunkCR); $cont++){
 		if(isset($_POST['disableTrunkCR'.$cont])){
 			$API = new routeros_api();
@@ -673,6 +954,7 @@ for ($cont = 0; $cont < count($estadoTrunkCR); $cont++){
 				$API->disconnect();
 		}}
 		}
+
 
 
 ?>

@@ -82,6 +82,9 @@
 		//VLANS
 		$vlans = $API->comm("/interface/ethernet/switch/vlan/print");
 
+		//IP ADDRESS
+		$ipAddress = $API->comm("/ip/address/print");
+
 		//CPU
 		$cpuInfo = $API->comm("/system/resource/print");
 		//RB o CR
@@ -141,8 +144,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-center">
                 <li><a href="Status.php">Status</a></li>
-              <li><a href="Switch.php">Switch</a></li>
-		<li><a href="Vlans.php">Vlans</a></li>
+              <li><a href="Switch.php">Switch</a></li>s
                 <li class="active"><a href="Ports.php">Ports</a></li>
 		<li><a href="Routing.php">Routing</a></li>
 		<li><a href="ACLs.php">ACLs</a></li>
@@ -503,8 +505,108 @@ foreach($_POST['checkbox'] as $value)
 	
 		if($modoPuerto == "NoSwitchport"){
 			if(strcmp($identidadRS,"RB") == 0 ){
+				for($cont = 0;$cont < count($vlans); $cont++){
+					//Check if PORT exist in another VLAN, if exist DELETE PORT and create in NEW
+					$pos= strpos($vlans[$cont]['ports'], $interfaz);
+					
+					
+					if(pos !== false){
+					
+						//Get Actual Port to delelte
+						$actualPort = $interfaz;
+						//Get all ports of VLAN
+						$previousPort = $vlans[$cont]['ports'];
+						//Delete port from previousPort
+						$finalPort = str_replace($actualPort,"",$previousPort);
+						//Replace ,, to , if the port is deleted in the middle of string
+						$finalPort = str_replace(',,',",",$finalPort);
+						//Delete the last comma
+						if ($finalPort[strlen($finalPort)-1] == ","){
+					
+							$finalPort = rtrim($finalPort,',');
+						}
+
+						//DELETE VLAN if last PORT
+						if($previousPort == $actualPort){
+							$API = new routeros_api();
+							if ($API->connect($IP, $user, $password)) {
+							$API->comm("/interface/ethernet/switch/vlan/remove", array(
+		 					".id"     => $cont
+							));
+							$API->disconnect();
+							}
+						}
+						//Delete Port from VLAN
+						$API = new routeros_api();
+						if ($API->connect($IP, $user, $password)) {
+							$API->comm("/interface/ethernet/switch/vlan/set", array(
+		 					".id"     => $cont,
+							"ports" => $finalPort,
+							));
+							$API->disconnect();
+						
+						}
+						}
+
+					
+
+					//Check if VLAN exist, if exist $contadorVlans is increased
+					if($vlans[$cont]['vlan-id'] == $accessVlanID){
+						$contadorVlans++;
+					}
+
+				}
+				
 				$API = new routeros_api();
 				if ($API->connect($IP, $user, $password)) {
+				//If VLAN dont exist, a new VLAN is created
+					//GET Switch per Port to create VLAN
+					$switchPerPort;
+					for($cont2=0; $cont2<$numPortsSwitch; $cont2++){
+						if($portsSwitch[$cont2]['name'] == $interfaz) {
+							$switchPerPort = $portsSwitch[$cont2]['switch'];
+							
+						}
+					}
+					if($contadorVlans==0){
+						$API->comm("/interface/ethernet/switch/vlan/add", array(
+         				 	"ports"     => $interfaz,
+          					"switch" => $switchPerPort,
+						"vlan-id" => $accessVlanID
+					));
+					}
+				
+				//If VLAN exist, edit VLAN and add ports
+					if($contadorVlans!=0){
+						for($cont = 0; $cont < count($vlans); $cont++){
+							if($vlans[$cont]['vlan-id'] == $accessVlanID){
+								$previousPort = $vlans[$cont]['ports'];
+								$actualPort = $previousPort.",".$interfaz;
+								$API->comm("/interface/ethernet/switch/vlan/set", array(
+         				 				".id"     => $cont,
+          								"ports" => $actualPort,
+									));
+							}
+
+						}
+										
+					
+						
+					}
+
+				//Set PORT mode NO SWITCHPORT
+				$API = new routeros_api();
+				if ($API->connect($IP, $user, $password)) {
+
+				//IF NO IP REMOVE IP ADDRESS				
+				if($noSwitchportIP == null){
+					for($cont = 0; $cont < count($ipAddress); $cont++){
+					if($ipAddress[$cont]['interface'] == $interfaz)
+					$API->comm("/ip/address/remove", array(
+					 ".id"     => $cont,
+				));
+				}}
+				
 				$API->comm("/interface/ethernet/switch/port/set", array(
          			 ".id"     => $interfaz,
           			"vlan-mode" => "disabled",
@@ -517,8 +619,9 @@ foreach($_POST['checkbox'] as $value)
 					"interface"=> $interfaz,
 				));
 				$API->disconnect();
-				}}
-			
+				}
+				}
+			}
 //////// NO SWITCHPORT ////////		
 ///// CR /////
 		
@@ -706,6 +809,7 @@ foreach($_POST['checkbox'] as $value)
 						
 						}
 						}
+			}
 
 			//Check if VLAN exist, if exist $contadorVlans is increased
 				for($cont = 0;$cont < count($vlans); $cont++){

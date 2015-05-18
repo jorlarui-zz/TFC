@@ -6,12 +6,12 @@
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosStatusImage.php').fadeIn("fast");
-			$('#refreshPorts').load('datosRouting.php').fadeIn("fast");
+			$('#refreshImage').load('datosStatusImage.php');
+			$('#refreshPorts').load('datosRouting.php');
 			}, 3000);
 
 			var auto_refresh = setInterval(function (){
-			$('#info').load('datosCPU.php').fadeIn("fast");
+			$('#info').load('datosCPU.php');
 			}, 1000);
 		});		
 			
@@ -114,7 +114,6 @@
             <ul class="nav navbar-nav navbar-center">
                 <li><a href="Status.php">Status</a></li>
               <li><a href="Switch.php">Switch</a></li>
-		<li><a href="Vlans.php">Vlans</a></li>
                 <li><a href="Ports.php">Ports</a></li>
 		<li class="active"><a href="Routing.php">Routing</a></li>
 		<li><a href="ACLs.php">ACLs</a></li>

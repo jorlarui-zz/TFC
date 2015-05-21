@@ -224,6 +224,8 @@
 				<td>
 				<table class="SwitchTable">
 				<?php
+
+					
 					for ($cont = 0; $cont < $numPorts; $cont++){
 					
 						echo "<tr>
@@ -232,7 +234,7 @@
 						<form action=Switch.php method=post>";
 						echo "<div class='styled-selectSwitch'><select name='formMaster$cont' onchange='this.form.submit()'>
   							<option value=''>".$Ports[$cont]['master-port']."</option>";
-								
+							
 							for ($cont2 = 0; $cont2 < $numPorts; $cont2++){
 								if ($Ports[$cont]['master-port'] != $Ports[$cont2]['name']){
 								
@@ -241,6 +243,8 @@
 								} 								
 								
 							}
+							if ($Ports[$cont]['master-port'] != 'none'){
+							echo "<option value='none'>".none."</option>";}
 
 						echo "</select</div>></form>";	
 						echo "</td>";

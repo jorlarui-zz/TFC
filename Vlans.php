@@ -6,9 +6,9 @@
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosPortsImage.php');
-			//$('#refreshPorts').load('datosPorts.php');
-			//}, 3000);
+			$('#refreshImage').load('datosVlansImage.php');
+			$('#refreshVlans').load('datosVlans.php');
+			}, 3000);
 
 			var auto_refresh = setInterval(function (){
 			$('#info').load('datosCPU.php').fadeIn("fast");
@@ -91,12 +91,55 @@
 		$routeroSwitch = $cpuInfo[0]['board-name'];
 		//Saber iniciales Router o Switch
 		$identidadRS = substr($routeroSwitch,0,2);
+	
+		//GET NUMBER OF ACCESS PORTS RB
+			$portsAccessRB= "";
+			for ($cont2 = 0; $cont2 < count($portsSwitch); $cont2++){
+			$allPortsAccessRB = $portsSwitch[$cont2]['default-vlan-id'].",".$allPortsAccessRB;
+			}
+						
+			//DELETE LAST COMMA
+			if ($allPortsAccessRB[strlen($allPorts)-1] == ","){
+			$allPortsAccessRB = rtrim($allPorts,',');
+			}
+			//LEAVE UNIQUE VALUES WITHOUT REPEATING
+			$allPortsAccessRB = implode(',',array_unique(explode(',', $allPortsAccessRB)));
+			//DO ARRAY WITH EACH VALUE
+			$allPortsAccessRB = explode(',', $allPortsAccessRB);
+
+		
+		//GET NUMBER OF ACCESS PORTS CR
+			$portsAccessCR= "";
+			for ($cont3 = 0; $cont3 < count($estadoAccessCR); $cont3++){
+			$allPortsAccessCR = $estadoAccessCR[$cont3]['new-customer-vid'].",".$allPortsAccessCR;
+			}
+						
+			//DELETE LAST COMMA
+			if ($allPortsAccessCR[strlen($allPorts)-1] == ","){
+			$allPortsAccessCR = rtrim($allPorts,',');
+			}
+			//LEAVE UNIQUE VALUES WITHOUT REPEATING
+			$allPortsAccessCR= implode(',',array_unique(explode(',', $allPortsAccessCR)));
+			//DO ARRAY WITH EACH VALUE
+			$allPortsAccessCR = explode(',', $allPortsAccessCR);
+		
+		
+
 
 		$API->write("/interface/ethernet/monitor",false);
 		$API->write("=numbers=".$valores,false);  
 		$API->write("=once=",true);
 		$READ = $API->read(false);
 		$statusPorts = $API->parse_response($READ);
+
+		//Array Colores,
+		$colores=["#00fff9","#ff00e7","#a3ff00","#ffdc0b","#ff4400","#7c00ff","#3377ff","#ff7468","#20e523","#fcc512"
+			 ,"#9f0d0d","#bc9ad4","#79addd","#e7d1e5","#7bcf5a","#cc8324","#b80f12","#0da9b0","#eea7b9","#1e7352"
+			,"#eee117","#b80000","#00137a","#AA0078","#3333FF","#99FF00","#FFCC00","#CC0000","#587498","#E86850"
+			,"#FFD800","##00FF00","#FF0000","#0000FF","#FF6600","#A16B23","#C9341C","#ECC5A8","#A3CBF1","#79BFA1"
+			,"#FB7374","#FF9900","#4FD5D6","#D6E3B5","#FFD197","#FFFF66","#FFC3CE","#21B6A8","#CDFFFF",""];
+
+
 		$API->disconnect();
 		}
 		else {
@@ -181,10 +224,12 @@
 				
 				if($statusPorts[$cont]['status']=='link-ok'){
 					if(strcmp($identidadRS,"RB") == 0 ){
-
 					//COLOR ACCESS IMAGE
 						if($portsSwitch[$cont+1]['vlan-mode']!='disabled' and $portsSwitch[$cont+1]['vlan-header']=='always-strip'){
-								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:$contColor; enable-background:new 0 0 15 11;' xml:space='preserve'>
+								for($cont2 = 0; $cont2 < count($allPortsAccessRB); $cont2 ++){
+									if($portsSwitch[$cont+1]['default-vlan-id'] === $allPortsAccessRB[$cont2]){
+									
+								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:$colores[$cont2]; enable-background:new 0 0 15 11;' xml:space='preserve'>
 								<style type='text/css'>
 								<![CDATA[
 								.st0{font-size:9px;}
@@ -196,6 +241,8 @@
 								<polygon class='st1' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
 								<text transform='matrix(1.0151 0 0 1 4.375 10.2891)' class='st3 st2 st0'>A</text>
 								</svg>";
+									}
+								}
 							}
 				//COLOR TRUNK IMAGE
 							else if($portsSwitch[$cont+1]['vlan-mode']!='disabled' and $portsSwitch[$cont+1]['vlan-header']=='add-if-missing'){
@@ -214,7 +261,7 @@
 							}
 				//COLOR NO SWITCHPORT
 							else{
-								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#a3ff00; enable-background:new 0 0 15 11;' xml:space='preserve'>
+								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#e7d1e5; enable-background:new 0 0 15 11;' xml:space='preserve'>
 								<style type='text/css'>
 								<![CDATA[
 								.st0{font-size:9px;}
@@ -232,9 +279,12 @@
 
 
 					else if(strcmp($identidadRS,"CR") == 0 ){
+
+
+
 //DIBUJAMOS NS EN TODOS LOS SWITCHPORTS						
 						
-								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#a3ff00; enable-background:new 0 0 15 11;' xml:space='preserve'>
+								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#e7d1e5; enable-background:new 0 0 15 11;' xml:space='preserve'>
 								<style type='text/css'>
 								<![CDATA[
 								.st0{font-size:9px;}
@@ -268,11 +318,12 @@
 						}
 
 //DIBUJAR ACCESS CR
-						for($cont1 = 0; $cont1 < count($estadoAccessCR); $cont1++){
-							if($estadoAccessCR[$cont1]['ports']==$Ports[$cont]['name']){
+						for($cont2 = 0; $cont2 < count($estadoAccessCR); $cont2++){
+							if($estadoAccessCR[$cont2]['ports']==$Ports[$cont]['name']){
+								for($cont3 = 0; $cont3 < count($allPortsAccessCR); $cont3 ++){
+									if($estadoAccessCR[$cont2]['new-customer-vid'] === $allPortsAccessCR[$cont3]){
 								
-								if($estadoAccessCR[$cont1]['new-customer-vid']!= 4095){	
-								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:#00fff9; enable-background:new 0 0 15 11;' xml:space='preserve'>
+								echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:$colores[$cont3]; enable-background:new 0 0 15 11;' xml:space='preserve'>
 								<style type='text/css'>
 								<![CDATA[
 								.st0{font-size:9px;}
@@ -284,7 +335,9 @@
 								<polygon class='st1' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
 								<text transform='matrix(1.0151 0 0 1 4.375 10.2891)' class='st3 st2 st0'>A</text>
 								</svg>";
-							}}
+									}
+								}
+							}
 						}
 						
 					}
@@ -320,7 +373,7 @@
 		<div class="col-lg-12 info-box">
 			<div class="col-lg-2"></div>
 			<div class="col-lg-4">
-			<div id="refreshPorts">
+			<div id="refreshVlans">
 <!--TABLA RB-->
 
 <?php
@@ -426,7 +479,6 @@
 					//DO ARRAY WITH EACH VALUE
 					$arrayPorts = explode(',', $allPorts);
 
-					$portsTable;
 
 					for ($cont = 0; $cont < count($arrayPorts); $cont++){
 						for($cont2=count($estadoTrunkCR); $cont2 >= 0 ; $cont2--){
@@ -763,6 +815,64 @@ $contadorAccess = 0;
 						
 					}
 
+				//IF PORT WAS ACCESS, DELETE PORTS FROM INGRESS
+			
+				for($cont = count($estadoAccessCR) -1; $cont >= 0; $cont--){
+					if($estadoAccessCR[$cont]['ports'] === $interfaz){
+								$API->comm("/interface/ethernet/switch/ingress-vlan-translation/remove", array(
+         				 				".id"     => $cont
+									));
+								
+					}
+				}
+
+				//IF PORT WAS TRUNK, DELETE PORTS FROM EGRESS
+				for($cont = count($estadoTrunkCR) -1; $cont >= 0; $cont--){
+					
+					$posTrunk= strpos($estadoTrunkCR[$cont]['tagged-ports'], $interfaz);
+					
+					if($pos !== false){
+					
+						//Get Actual Port to delelte
+						$actualPort = $interfaz;
+						//Get all ports of VLAN
+						$previousPort = $estadoTrunkCR[$cont]['tagged-ports'];
+						//Delete port from previousPort
+						$finalPort = str_replace($actualPort,"",$previousPort);
+						//Replace ,, to , if the port is deleted in the middle of string
+						$finalPort = str_replace(',,',",",$finalPort);
+						//Delete the last comma
+						if ($finalPort[strlen($finalPort)-1] == ","){
+					
+							$finalPort = rtrim($finalPort,',');
+						}
+
+						//DELETE VLAN if last PORT
+						if($previousPort == $actualPort){
+							$API = new routeros_api();
+							if ($API->connect($IP, $user, $password)) {
+							$API->comm("/interface/ethernet/switch/egress-vlan-tag/remove", array(
+		 					".id"     => $cont
+							));
+							$API->disconnect();
+							}
+						}
+						//Delete Port from VLAN
+						$API = new routeros_api();
+						if ($API->connect($IP, $user, $password)) {
+							$API->comm("/interface/ethernet/switch/egress-vlan-tag/set", array(
+		 					".id"     => $cont,
+							"tagged-ports" => $finalPort,
+							));
+							$API->disconnect();
+						
+						}
+					}
+
+				}
+
+
+
 				//Set PORT mode NO SWITCHPORT
 				
 
@@ -801,7 +911,7 @@ $contadorAccess = 0;
 					
 					if($pos !== false){
 					
-						//Get Actual Port to delelte
+						//Get Actual Port to delete
 						$actualPort = $interfaz;
 						//Get all ports of VLAN
 						$previousPort = $vlans[$cont]['ports'];
@@ -882,15 +992,28 @@ $contadorAccess = 0;
 					
 						
 					}
-
-				//Set PORT mode ACCESS
-				$API->comm("/interface/ethernet/switch/port/set", array(
-         			 ".id"     => $interfaz,
-          			"vlan-mode" => "secure",
-          			"vlan-header" => "always-strip",
-				"default-vlan-id" => $accessVlanID
-				));
-				$API->disconnect();
+				
+				
+				//DONT ALLOW TO SET PORT IN MODE ACCESS IF VLAN ISNT IN THE SAME SWITCH
+				$vlans = $API->comm("/interface/ethernet/switch/vlan/print");
+				for($cont2 = 0; $cont2 < count($portsSwitch); $cont2 ++){
+					if($portsSwitch[$cont2]['name'] === $interfaz){
+						for($cont3 = 0; $cont3 < count($vlans); $cont3 ++){
+						if($accessVlanID === $vlans[$cont3]['vlan-id'] and $portsSwitch[$cont2]['switch'] === $vlans[$cont3]['switch']){
+							
+							//Set PORT mode ACCESS
+							$API->comm("/interface/ethernet/switch/port/set", array(
+         						 ".id"     => $interfaz,
+          						"vlan-mode" => "secure",
+          						"vlan-header" => "always-strip",
+							"default-vlan-id" => $accessVlanID
+							));
+							$API->disconnect();}
+						}
+						}
+					}
+				
+				
 				}
 			}
 		
@@ -899,7 +1022,7 @@ $contadorAccess = 0;
 ///// CR /////		
 			else if(strcmp($identidadRS,"CR") == 0 ){
 
-				for($cont = 0;$cont < count($vlans); $cont++){
+				for($cont = count($vlans) -1 ;$cont >= 0; $cont--){
 					//Check if PORT exist in another VLAN, if exist DELETE PORT and create in NEW
 					
 					$pos= strpos($vlans[$cont]['ports'], $interfaz);
@@ -996,7 +1119,6 @@ $contadorAccess = 0;
           					"customer-vid" => "0",
 						"new-customer-vid" => $accessVlanID
 					));
-					$API->disconnect();
 					}
 				}
 				
@@ -1011,7 +1133,55 @@ $contadorAccess = 0;
 							}
 						}					
 				}
-				
+
+
+
+				//IF PORT WAS TRUNK, DELETE PORTS FROM EGRESS
+				for($cont = count($estadoTrunkCR) -1; $cont >= 0; $cont--){
+					
+					$posTrunk= strpos($estadoTrunkCR[$cont]['tagged-ports'], $interfaz);
+					
+					if($pos !== false){
+					
+						//Get Actual Port to delelte
+						$actualPort = $interfaz;
+						//Get all ports of VLAN
+						$previousPort = $estadoTrunkCR[$cont]['tagged-ports'];
+						//Delete port from previousPort
+						$finalPort = str_replace($actualPort,"",$previousPort);
+						//Replace ,, to , if the port is deleted in the middle of string
+						$finalPort = str_replace(',,',",",$finalPort);
+						//Delete the last comma
+						if ($finalPort[strlen($finalPort)-1] == ","){
+					
+							$finalPort = rtrim($finalPort,',');
+						}
+
+						//DELETE VLAN if last PORT
+						if($previousPort == $actualPort){
+							$API = new routeros_api();
+							if ($API->connect($IP, $user, $password)) {
+							$API->comm("/interface/ethernet/switch/egress-vlan-tag/remove", array(
+		 					".id"     => $cont
+							));
+							$API->disconnect();
+							}
+						}
+						//Delete Port from VLAN
+						$API = new routeros_api();
+						if ($API->connect($IP, $user, $password)) {
+							$API->comm("/interface/ethernet/switch/egress-vlan-tag/set", array(
+		 					".id"     => $cont,
+							"tagged-ports" => $finalPort,
+							));
+							$API->disconnect();
+						
+						}
+					}
+
+
+				}
+				$API->disconnect();
 			}
 		}
 	}
@@ -1039,7 +1209,7 @@ $contadorAccess = 0;
 				
 				$API = new routeros_api();
 				if ($API->connect($IP, $user, $password)) {
-				//If VLAN dont exist, a new VLAN is created
+				//If VLAN doesnt exist, a new VLAN is created
 					//GET Switch per Port to create VLAN
 					$switchPerPort;
 					for($cont2=0; $cont2<$numPortsSwitch; $cont2++){
@@ -1095,20 +1265,73 @@ $contadorAccess = 0;
 ///// CR /////
 			
 
-			else if(strcmp($identidadRS,"CR") == 0 ){
+		else if(strcmp($identidadRS,"CR") == 0 ){
+
+		//DELETE PORTS IF WE CHANGE FROM ACCESS TO TRUNK
 
 
 				//Create Vlan per Allowed Vlan in Trunk
 			for($contAllowed = 0; $contAllowed < count($allowedVlans);$contAllowed++){
 				
-				for($cont = 0;$cont < count($vlans); $cont++){
 				
+				for($cont = count($vlans) -1 ;$cont >= 0; $cont--){
+					//Check if PORT exist in another VLAN, if exist DELETE PORT and create in NEW
+					
+					$pos= strpos($vlans[$cont]['ports'], $interfaz);
+					
+					if($pos !== false and $vlans[$cont]['vlan-id'] !== $allowedVlans[$contAllowed]){
+					
+						//Get Actual Port to delelte
+						$actualPort = $interfaz;
+						//Get all ports of VLAN
+						$previousPort = $vlans[$cont]['ports'];
+						//Delete port from previousPort
+						$finalPort = str_replace($actualPort,"",$previousPort);
+						//Replace ,, to , if the port is deleted in the middle of string
+						$finalPort = str_replace(',,',",",$finalPort);
+						//Delete the last comma
+						if ($finalPort[strlen($finalPort)-1] == ","){
+					
+							$finalPort = rtrim($finalPort,',');
+						}
 
+						//DELETE VLAN if last PORT
+						if($previousPort == $actualPort){
+							$API = new routeros_api();
+							if ($API->connect($IP, $user, $password)) {
+							$API->comm("/interface/ethernet/switch/vlan/remove", array(
+		 					".id"     => $cont
+							));
+							$API->disconnect();
+							}
+						}
+						//Delete Port from VLAN
+						$API = new routeros_api();
+						if ($API->connect($IP, $user, $password)) {
+							$API->comm("/interface/ethernet/switch/vlan/set", array(
+		 					".id"     => $cont,
+							"ports" => $finalPort,
+							));
+							$API->disconnect();
+						
+						}
+					}
+			}
+		}
+
+		//CREATE VLANS AND SET PORTS MODE TRUNK
+
+		for($contAllowed = 0; $contAllowed < count($allowedVlans);$contAllowed++){
+				
+				
+				for($cont = count($vlans) -1 ;$cont >= 0; $cont--){
 			//Check if VLAN exist, if exist $contadorVlans is increased
 				
 					if($vlans[$cont]['vlan-id'] == $allowedVlans[$contAllowed]){
 						$contadorVlans++;
+						
 					}
+					
 				}
 			//Check if another Port is Trunking the VLAN ID
 				for($cont = 0;$cont < count($estadoTrunkCR); $cont++){
@@ -1161,6 +1384,18 @@ $contadorAccess = 0;
 					$contadorVlans = 0;
 
 				}
+
+				//IF PORT WAS ACCESS, DELETE PORTS FROM INGRESS
+			
+				for($cont = count($estadoAccessCR) -1; $cont >= 0; $cont--){
+					if($estadoAccessCR[$cont]['ports'] === $interfaz){
+								$API->comm("/interface/ethernet/switch/ingress-vlan-translation/remove", array(
+         				 				".id"     => $cont
+									));
+								
+					}
+				}
+
 				//Set PORT mode TRUNK
 				$API->comm("/interface/ethernet/switch/egress-vlan-tag/add", array(
          			 "tagged-ports"     => $interfaz,

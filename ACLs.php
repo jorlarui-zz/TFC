@@ -66,7 +66,7 @@
 		$API->disconnect();
 		}
 		else {
-			header( 'Location:Login.php?notLogin=true' );
+			header( 'Location:index.php?notLogin=true' );
 
 		}
 
@@ -312,7 +312,7 @@ for ($cont = 0; $cont < $numFirewall; $cont++){
 <?php
 	if($_GET['logOut'] == 'yes'){
 		session_destroy();
-		header( 'Location:Login.php'); 
+		header( 'Location:index.php'); 
 }
 
 ?>

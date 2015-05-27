@@ -75,7 +75,7 @@
 		$API->disconnect();
 		}
 		else {
-			header( 'Location:Login.php?notLogin=true' );}
+			header( 'Location:index.php?notLogin=true' );}
 
 ?>
 
@@ -298,8 +298,7 @@
 
 				<h3>Routes</h3>
 
-				
-				</br>Destination Address:</br> <input name='dstAddress' type='text' placeholder='0.0.0.0/0'/></br>
+				Destination Address:</br> <input name='dstAddress' type='text' placeholder='0.0.0.0/0'/></br>
 
 				</br> Gateway (Select one): </br>
 				<div class='styled-selectRouting gateway'>

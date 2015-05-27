@@ -8,7 +8,7 @@
 </head>
 <body>
 	<img id="logo" src='images/logo.png' />
-	<form name="login" method="post" action="Login.php">
+	<form name="login" method="post" action="index.php">
 	<table cellspacing="0" cellpadding="0" id="loginTable">
 	<tr id="loginBorder">
 			<th colspan="2">LOGIN</td>
@@ -74,10 +74,6 @@
 
 ?>
 
- <footer>
-  <p>Posted by: Hege Refsnes</p>
-  <p>Contact information: <a href="mailto:someone@example.com">
-  someone@example.com</a>.</p>
-</footer> 
+
 </body>
 </html>

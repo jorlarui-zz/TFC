@@ -22,7 +22,7 @@
 <?php
 
 
-	sleep (2);
+
 		$API = new routeros_api();
 		$IP = $_SESSION[ 'ip' ];
 		$user = $_SESSION[ 'user' ];

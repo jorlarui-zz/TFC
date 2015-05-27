@@ -143,7 +143,7 @@
 		$API->disconnect();
 		}
 		else {
-			header( 'Location:Login.php?notLogin=true' );}
+			header( 'Location:index.php?notLogin=true' );}
 
 ?>
 
@@ -705,19 +705,23 @@ $contadorAccess = 0;
 								));
 							}
 						
-							else{
-							$API->comm("/interface/ethernet/switch/port/set", array(
-         						 ".id"     => $interfaz,
-          						"vlan-mode" => "disabled",
-          						"vlan-header" => "leave-as-is",
-							"default-vlan-id" => "0",
-							));
-
+							
+						}
+					}
+					else{
 							$API->comm("/ip/address/add", array(
 							"address"=> $noSwitchportIP, 
 							"interface"=> $interfaz,
 							));
-							}}}
+							}
+					
+					
+					$API->comm("/interface/ethernet/switch/port/set", array(
+         				".id"     => $interfaz,
+          				"vlan-mode" => "disabled",
+          				"vlan-header" => "leave-as-is",
+					"default-vlan-id" => "0",
+					));
 				}$API->disconnect();
 				
 			

@@ -289,7 +289,7 @@
 <?php
 	if($_GET['logOut'] == 'yes'){
 		session_destroy();
-		header( 'Location:Login.php'); 
+		header( 'Location:index.php'); 
 }
 
 ?>

@@ -29,7 +29,13 @@
 		$numSwitches = count($switches);
 
 		//Interfaz VLAN
-		$interfazVlan = $API->comm('/interface/vlan/print');		
+		$interfazVlan = $API->comm('/interface/vlan/print');	
+
+		//Interfaz bridge
+		$interfazBridge = $API->comm('/interface/bridge/print');	
+
+		//routes
+		$routes = $API->comm('/ip/route/print');	
 
 		//IP addresses
 		$ipAddress = $API->comm('/ip/address/print');		
@@ -48,14 +54,15 @@
 		$API->disconnect();}	
 				?>
 <?php
-				echo "<table class='tableRouting'>
+				echo "<h3>VLAN Interface</h3>";
+					echo "<table class='tableRouting'>
 						<tr><th>Name</th>
 							<th>VLAN ID</th>
 							<th>Interface</th>
 							<th>IP Address</th></tr>";
 					for ($cont = 0; $cont < count($interfazVlan); $cont++){
 						echo '<tr>
-							<td>'.$interfazVlan[$cont]['name'].'</td>';
+							<td>'.$interfazVlan[$cont]['comment'].'</td>';
 						echo '<td>'.$interfazVlan[$cont]['vlan-id'].'</td>';
 						echo '<td>'.$interfazVlan[$cont]['interface'].'</td>';
 
@@ -73,6 +80,34 @@
 					}
 				
 					echo "</table>";
+
+	//TABLE ROUTES//
+					echo "<h3>Routes</h3>";
+					echo "<table class='tableRouting'>
+						<tr><th>Destination Address</th>
+							<th>Gateway</th>
+							<th>Dynamic/Static</th></tr>";
+					for ($cont = 0; $cont < count($routes); $cont++){
+						echo '<tr>
+							<td>'.$routes[$cont]['dst-address'].'</td>';
+						echo '<td>'.$routes[$cont]['gateway'].'</td>';
+						if($routes[$cont]['dynamic']=='true'){
+							echo '<td>D</td>';
+						}
+						else{
+							echo '<td>S</td>';
+						}
+						echo "<td><form name='button$cont' method='post'>
+							<input type='submit' name='disableInterfaceRouting$cont' value='X' class='buttonDisable'/>
+							</form></td>";
+			
+
+						echo '</tr>';
+					}
+				
+					echo "</table>";
+							
+							
 			?>
 
 

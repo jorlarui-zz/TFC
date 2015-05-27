@@ -48,14 +48,15 @@
 		$API->disconnect();}	
 				?>
 <?php
-				echo "<table class='tableRouting'>
+				echo "<h3>VLAN Interface</h3>";
+					echo "<table class='tableRouting'>
 						<tr><th>Name</th>
 							<th>VLAN ID</th>
 							<th>Interface</th>
 							<th>IP Address</th></tr>";
 					for ($cont = 0; $cont < count($interfazVlan); $cont++){
 						echo '<tr>
-							<td>'.$interfazVlan[$cont]['name'].'</td>';
+							<td>'.$interfazVlan[$cont]['comment'].'</td>';
 						echo '<td>'.$interfazVlan[$cont]['vlan-id'].'</td>';
 						echo '<td>'.$interfazVlan[$cont]['interface'].'</td>';
 
@@ -73,22 +74,25 @@
 					}
 				
 					echo "</table>";
-			?>
 
-<!--TABLA CR-->
-			<?php
-				
-				if(strcmp($identidadRS,"CR") == 0 ){
-					echo "Access
-						<table class='tablePortsCR'>
-					";
-					echo '<tr><td>Ports</td>';
-					echo '<td>VLAN</td></tr>';
-					for ($cont = 0; $cont < count($estadoAccessCR); $cont++){
-						echo '<tr><td>'.$estadoAccessCR[$cont]['ports'].'</td>';
-						echo '<td>'.$estadoAccessCR[$cont]['new-customer-vid'].'</td>';
+	//TABLE ROUTES//
+					echo "<h3>Routes</h3>";
+					echo "<table class='tableRouting'>
+						<tr><th>Destination Address</th>
+							<th>Gateway</th>
+							<th>Dynamic/Static</th></tr>";
+					for ($cont = 0; $cont < count($routes); $cont++){
+						echo '<tr>
+							<td>'.$routes[$cont]['dst-address'].'</td>';
+						echo '<td>'.$routes[$cont]['gateway'].'</td>';
+						if($routes[$cont]['dynamic']=='true'){
+							echo '<td>D</td>';
+						}
+						else{
+							echo '<td>S</td>';
+						}
 						echo "<td><form name='button$cont' method='post'>
-							<input type='submit' name='disableAccessCR$cont' value='X' class='buttonDisable'/>
+							<input type='submit' name='disableInterfaceRouting$cont' value='X' class='buttonDisable'/>
 							</form></td>";
 			
 
@@ -97,24 +101,7 @@
 				
 					echo "</table>";
 							
-					echo "Trunk
-						<table class='tablePortsCR'>
-					";
-					echo '<tr><td>VLAN</td>';
-					echo '<td>Ports</td></tr>';
-					for ($cont = 0; $cont < count($estadoTrunkCR); $cont++){
-						echo '<tr><td>'.$estadoTrunkCR[$cont]['vlan-id'].'</td>';
-						echo '<td>'.$estadoTrunkCR[$cont]['tagged-ports'].'</td>';
-						echo "<td><form name='button$cont' method='post'>
-							<input type='submit' name='disableTrunkCR$cont' value='X' class='buttonDisable'/>
-							</form></td>";
-			
-
-						echo '</tr>';
-					}
-				
-					echo "</table>";
-
-
-				}
+							
 			?>
+
+

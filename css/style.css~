@@ -2,8 +2,6 @@ body{
 	background-color:#DDD;
 }
 
-
-
 /* Menu Bar */
 .navbar{
 	background-color: #080808;
@@ -238,6 +236,58 @@ input[class=buttonDisable] {
 	padding-bottom:2px;
 	text-align:center;
 }  
+.tableRouting{
+	margin-bottom:50px;
+}
+.routingBox{
+	font-size: 13px !important;
+}
+
+#refreshPorts h3{
+	margin-bottom:15px;
+	font-size: 16px;
+	text-decoration:underline;
+	text-align:center;
+	font-weight: bold;
+}
+
+.routingBox h3{
+	margin-bottom:15px;
+	font-size: 16px;
+	text-decoration:underline;
+	font-weight: bold;
+
+	}
+.gateway {
+display: inline;
+}
+.gateway input{
+	width: 50%;
+	
+   margin-top: -35px;
+	
+}
+
+.styled-selectRouting select {
+	
+   background: transparent;
+   width: 118px;	
+   font-size:13px;
+   border: 0;
+   border-radius: 0;
+   height: 24px;
+   -webkit-appearance: none;
+   }
+
+.styled-selectRouting {
+   display: inline-block;
+   width: 100px;
+   height: 24px;
+   overflow: hidden;
+   border: 1px solid #ccc;
+   background-color:rgba(0,0,0,0.1);
+   }
+
 
 /*-----------------ACL.php-----------------*/
 
@@ -286,7 +336,7 @@ input[class=buttonDisable] {
 
 /*-----------------Help.index-----------------*/
 .jumbotron iframe{
-	display:block;
+
 	margin: 0 auto;
 }
 .help-box{

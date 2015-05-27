@@ -28,19 +28,21 @@
 		$portsSwitch = $API->comm("/interface/ethernet/switch/port/print");
 		$numPortsSwitch = count($portsSwitch);
 
-		//puerto Acceso, Trunk, NoSwitchport de RB
-		$estadoPort = $API->comm("/interface/ethernet/switch/port/print");
-
 		//puerto Trunk CR
 		$estadoTrunkCR = $API->comm("/interface/ethernet/switch/egress-vlan-tag/print");
 
 		//puerto Acceso CR
 		$estadoAccessCR = $API->comm("/interface/ethernet/switch/ingress-vlan-translation/print");
 
+		//VLANS
+		$vlans = $API->comm("/interface/ethernet/switch/vlan/print");
+
+		//IP ADDRESS
+		$ipAddress = $API->comm("/ip/address/print");
 
 		//CPU
 		$cpuInfo = $API->comm("/system/resource/print");
-		//RB o CS
+		//RB o CR
 		$routeroSwitch = $cpuInfo[0]['board-name'];
 		//Saber iniciales Router o Switch
 		$identidadRS = substr($routeroSwitch,0,2);

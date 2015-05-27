@@ -50,7 +50,13 @@
 		$numSwitches = count($switches);
 
 		//Interfaz VLAN
-		$interfazVlan = $API->comm('/interface/vlan/print');		
+		$interfazVlan = $API->comm('/interface/vlan/print');	
+
+		//Interfaz bridge
+		$interfazBridge = $API->comm('/interface/bridge/print');	
+
+		//routes
+		$routes = $API->comm('/ip/route/print');	
 
 		//IP addresses
 		$ipAddress = $API->comm('/ip/address/print');		
@@ -186,11 +192,11 @@
 
 	<div class="row">
 		<div class="col-lg-12 info-box">
-			<div class="col-lg-2"></div>
+			<div class="col-lg-1"></div>
 			<div class="col-lg-5">
 				<div id="refreshPorts">
 				<?php
-			
+					echo "<h3>VLAN Interface</h3>";
 					echo "<table class='tableRouting'>
 						<tr><th>Name</th>
 							<th>VLAN ID</th>
@@ -198,7 +204,7 @@
 							<th>IP Address</th></tr>";
 					for ($cont = 0; $cont < count($interfazVlan); $cont++){
 						echo '<tr>
-							<td>'.$interfazVlan[$cont]['name'].'</td>';
+							<td>'.$interfazVlan[$cont]['comment'].'</td>';
 						echo '<td>'.$interfazVlan[$cont]['vlan-id'].'</td>';
 						echo '<td>'.$interfazVlan[$cont]['interface'].'</td>';
 
@@ -216,6 +222,33 @@
 					}
 				
 					echo "</table>";
+
+	//TABLE ROUTES//
+					echo "<h3>Routes</h3>";
+					echo "<table class='tableRouting'>
+						<tr><th>Destination Address</th>
+							<th>Gateway</th>
+							<th>Dynamic/Static</th></tr>";
+					for ($cont = 0; $cont < count($routes); $cont++){
+						echo '<tr>
+							<td>'.$routes[$cont]['dst-address'].'</td>';
+						echo '<td>'.$routes[$cont]['gateway'].'</td>';
+						if($routes[$cont]['dynamic']=='true'){
+							echo '<td>D</td>';
+						}
+						else{
+							echo '<td>S</td>';
+						}
+						echo "<td><form name='button$cont' method='post'>
+							<input type='submit' name='disableInterfaceRouting$cont' value='X' class='buttonDisable'/>
+							</form></td>";
+			
+
+						echo '</tr>';
+					}
+				
+					echo "</table>";
+							
 							
 
 				?>
@@ -223,34 +256,73 @@
 
 			</div>
 			<div class="col-lg-3 routingBox">
-					
+		
+		<!-- FORM INTERFACES VLAN-->		
+			<h3>VLAN Interface</h3>
 			<div>
 				<form method='post' action='#' name='formRouting'>
-				Interface: 
+				Master interface:
 				<div class='styled-select'>
 				<select name='interfaces'>
-				<option value>Interface</option>
+				<option value>Master interface</option>
 				<?php
+				
+				for ($cont = 0; $cont < $numPorts; $cont++){
+					if($Ports[$cont]['master-port'] === 'none'){
+					$interfazSel = $Ports[$cont]['name'];
+					echo "<option value=$interfazSel>$interfazSel"." (Master Port)</option>";}
 			
-				for ($cont = 0; $cont < $numInterfaces; $cont++){
-			
-				$interfazSel = $Interfaces[$cont]['name'];
-				echo "<option value=$interfazSel>$interfazSel</option>";
-			
-				}		
+				}
+				for ($cont = 0; $cont < count($interfazBridge); $cont++){
+					$interfazSel = $interfazBridge[$cont]['name'];
+					echo "<option value=$interfazSel>$interfazSel"." (Bridge) </option>";
+				}
+		
 				echo "</select></div>";
 				?>
-				</br>VLAN ID:</br> <input name='VlanID' type='number' min='0' max='4095' placeholder='100'/></br>
-				</br>VLAN Name:</br> <input name='VlanName' type='text' placeholder='Management VLAN'/></br>
-				</br>IP Address:</br> <input name='VlanAddress' type='text' placeholder='192.168.100.1/24'/></br>
+				</br> VLAN ID:</br> <input name='VlanID' type='number' min='0' max='4095' placeholder='100'/></br>
+				</br> VLAN Name:</br> <input name='VlanName' type='text' placeholder='Management VLAN'/></br>
+				</br> IP Address:</br> <input name='VlanAddress' type='text' placeholder='192.168.100.1/24'/></br>
 
 				</br><input type='submit' name='submitButton' value='Submit'/>
 				</form>
 
-			</div>	
 
+			</div>	
+			</div>
+
+	<!-- FORM ROUTES -->
+				<div class="col-lg-3 routingBox">
+
+				<form method='post' action='#' name='formRouting'>
+
+				<h3>Routes</h3>
+
+				Destination Address:</br> <input name='dstAddress' type='text' placeholder='0.0.0.0/0'/></br>
+
+				</br> Gateway (Select one): </br>
+				<div class='styled-selectRouting gateway'>
+				<select name='gatewayInterface'>
+				<option value>Interface</option>
+				<?php
+				
+				for ($cont = 0; $cont < $numInterfaces; $cont++){
+				
+					$interfazSel = $Interfaces[$cont]['name'];
+					echo "<option value=$interfazSel>$interfazSel</option>";}
 			
-			<div class="col-lg-1"></div>
+		
+				echo "</select></div>";
+				?>
+				<div class='gateway'>
+				<input name='gateway' type='text' placeholder='192.168.80.1'/></br>
+				</div>
+				</br><input type='submit' name='submitButton2' value='Submit'/>
+				</form>
+
+
+			</div>	
+			</div>
 			
 	</div>
 
@@ -260,24 +332,64 @@ $interfaz = $_POST['interfaces'];
 $VlanID = $_POST['VlanID'];
 $VlanName = $_POST['VlanName'];
 $VlanAddress = $_POST['VlanAddress'];
+$dstAddress = $_POST['dstAddress'];
+$gatewayInterface = $_POST['gatewayInterface'];
+$gateway = $_POST['gateway'];
 
 	if(isset($_POST['submitButton'])){
-		if(strcmp($identidadRS,"RB") == 0 ){
 			$API = new routeros_api();
 			if ($API->connect($IP, $user, $password)) {
 			$API->comm("/interface/vlan/add", array(
          		 "interface"     => $interfaz,
           		"vlan-id" => $VlanID,
-          		"name" => $VlanName,
+          		"name" => "VLAN ".$VlanID,
+			"comment" => $VlanName,
 			));
 
 			$API->comm("/ip/address/add", array(
 			"address"=> $VlanAddress, 
-			"interface"=> $VlanName,
+			"interface"=> "VLAN ".$VlanID,
 			));
 			$API->disconnect();
-			}
+			
 		}
+	}
+
+	else if(isset($_POST['submitButton2'])){
+			//IF selected gateway was selected and ip gateway too, send ip gateway
+			if($gateway != null and $gatewayInterface != null){
+				$API = new routeros_api();
+				if ($API->connect($IP, $user, $password)) {
+					$API->comm("/ip/route/add", array(
+         				 "dst-address"     => $dstAddress,
+          				"gateway" => $gateway,
+						));
+
+					$API->disconnect();}
+			}
+
+			if($gateway == null and $gatewayInterface != null){
+				$API = new routeros_api();
+				if ($API->connect($IP, $user, $password)) {
+					$API->comm("/ip/route/add", array(
+         				 "dst-address"     => $dstAddress,
+          				"gateway" => $gatewayInterface,
+						));
+
+					$API->disconnect();}
+			}
+
+			if($gateway != null and $gatewayInterface == null){
+				$API = new routeros_api();
+				if ($API->connect($IP, $user, $password)) {
+					$API->comm("/ip/route/add", array(
+         				 "dst-address"     => $dstAddress,
+          				"gateway" => $gateway,
+						));
+
+					$API->disconnect();}
+			}
+
 	}
 
 
@@ -308,6 +420,24 @@ for ($cont = 0; $cont < count($interfazVlan); $cont++){
 						}		
 					}
 				}			
+		}
+	}
+}
+
+// ELIMINAR RUTA //
+
+for ($cont = 0; $cont < count($routes); $cont++){
+	if(isset($_POST['disableInterfaceRouting'.$cont])){
+			$API = new routeros_api();
+			$IP = $_SESSION[ 'ip' ];
+			$user = $_SESSION[ 'user' ];
+			$password = $_SESSION[ 'password' ];
+			if ($API->connect($IP, $user, $password)) {
+				$API->write("/ip/route/remove",false);
+				$API->write("=.id=".$cont);
+				$Ports = $API->read();
+				$API->disconnect();
+						
 		}
 	}
 }

@@ -610,7 +610,10 @@ $contadorAccess = 0;
 	
 		if($modoPuerto == "NoSwitchport"){
 			if(strcmp($identidadRS,"RB") == 0 ){
-				for($cont = 0;$cont < count($vlans); $cont++){
+				$API = new routeros_api();
+				if ($API->connect($IP, $user, $password)) {
+
+				for($cont = count($vlans) -1 ;$cont >= 0; $cont--){
 					//Check if PORT exist in another VLAN, if exist DELETE PORT and create in NEW
 					$pos= strpos($vlans[$cont]['ports'], $interfaz);
 					
@@ -633,24 +636,17 @@ $contadorAccess = 0;
 
 						//DELETE VLAN if last PORT
 						if($previousPort == $actualPort){
-							$API = new routeros_api();
-							if ($API->connect($IP, $user, $password)) {
 							$API->comm("/interface/ethernet/switch/vlan/remove", array(
 		 					".id"     => $cont
 							));
-							$API->disconnect();
-							}
+							
 						}
 						//Delete Port from VLAN
-						$API = new routeros_api();
-						if ($API->connect($IP, $user, $password)) {
 							$API->comm("/interface/ethernet/switch/vlan/set", array(
 		 					".id"     => $cont,
 							"ports" => $finalPort,
 							));
-							$API->disconnect();
-						
-						}
+							
 					}
 
 					
@@ -662,8 +658,6 @@ $contadorAccess = 0;
 
 				}
 				
-				$API = new routeros_api();
-				if ($API->connect($IP, $user, $password)) {
 				//If VLAN dont exist, a new VLAN is created
 					//GET Switch per Port to create VLAN
 					$switchPerPort;
@@ -705,28 +699,32 @@ $contadorAccess = 0;
 					//IF NO IP REMOVE IP ADDRESS				
 					if($noSwitchportIP == null){
 						for($cont = 0; $cont < count($ipAddress); $cont++){
-							if($ipAddress[$cont]['interface'] == $interfaz)
+							if($ipAddress[$cont]['interface'] == $interfaz){
 								$API->comm("/ip/address/remove", array(
 					 			".id"     => $cont,
 								));
 							}
+						
+							
 						}
-							else{
-							$API->comm("/interface/ethernet/switch/port/set", array(
-         						 ".id"     => $interfaz,
-          						"vlan-mode" => "disabled",
-          						"vlan-header" => "leave-as-is",
-							"default-vlan-id" => "0",
-							));
-
+					}
+					else{
 							$API->comm("/ip/address/add", array(
 							"address"=> $noSwitchportIP, 
 							"interface"=> $interfaz,
 							));
 							}
-				$API->disconnect();
+					
+					
+					$API->comm("/interface/ethernet/switch/port/set", array(
+         				".id"     => $interfaz,
+          				"vlan-mode" => "disabled",
+          				"vlan-header" => "leave-as-is",
+					"default-vlan-id" => "0",
+					));
+				}$API->disconnect();
 				
-			}
+			
 		}
 //////// NO SWITCHPORT ////////		
 ///// CR /////
@@ -906,7 +904,7 @@ $contadorAccess = 0;
 			if(strcmp($identidadRS,"RB") == 0 ){
 
 			
-				for($cont = 0;$cont < count($vlans); $cont++){
+				for($cont = count($vlans)-1 ;$cont >= 0; $cont--){
 					//Check if PORT exist in another VLAN, if exist DELETE PORT and create in NEW
 					
 					if($pos !== false){
@@ -1191,6 +1189,49 @@ $contadorAccess = 0;
 
 		if($modoPuerto == "Trunk"){
 			if(strcmp($identidadRS,"RB") == 0 ){
+
+			for($cont = count($vlans)-1 ;$cont >= 0; $cont--){
+					//Check if PORT exist in another VLAN, if exist DELETE PORT and create in NEW
+					
+					if($pos !== false){
+					
+						//Get Actual Port to delete
+						$actualPort = $interfaz;
+						//Get all ports of VLAN
+						$previousPort = $vlans[$cont]['ports'];
+						//Delete port from previousPort
+						$finalPort = str_replace($actualPort,"",$previousPort);
+						//Replace ,, to , if the port is deleted in the middle of string
+						$finalPort = str_replace(',,',",",$finalPort);
+						//Delete the last comma
+						if ($finalPort[strlen($finalPort)-1] == ","){
+					
+							$finalPort = rtrim($finalPort,',');
+						}
+
+						//DELETE VLAN if last PORT
+						if($previousPort == $actualPort){
+							$API = new routeros_api();
+							if ($API->connect($IP, $user, $password)) {
+							$API->comm("/interface/ethernet/switch/vlan/remove", array(
+		 					".id"     => $cont
+							));
+							$API->disconnect();
+							}
+						}
+						//Delete Port from VLAN
+						$API = new routeros_api();
+						if ($API->connect($IP, $user, $password)) {
+							$API->comm("/interface/ethernet/switch/vlan/set", array(
+		 					".id"     => $cont,
+							"ports" => $finalPort,
+							));
+							$API->disconnect();
+						
+						}
+					}
+				}
+
 
 		//Create Vlan per Allowed Vlan in Trunk
 			for($contAllowed = 0; $contAllowed < count($allowedVlans);$contAllowed++){

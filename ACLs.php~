@@ -47,6 +47,9 @@
 		$valoresPar= json_encode(range(0, $numPorts-1));
 		$valores = substr($valoresPar, 1, -1);
 
+		//Interfaz VLAN
+		$interfazVlan = $API->comm('/interface/vlan/print');	
+
 		//CPU
 		$cpuInfo = $API->comm("/system/resource/print");
 		//RB o CS
@@ -188,6 +191,24 @@
 				<tr>
 				<form method='post' action='#' name='formACL'>
 				<td>	
+				Source VLAN: 	
+				<div class='styled-selectACL'>
+				<select name='sourceVlan'>
+				<option value=''>Select</option>
+				<?php
+					for($cont=0;$cont < count($interfazVlan); $cont++){
+						$interfazSel = $interfazVlan[$cont]['name'];
+						$comment = $interfazVlan[$cont]['comment'];
+						echo "<option value=$interfazSel>$interfazSel"." ($comment)</option>";
+					}
+
+				?>
+					
+					
+				</select>
+				</div>
+				</td>
+				<td>	
 				Permit/Deny: 	
 				<div class='styled-selectACL'>
 				<select name='permitDeny'>
@@ -196,23 +217,26 @@
 				</select>
 				</div>
 				</td>
-				
-				<td>Source IP: <input name='sourceIP' type='text' placeholder='192.168.80.10-192.168.80.0/24'/></td>
-				<td>Destination IP: <input name='destinationIP' type='text' placeholder='192.168.90.10-192.168.90.0/24'/></td>
-				
-				<tr>
-				<td>Protocol: 
+				<td>
+				Destination Vlan
 				<div class='styled-selectACL'>
-				<select name='protocol'>
-					<option value='tcp'>TCP</option>
-					<option value='udp'>UDP</option>
-					<option value='icmp'>ICMP</option>
-				</select>
-				</div></td>
+				<select name='destinationVlan'>
+				<option value=''>Select</option>
+				<?php
+					for($cont=0;$cont < count($interfazVlan); $cont++){
+						$interfazSel = $interfazVlan[$cont]['name'];
+						$comment = $interfazVlan[$cont]['comment'];
+						echo "<option value=$interfazSel>$interfazSel"." ($comment)</option>";
+					}
 
-				<td>Src. Port: <input name='srcPort' type='number' min='0' max='65535' placeholder='23'/></td>
-				<td>Dst. Port: <input name='dstPort' type='number' min='0' max='65535' placeholder='23'/></td>
-				</tr>
+				?>
+					
+					
+				</select>
+				</div>
+
+				</td>
+				
 				</table>
 
 				<div class='buttonACL'>
@@ -229,29 +253,37 @@
 				<div id="refreshRules">
 				<table class="ACLRules">
 				<tr>
-					<th>#</th>
+					
+					<th>Src. VLAN</th>
 					<th>Action</th>
-					<th>Src. Address</th>
-					<th>Dst. Address</th>
-					<th>Protocol</th>
-					<th>Src. Port</th>
-					<th>Dst. Port</th>
+					<th>Dst. VLAN</th>
 				</tr>
 				<?php
 				
 				for ($cont = 0; $cont < $numFirewall; $cont++){
-					echo "<tr>";
-					echo "<td>$cont</td>";	
-					echo "<td>".$firewall[$cont]['action']."</td>";
-					echo "<td>".$firewall[$cont]['src-address']."</td>";		
-					echo "<td>".$firewall[$cont]['dst-address']."</td>";		
-					echo "<td>".$firewall[$cont]['protocol']."</td>";
-					echo "<td>".$firewall[$cont]['src-port']."</td>";
-					echo "<td>".$firewall[$cont]['dst-port']."</td>";
-					echo "<td><form name='button$cont' method='post'>
+					for($cont2=0;$cont2 < count($interfazVlan); $cont2++){
+						if($firewall[$cont]['in-interface'] === $interfazVlan[$cont2]['name']){
+							echo "<tr>";
+							echo "<td>".$firewall[$cont]['in-interface']."</td>";
+							if($firewall[$cont]['action']==='accept'){
+								echo "<td id='permit'>Permit</td>";	
+							}	
+							else if($firewall[$cont]['action']==='drop'){
+								echo "<td id='deny'>Deny</td>";	
+							}
+							else{
+								echo "<td>".$firewall[$cont]['action']."</td>";	
+							}
+							echo "<td>".$firewall[$cont]['out-interface']."</td>";		
+							
+							echo "<td><form name='button$cont' method='post'>
 							<input type='submit' name='disableRule$cont' value='X' class='button'/>
 							</form></td>";		
-					echo "</tr>";	
+							echo "</tr>";	
+						}
+
+					}
+					
 					
 				}
 						
@@ -266,11 +298,8 @@
 <?php
 
 $permitDeny = $_POST['permitDeny'];
-$sourceIP= $_POST['sourceIP'];
-$destinationIP= $_POST['destinationIP'];
-$protocol = $_POST['protocol'];
-$srcPort = $_POST['srcPort'];
-$dstPort = $_POST['dstPort'];
+$sourceVlan= $_POST['sourceVlan'];
+$destinationVlan= $_POST['destinationVlan'];
 
 	if(isset($_POST['submitButton'])){
 		$API = new routeros_api();
@@ -278,11 +307,8 @@ $dstPort = $_POST['dstPort'];
 				$API->comm("/ip/firewall/filter/add", array(
 				"chain" => "forward",
          			"action"     => $permitDeny,
-          			"src-address" => $sourceIP,
-          			"dst-address" => $destinationIP,
-				"protocol" => $protocol,
-				"src-port" => $srcPort,
-				"dst-port" => $dstPort,
+          			"in-interface" => $sourceVlan,
+				"out-interface" => $destinationVlan,
 			));
 
 			
@@ -312,7 +338,7 @@ for ($cont = 0; $cont < $numFirewall; $cont++){
 <?php
 	if($_GET['logOut'] == 'yes'){
 		session_destroy();
-		header( 'Location:Login.php'); 
+		header( 'Location:index.php'); 
 }
 
 ?>

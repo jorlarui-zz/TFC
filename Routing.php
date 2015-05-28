@@ -342,13 +342,13 @@ $gateway = $_POST['gateway'];
 			$API->comm("/interface/vlan/add", array(
          		 "interface"     => $interfaz,
           		"vlan-id" => $VlanID,
-          		"name" => "VLAN ".$VlanID,
+          		"name" => "VLAN-".$VlanID,
 			"comment" => $VlanName,
 			));
 
 			$API->comm("/ip/address/add", array(
 			"address"=> $VlanAddress, 
-			"interface"=> "VLAN ".$VlanID,
+			"interface"=> "VLAN-".$VlanID,
 			));
 			$API->disconnect();
 			

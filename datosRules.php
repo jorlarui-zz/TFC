@@ -16,7 +16,9 @@
 		//Modelo
 		$modeloCom = $API->comm("/system/routerboard/print");
 		$modelo=$modeloCom[0]['model'];
-
+		
+		//Interfaz VLAN
+		$interfazVlan = $API->comm('/interface/vlan/print');	
 		
 		//Firewall rules
 		$firewall = $API->comm("/ip/firewall/filter/print");
@@ -29,33 +31,41 @@
 		$statusPorts = $API->parse_response($READ);
 		$API->disconnect();}	
 				echo "
+				<h3>Rules</h3>
 				<table class='ACLRules'>
 				<tr>
-					<th>#</th>
+					
+					<th>Src. VLAN</th>
 					<th>Action</th>
-					<th>Src. Address</th>
-					<th>Dst. Address</th>
-					<th>Protocol</th>
-					<th>Src. Port</th>
-					<th>Dst. Port</th>
+					<th>Dst. VLAN</th>
 				</tr>";
 				
 				for ($cont = 0; $cont < $numFirewall; $cont++){
-					echo "<tr>";
-					echo "<td>$cont</td>";	
-					echo "<td>".$firewall[$cont]['action']."</td>";
-					echo "<td>".$firewall[$cont]['src-address']."</td>";		
-					echo "<td>".$firewall[$cont]['dst-address']."</td>";		
-					echo "<td>".$firewall[$cont]['protocol']."</td>";
-					echo "<td>".$firewall[$cont]['src-port']."</td>";
-					echo "<td>".$firewall[$cont]['dst-port']."</td>";
-					echo "<td><form name='button$cont' method='post'>
+					for($cont2=0;$cont2 < count($interfazVlan); $cont2++){
+						if($firewall[$cont]['in-interface'] === $interfazVlan[$cont2]['name']){
+							echo "<tr>";
+							echo "<td>".$firewall[$cont]['in-interface']."</td>";
+							if($firewall[$cont]['action']==='accept'){
+								echo "<td id='permit'>Permit</td>";	
+							}	
+							else if($firewall[$cont]['action']==='drop'){
+								echo "<td id='deny'>Deny</td>";	
+							}
+							else{
+								echo "<td>".$firewall[$cont]['action']."</td>";	
+							}
+							echo "<td>".$firewall[$cont]['out-interface']."</td>";		
+							
+							echo "<td><form name='button$cont' method='post'>
 							<input type='submit' name='disableRule$cont' value='X' class='button'/>
 							</form></td>";		
-					echo "</tr>";	
+							echo "</tr>";	
+						}
+
+					}
 					
-				}
-						
+					
+				}	
 				
 				echo "</table>";
 		

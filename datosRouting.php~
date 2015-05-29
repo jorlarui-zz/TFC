@@ -29,7 +29,13 @@
 		$numSwitches = count($switches);
 
 		//Interfaz VLAN
-		$interfazVlan = $API->comm('/interface/vlan/print');		
+		$interfazVlan = $API->comm('/interface/vlan/print');	
+
+		//Interfaz bridge
+		$interfazBridge = $API->comm('/interface/bridge/print');	
+
+		//routes
+		$routes = $API->comm('/ip/route/print');	
 
 		//IP addresses
 		$ipAddress = $API->comm('/ip/address/print');		

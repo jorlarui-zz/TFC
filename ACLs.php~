@@ -1,6 +1,6 @@
 <?php ob_start(); session_start(); require('routeros_api.class.php'); ?>
 <?php error_reporting (E_ALL ^ E_NOTICE); ?>
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="jquery/jquery.min.js"></script>
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
@@ -251,7 +251,9 @@
 			<div class="col-lg-2"></div>
 			<div class="col-lg-8">	
 				<div id="refreshRules">
+				<h3>Rules</h3>
 				<table class="ACLRules">
+				
 				<tr>
 					
 					<th>Src. VLAN</th>
@@ -342,7 +344,7 @@ for ($cont = 0; $cont < $numFirewall; $cont++){
 }
 
 ?>
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="jquery/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>			
 			
 

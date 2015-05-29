@@ -480,7 +480,7 @@ If the server can't connect the device an error message will be displayed. Pleas
 				<img src="images/helpImages/Example3-1.png" alt="Step 2"/>
 				<li>3- Set interface of the desired port to make Trunk mode Trunk and check the switchcpu of the port in mode Fallback. (Ports).</li>	
 				<img src="images/helpImages/Fallback.png" alt="Step 3"/>
-				<li>4- Set a VLAN interface (name, ID and interface) and an IP Address. (Routing)</li>
+				<li>4- Set a VLAN interface (name, ID and interface) and an IP Address to enroute traffic. (Routing)</li>
 				<li>5- Give IP Address to the devices and check connection.</li>
 
 

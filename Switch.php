@@ -1,6 +1,6 @@
 <?php ob_start(); session_start(); require('routeros_api.class.php'); ?>
 <?php error_reporting (E_ALL ^ E_NOTICE); ?>
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="jquery/jquery.min.js"></script>
 
 <!--Script para actualizar imagenes y contenido automaticamente-->
 <script type="text/javascript">
@@ -68,7 +68,6 @@
 <html>
 <head>
 	<title>Mikrotik Web Controller</title>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
 	<link rel="stylesheet" href="css/style.css"/>
@@ -293,15 +292,10 @@
 }
 
 ?>
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="jquery/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>			
 			
 
 </body>
-<?php 
-}
-		else {
-			header( 'Location:Login.php?notLogin=true' );
 
-		}?>
 </html>

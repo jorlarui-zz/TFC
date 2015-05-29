@@ -92,7 +92,10 @@ body{
 
 .graphics #container{
 	
-	max-width:100% !important;
+	max-width:100%;
+	
+	height: 200px; 
+	margin: 0 auto;
 }
 #highcharts-0{
 	margin-left:-40px;
@@ -240,13 +243,13 @@ input[class=buttonDisable] {
 	margin-bottom:50px;
 }
 .routingBox{
-	font-size: 12px !important;
+	font-size: 12px;
 	padding-left: 50px;
 }
 
 #refreshPorts h3{
 	margin-bottom:15px;
-	font-size: 16px;
+	font-size: 13px;
 	text-decoration:underline;
 	text-align:center;
 	font-weight: bold;
@@ -254,18 +257,18 @@ input[class=buttonDisable] {
 
 .routingBox h3{
 	margin-bottom:15px;
-	font-size: 16px;
+	font-size: 13px;
 	text-decoration:underline;
 	font-weight: bold;
 
 	}
+
 .gateway {
 display: inline;
 }
 .gateway input{
 	width: 50%;
-	
-   margin-top: -35px;
+	margin-top: -35px;
 	
 }
 

@@ -4,7 +4,7 @@ body{font-family:"Open Sans";}
 	display: block;
     	margin-left: auto;
     	margin-right: auto;
-	margin-top:10%;
+	padding-top:10%;
 }
 
 #loginTable {
@@ -51,3 +51,69 @@ input{
 	border: 0px solid white;
 }
 
+/* FOOTER */
+
+* {
+  margin: 0;
+}
+
+html, body {
+  overflow:hidden;
+  height: 100%;
+}
+
+.page-wrap {
+  min-height: 100%;
+  /* equal to footer height */
+  margin-bottom: -40px; 
+}
+.page-wrap:after {
+  content: "";
+  display: block;
+}
+.site-footer, .page-wrap:after {
+  height: 40px; 
+}
+.site-footer { 
+  height: 15%;
+  display:block;
+  padding-top:8px;
+  color: #fff;
+  background: #121212;
+}
+
+#footerContainer {
+	text-align:center;
+	 font-size: 13px;
+}
+
+#footerContainer img{
+	width: 25px;
+	height: 25px;
+	vertical-align:middle;
+}
+
+#footerContainer p{
+	display: inline-block;
+	vertical-align:middle;
+	margin-left: 20px;
+}
+
+#help{	
+	position:absolute;
+	right: 9%;
+}
+
+.site-footer a{
+	font-size: 13px;
+}
+
+.site-footer a:link, .site-footer a:visited {
+	color: #fff;
+	text-decoration: none;
+}
+
+.site-footer a:hover, .site-footer a:active {
+	color: #fff;
+	text-decoration: underline;
+}

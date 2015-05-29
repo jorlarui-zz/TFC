@@ -1,6 +1,6 @@
 <?php ob_start(); session_start(); require('routeros_api.class.php'); ?>
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<link rel="stylesheet" href="css/styleStatus.css"/>
+
 <?php
 		$API = new routeros_api();
 		$IP = $_SESSION[ 'ip' ];

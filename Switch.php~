@@ -1,6 +1,6 @@
 <?php ob_start(); session_start(); require('routeros_api.class.php'); ?>
 <?php error_reporting (E_ALL ^ E_NOTICE); ?>
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="jquery/jquery.min.js"></script>
 
 <!--Script para actualizar imagenes y contenido automaticamente-->
 <script type="text/javascript">
@@ -289,19 +289,14 @@
 <?php
 	if($_GET['logOut'] == 'yes'){
 		session_destroy();
-		header( 'Location:Login.php'); 
+		header( 'Location:index.php'); 
 }
 
 ?>
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="jquery/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>			
 			
 
 </body>
-<?php 
-}
-		else {
-			header( 'Location:Login.php?notLogin=true' );
 
-		}?>
 </html>

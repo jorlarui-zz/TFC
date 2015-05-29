@@ -1,7 +1,7 @@
 <?php ob_start(); session_start(); require('routeros_api.class.php'); ?>
 <?php error_reporting (E_ALL ^ E_NOTICE); ?>
 
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="jquery/jquery.min.js"></script>
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
 
 <!--Script para actualizar imagenes y contenido automaticamente-->
@@ -39,9 +39,6 @@
 					shift=chart.series[0].data.length > 8;
 					chart.series[0].addPoint([x, TX], true, shift);
 					chart.series[1].addPoint([x, RX], true, shift);
-					document.getElementById("trafico").innerHTML=TX + " / " + RX;
-				}else{
-					document.getElementById("trafico").innerHTML="- / -";
 				}
 			},
 			error: function(XMLHttpRequest, textStatus, errorThrown) { 
@@ -137,7 +134,6 @@
 <html>
 <head>
 	<title>Mikrotik Web Controller</title>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
 	<link rel="stylesheet" href="css/style.css"/>
@@ -280,7 +276,7 @@
 			
 			?>
 				<div class='graphics'>
-				<div id="container" style="max-width: 80%; height: 200px; margin: 0 auto"></div>
+				<div id="container"></div>
 				<input name="interface" id="interface" type="text" value="rb_inalambricos" />
 				</div>
 			</div>
@@ -378,8 +374,13 @@
 }
 
 ?>
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="jquery/jquery.min.js"></script>
+<script src="jquery/jquery-ui.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>	
+
+
+
+
 
 
 			
@@ -388,6 +389,7 @@
 
 <script type="text/javascript" src="highchart/js/highcharts.js"></script>
 <script type="text/javascript" src="highchart/js/themes/gray2.js"></script>
+
 
 </body>
 </html>

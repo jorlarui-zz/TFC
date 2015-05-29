@@ -21,8 +21,6 @@
   </script>
 <?php
 
-
-
 		$API = new routeros_api();
 		$IP = $_SESSION[ 'ip' ];
 		$user = $_SESSION[ 'user' ];
@@ -61,7 +59,7 @@
 			,"#FB7374","#FF9900","#4FD5D6","#D6E3B5","#FFD197","#FFFF66","#FFC3CE","#21B6A8","#CDFFFF",""];
 		
 		$API->disconnect();
-		
+		}
 
 ?>
 
@@ -289,7 +287,7 @@
 	if($_GET['logOut'] == 'yes'){
 		session_destroy();
 		header( 'Location:index.php'); 
-}
+	}
 
 ?>
 <script src="jquery/jquery.min.js"></script>

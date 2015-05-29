@@ -84,6 +84,7 @@ html, body {
 
 #footerContainer {
 	text-align:center;
+	padding-right:60%;	
 	 font-size: 13px;
 }
 
@@ -116,4 +117,24 @@ html, body {
 .site-footer a:hover, .site-footer a:active {
 	color: #fff;
 	text-decoration: underline;
+}
+
+
+@media only screen and (max-device-width: 1048px) {
+
+	.site-footer, .page-wrap:after {
+ 	 height: 100px; 
+	}
+
+	.page-wrap {
+ 
+  	margin-bottom: -100px; 
+	}
+
+#footerContainer {
+	
+	padding-right:40%;	
+	
+	
+ 
 }

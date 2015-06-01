@@ -162,6 +162,29 @@ input[type=submit] {
 	display:none;
 }
 
+/* Zoom Classes */
+.hideElement{
+	display:none;
+}
+
+.maxBox{
+	width: 100% !important;
+	min-width:100% !important;
+}
+
+.colMax{
+	min-width:100% !important;
+}
+
+
+.buttonIn, .buttonOut {
+	width: 100px;
+	margin:0 auto;
+	border: 1px solid #ccc;
+	background-color:rgba(0,0,0,0.1);
+}
+
+
 /*-----------------Switch.php-----------------*/
 
 .switchTable{
@@ -268,8 +291,7 @@ display: inline;
 }
 .gateway input{
 	width: 50%;
-	
-   margin-top: -35px;
+	margin-top: -35px;
 	
 }
 

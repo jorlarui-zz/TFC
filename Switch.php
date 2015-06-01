@@ -2,23 +2,6 @@
 <?php error_reporting (E_ALL ^ E_NOTICE); ?>
 <script src="jquery/jquery.min.js"></script>
 
-<!--Script para actualizar imagenes y contenido automaticamente-->
-<script type="text/javascript">
-  $(document).ready(function(){
-			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosSwitchImage.php');
-			$('#refreshPorts').load('datosSwitch.php');
-			}, 3000);
-
-			var auto_refresh = setInterval(function (){
-			$('#info').load('datosCPU.php');
-			}, 1000);
-		});		
-			
-
- 
-	
-  </script>
 <?php
 
 		$API = new routeros_api();
@@ -292,7 +275,26 @@
 ?>
 <script src="jquery/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>			
+		
+
+<!--Script para actualizar imagenes y contenido automaticamente-->
+<script type="text/javascript">
+  $(document).ready(function(){
+			var auto_refresh = setInterval(function (){
+			$('#refreshImage').load('datosStatusImage.php');
+			$('#refreshPorts').load('datosStatus.php');
+			}, 3000);
+
+			var auto_refresh = setInterval(function (){
+			$('#info').load('datosCPU.php');
+			}, 3000);
+		});		
 			
+
+ 
+	
+  </script>
+	
 
 </body>
 

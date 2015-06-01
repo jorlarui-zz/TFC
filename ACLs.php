@@ -1,22 +1,7 @@
 <?php ob_start(); session_start(); require('routeros_api.class.php'); ?>
 <?php error_reporting (E_ALL ^ E_NOTICE); ?>
 <script src="jquery/jquery.min.js"></script>
-<script type="text/javascript">
-  $(document).ready(function(){
-			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosStatusImage.php').fadeIn("fast");
-			$('#refreshRules').load('datosRules.php').fadeIn("fast");
-			}, 2000);
 
-			var auto_refresh = setInterval(function (){
-			$('#info').load('datosCPU.php').fadeIn("fast");
-			}, 1000);
-		});		
-			
-
- 
-	
-  </script>
 <?php
 
 
@@ -343,9 +328,30 @@ for ($cont = 0; $cont < $numFirewall; $cont++){
 }
 
 ?>
+
+
 <script src="jquery/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>			
+	
+
+<!--Script para actualizar imagenes y contenido automaticamente-->
+<script type="text/javascript">
+  $(document).ready(function(){
+			var auto_refresh = setInterval(function (){
+			$('#refreshImage').load('datosStatusImage.php');
+			$('#refreshPorts').load('datosStatus.php');
+			}, 3000);
+
+			var auto_refresh = setInterval(function (){
+			$('#info').load('datosCPU.php');
+			}, 3000);
+		});		
 			
+
+ 
+	
+  </script>
+		
 
 </body>
 </html>

@@ -1,22 +1,7 @@
 <?php ob_start(); session_start(); require('routeros_api.class.php'); ?>
 <?php error_reporting (E_ALL ^ E_NOTICE); ?>
 <script src="jquery/jquery.min.js"></script>
-<script type="text/javascript">
-  $(document).ready(function(){
-			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosStatusImage.php').fadeIn("fast");
-			$('#refreshRules').load('datosRules.php').fadeIn("fast");
-			}, 2000);
 
-			var auto_refresh = setInterval(function (){
-			$('#info').load('datosCPU.php').fadeIn("fast");
-			}, 1000);
-		});		
-			
-
- 
-	
-  </script>
 <?php
 
 
@@ -78,7 +63,6 @@
 <html>
 <head>
 	<title>Mikrotik Web Controller</title>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
 	<link rel="stylesheet" href="css/style.css"/>
@@ -344,6 +328,26 @@ for ($cont = 0; $cont < $numFirewall; $cont++){
 }
 
 ?>
+
+
+<!--Script para actualizar imagenes y contenido automaticamente-->
+<script type="text/javascript">
+  $(document).ready(function(){
+			var auto_refresh = setInterval(function (){
+			$('#refreshImage').load('datosStatusImage.php');
+			$('#refreshPorts').load('datosStatus.php');
+			}, 3000);
+
+			var auto_refresh = setInterval(function (){
+			$('#info').load('datosCPU.php');
+			}, 3000);
+		});		
+			
+
+ 
+	
+  </script>
+
 <script src="jquery/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>			
 			

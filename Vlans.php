@@ -3,22 +3,6 @@
 
 <script src="jquery/jquery.min.js"></script>
 
-<script type="text/javascript">
-  $(document).ready(function(){
-			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosVlansImage.php');
-			$('#refreshVlans').load('datosVlans.php');
-			}, 3000);
-
-			var auto_refresh = setInterval(function (){
-			$('#info').load('datosCPU.php');
-			}, 1000);
-		});		
-			
-
- 
-	
-  </script>
 
 <script type="text/javascript">
     $(document).ready(function(){
@@ -1763,6 +1747,25 @@ for ($cont = 0; $cont < count($arrayPorts); $cont++){
 ?>
 <script src="jquery/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>	
+
+
+<!--Script para actualizar imagenes y contenido automaticamente-->
+<script type="text/javascript">
+  $(document).ready(function(){
+			var auto_refresh = setInterval(function (){
+			$('#refreshImage').load('datosStatusImage.php');
+			$('#refreshPorts').load('datosStatus.php');
+			}, 3000);
+
+			var auto_refresh = setInterval(function (){
+			$('#info').load('datosCPU.php');
+			}, 3000);
+		});		
+			
+
+ 
+	
+  </script>
 
 
 </body>

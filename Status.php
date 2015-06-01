@@ -4,23 +4,6 @@
 <script src="jquery/jquery.min.js"></script>
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
 
-<!--Script para actualizar imagenes y contenido automaticamente-->
-<script type="text/javascript">
-  $(document).ready(function(){
-			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosStatusImage.php');
-			$('#refreshPorts').load('datosStatus.php');
-			}, 3000);
-
-			var auto_refresh = setInterval(function (){
-			$('#info').load('datosCPU.php');
-			}, 1000);
-		});		
-			
-
- 
-	
-  </script>
 
 
 <!--Script para dibujar las graficas-->
@@ -94,6 +77,8 @@
 	  });
   });
 </script>
+
+
 
 <?php
 		$API = new routeros_api();
@@ -185,7 +170,7 @@
 <div class="container" style="margin-top:50px;">
 
       	<div class="row">
-		<div class="col-lg-12 switch-box">
+		<div class="col-lg-12 switch-box hideBox">
 			<div class="col-lg-2"></div>
 			<div class="col-lg-6">
 				 <div id="refreshImage">
@@ -247,7 +232,7 @@
 	</div>
 
 	<div class="row">
-		<div class="col-lg-12 info-box">
+		<div class="col-lg-12 info-box graphicBox">
 			<div class="col-lg-2"></div>
 			<div class="col-lg-4">
 					<?php
@@ -279,10 +264,15 @@
 				<div id="container"></div>
 				<input name="interface" id="interface" type="text" value="rb_inalambricos" />
 				</div>
+				
+				
+				<button class="buttonIn">Zoom in</button>
+				<button class="buttonOut" style="display:  none;">Zoom out</button>
 			</div>
+				
+				
 
-
-			<div class="col-lg-4">
+			<div class="col-lg-4 hideBox">
 				<table>
 				<td>
 
@@ -379,17 +369,142 @@
 <script src="bootstrap/js/bootstrap.min.js"></script>	
 
 
+<!--Script para actualizar imagenes y contenido automaticamente-->
+<script type="text/javascript">
+  $(document).ready(function(){
+			var auto_refresh = setInterval(function (){
+			$('#refreshImage').load('datosStatusImage.php');
+			$('#refreshPorts').load('datosStatus.php');
+			}, 3000);
 
-
-
-
+			var auto_refresh = setInterval(function (){
+			$('#info').load('datosCPU.php');
+			}, 3000);
+		});		
 			
+
+ 
+	
+  </script>
+
+
+<!-- Script Zoom Grafica -->
+
+ <script>
+$(document).ready(function(){
+
+	    $(".buttonIn").click(function(){		
+	   	$(this).hide();
+      		$(".hideBox").addClass("hideElement",400, "swing");
+		$(".graphics").addClass("maxBox",400, "swing");
+		$("#highcharts-0").addClass("hideElement",400, "swing");
+	//	$("img").addClass("imgBig");
+		
+		$(".col-lg-4").addClass("colMax");
+		$(".buttonOut").show();
+
+		Highcharts.setOptions({
+				global: {
+					useUTC: false
+				}
+
+			});
+	
+
+           chart = new Highcharts.Chart({
+			   chart: {
+				renderTo: 'container',
+				animation: Highcharts.svg,
+				type: 'spline',
+				
+		 },
+		 title: {
+			text: ''
+		 },
+		 xAxis: {
+			type: 'datetime',
+				tickPixelInterval: 200,
+				maxZoom: 20 * 400
+		 },
+		 yAxis: {
+			minPadding: 0.2,
+				maxPadding: 0.2,
+				title: {
+					text: 'Trafico Kbps',
+					margin: 10
+				}
+		 },
+            series: [{
+                name: 'TX',
+                data: []
+            }, {
+                name: 'RX',
+                data: []
+            }]
+	  });
+	});
+	
+	$(".buttonOut").click(function(){		
+		$(this).hide();
+		$(".hideBox").removeClass("hideElement");   
+		$(".graphics").removeClass("maxBox");
+		$("#highcharts-0").removeClass("hideElement");
+		$("#highcharts-0").addClass("hideElement");
+	//	$("img").addClass("imgBig");
+		$(".colMax").removeClass("colMax");
+		$(".buttonIn").show();
+
+		Highcharts.setOptions({
+				global: {
+					useUTC: false
+				}
+			});
+	
+
+           chart = new Highcharts.Chart({
+			   chart: {
+				renderTo: 'container',
+				animation: Highcharts.svg,
+				type: 'spline',
+				
+		 },
+		 title: {
+			text: ''
+		 },
+		 xAxis: {
+			type: 'datetime',
+				tickPixelInterval: 200,
+				maxZoom: 20 * 400
+		 },
+		 yAxis: {
+			minPadding: 0.2,
+				maxPadding: 0.2,
+				title: {
+					text: 'Trafico Kbps',
+					margin: 10
+				}
+		 },
+            series: [{
+                name: 'TX',
+                data: []
+            }, {
+                name: 'RX',
+                data: []
+            }]
+	  });
+	});
+	
+	
+});
+</script>
+
+
+
 <!-- Dibujamos las graficas-->
 
 
 <script type="text/javascript" src="highchart/js/highcharts.js"></script>
 <script type="text/javascript" src="highchart/js/themes/gray2.js"></script>
-
 
 </body>
 </html>

@@ -4,31 +4,6 @@
 <script src="jquery/jquery.min.js"></script>
 
 
-<script type="text/javascript">
-    $(document).ready(function(){
-        $("input[value=Access]:radio" ).change(function(){
-                $('#areaAccess').show("fast");
-		$('#areaTrunk').hide("fast");
-		$('#areaNoSwitchport').hide("fast");
-		$('input[name=submitButton]').show("fast");
-            });
-
-	$("input[value=Trunk]:radio" ).change(function(){
-                $('#areaTrunk').show("fast");
-		$('#areaAccess').hide("fast");
-		$('#areaNoSwitchport').hide("fast");
-		$('input[name=submitButton]').show("fast");
-            });
-
-	$("input[value=NoSwitchport]:radio" ).change(function(){
-                $('#areaNoSwitchport').show("fast");
-		$('#areaTrunk').hide("fast");
-		$('#areaAccess').hide("fast");
-		$('input[name=submitButton]').show("fast");
-            });
-});
-</script>
-
 <?php
 		$API = new routeros_api();
 		$IP = $_SESSION[ 'ip' ];
@@ -619,9 +594,23 @@ $contadorAccess = 0;
 
 						//DELETE VLAN if last PORT
 						if($previousPort == $actualPort){
+							$switchPerPort;
+							for($cont3=0; $cont3<$numPortsSwitch; $cont3++){
+								if($portsSwitch[$cont3]['name'] == $actualPort) {
+									$switchPerPort = $portsSwitch[$cont3]['switch'];
+								}
+							}
+
 							$API->comm("/interface/ethernet/switch/vlan/remove", array(
 		 					".id"     => $cont
 							));
+
+
+							$API->comm("/interface/ethernet/switch/port/set", array(
+         				 		".id"     => $switchPerPort,
+          						"vlan-mode" => "disabled",
+								));
+					
 							
 						}
 						//Delete Port from VLAN
@@ -735,8 +724,8 @@ $contadorAccess = 0;
 							$finalPort = rtrim($finalPort,',');
 						}
 
-						//DELETE VLAN if last PORT
-						if($previousPort == $actualPort){
+						//DELETE VLAN if last PORT and set SwitchPort Disabled
+						if($previousPort == $actualPort.",switch1-cpu"){
 							$API = new routeros_api();
 							if ($API->connect($IP, $user, $password)) {
 							$API->comm("/interface/ethernet/switch/vlan/remove", array(
@@ -954,6 +943,11 @@ $contadorAccess = 0;
           					"switch" => $switchPerPort,
 						"vlan-id" => $accessVlanID
 					));
+
+						$API->comm("/interface/ethernet/switch/port/set", array(
+         				 	".id"     => $switchPerPort,
+          					"vlan-mode" => "fallback",
+					));
 					}
 				
 				//If VLAN exist, edit VLAN and add ports
@@ -1025,7 +1019,7 @@ $contadorAccess = 0;
 						}
 
 						//DELETE VLAN if last PORT
-						if($previousPort == $actualPort){
+						if($previousPort == $actualPort.",switch1-cpu"){
 							$API = new routeros_api();
 							if ($API->connect($IP, $user, $password)) {
 							$API->comm("/interface/ethernet/switch/vlan/remove", array(
@@ -1061,7 +1055,7 @@ $contadorAccess = 0;
 					
 					if($contadorVlans==0){
 						$API->comm("/interface/ethernet/switch/vlan/add", array(
-         				 	"ports"     => $interfaz,
+         				 	"ports"     => $interfaz.", switch1-cpu",
 						"vlan-id" => $accessVlanID
 					));
 					}
@@ -1242,13 +1236,20 @@ $contadorAccess = 0;
 							
 						}
 					}
+
 					if($contadorVlans==0){
 						$API->comm("/interface/ethernet/switch/vlan/add", array(
-         				 	"ports"     => $interfaz,
+         				 	"ports"     => $interfaz.",".$switchPerPort."-cpu",
           					"switch" => $switchPerPort,
 						"vlan-id" => $allowedVlans[$contAllowed]
 					));
 					
+						
+
+						$API->comm("/interface/ethernet/switch/port/set", array(
+         				 	".id"     => $switchPerPort,
+          					"vlan-mode" => "fallback",
+					));
 					}
 					
 				//If VLAN exist, edit VLAN and add ports
@@ -1272,7 +1273,9 @@ $contadorAccess = 0;
 					$contadorVlans = 0;
 
 				}
-
+if($nativeVLAN == null){
+	$nativeVLAN = 0;
+}
 				//Set PORT mode TRUNK
 				$API->comm("/interface/ethernet/switch/port/set", array(
          			 ".id"     => $interfaz,
@@ -1320,7 +1323,7 @@ $contadorAccess = 0;
 						}
 
 						//DELETE VLAN if last PORT
-						if($previousPort == $actualPort){
+						if($previousPort == $actualPort.",switch1-cpu"){
 							$API = new routeros_api();
 							if ($API->connect($IP, $user, $password)) {
 							$API->comm("/interface/ethernet/switch/vlan/remove", array(
@@ -1381,7 +1384,7 @@ $contadorAccess = 0;
 					
 					if($contadorVlans==0){
 						$API->comm("/interface/ethernet/switch/vlan/add", array(
-         				 	"ports"     => $interfaz,
+         				 	"ports"     => $interfaz.", switch1-cpu",
 						"vlan-id" => $allowedVlans[$contAllowed]
 					));
 					
@@ -1465,15 +1468,32 @@ for ($cont = 0; $cont < count($portsSwitch); $cont++){
 					$finalPort = rtrim($finalPort,',');
 				}
 
-			//DELETE VLAN if last PORT
+			//DELETE VLAN if last PORT and set SwitchPort Disabled
 				if($previousPort == $actualPort){
+					$switchPerPort;
+					for($cont3=0; $cont3<$numPortsSwitch; $cont3++){
+						if($portsSwitch[$cont3]['name'] == $actualPort) {
+							$switchPerPort = $portsSwitch[$cont3]['switch'];
+						}
+					}
 					$API = new routeros_api();
+
 					if ($API->connect($IP, $user, $password)) {
 					$API->comm("/interface/ethernet/switch/vlan/remove", array(
 		 				".id"     => $cont2
 						));
+					
+					$API->comm("/interface/ethernet/switch/port/set", array(
+         				 	".id"     => $switchPerPort,
+          					"vlan-mode" => "disabled",
+					));
+					
+					
+
 					$API->disconnect();
 					}
+
+
 				}
 			//Delete Port from VLAN
 				$API = new routeros_api();
@@ -1546,16 +1566,30 @@ for ($cont = 0; $cont < count($portsSwitch); $cont++){
 				}
 				
 				
-
+					$switchPerPort;
+					for($cont3=0; $cont3<$numPortsSwitch; $cont3++){
+						if($portsSwitch[$cont3]['name'] == $actualPort) {
+							$switchPerPort = $portsSwitch[$cont3]['switch'];
+						}
+					}
 			//DELETE VLAN if last PORT
 				
 				
-					if(strcmp($previousPort, $actualPort) === 0){
+					if(strcmp($previousPort, $actualPort.",".$switchPerPort."-cpu") === 0){
+
+				
+
 					$API = new routeros_api();
 						if ($API->connect($IP, $user, $password)) {
 						$API->comm("/interface/ethernet/switch/vlan/remove", array(
 		 					".id"     => $cont2
 							));
+
+					
+					$API->comm("/interface/ethernet/switch/port/set", array(
+         				 	".id"     => $switchPerPort,
+          					"vlan-mode" => "disabled",
+					));
 					
 						
 					}
@@ -1602,7 +1636,7 @@ for ($cont = 0; $cont < count($estadoAccessCR); $cont++){
 				}
 
 			//DELETE VLAN if last PORT
-				if($previousPort == $actualPort){
+				if($previousPort == $actualPort.",switch1-cpu"){
 					$API = new routeros_api();
 					if ($API->connect($IP, $user, $password)) {
 					$API->comm("/interface/ethernet/switch/vlan/remove", array(
@@ -1665,7 +1699,7 @@ for ($cont = 0; $cont < count($arrayPorts); $cont++){
 				}
 
 			//DELETE VLAN if last PORT
-				if($previousPort == $actualPort){
+				if($previousPort == $actualPort.",switch1-cpu"){
 					$API = new routeros_api();
 					if ($API->connect($IP, $user, $password)) {
 					$API->comm("/interface/ethernet/switch/vlan/remove", array(
@@ -1753,8 +1787,8 @@ for ($cont = 0; $cont < count($arrayPorts); $cont++){
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosStatusImage.php');
-			$('#refreshPorts').load('datosStatus.php');
+			$('#refreshImage').load('datosVlansImage.php');
+			$('#refreshVlans').load('datosVlans.php');
 			}, 3000);
 
 			var auto_refresh = setInterval(function (){
@@ -1765,7 +1799,34 @@ for ($cont = 0; $cont < count($arrayPorts); $cont++){
 
  
 	
-  </script>
+ </script>
+
+
+<!--Script para mostrar Access, Trunk o NS -->
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("input[value=Access]:radio" ).change(function(){
+                $('#areaAccess').show("fast");
+		$('#areaTrunk').hide("fast");
+		$('#areaNoSwitchport').hide("fast");
+		$('input[name=submitButton]').show("fast");
+            });
+
+	$("input[value=Trunk]:radio" ).change(function(){
+                $('#areaTrunk').show("fast");
+		$('#areaAccess').hide("fast");
+		$('#areaNoSwitchport').hide("fast");
+		$('input[name=submitButton]').show("fast");
+            });
+
+	$("input[value=NoSwitchport]:radio" ).change(function(){
+                $('#areaNoSwitchport').show("fast");
+		$('#areaTrunk').hide("fast");
+		$('#areaAccess').hide("fast");
+		$('input[name=submitButton]').show("fast");
+            });
+});
+</script>
 
 
 </body>

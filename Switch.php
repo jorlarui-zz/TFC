@@ -281,8 +281,8 @@
 <script type="text/javascript">
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosStatusImage.php');
-			$('#refreshPorts').load('datosStatus.php');
+			$('#refreshImage').load('datosSwitchImage.php');
+			$('#refreshPorts').load('datosSwitch.php');
 			}, 3000);
 
 			var auto_refresh = setInterval(function (){

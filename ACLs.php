@@ -234,8 +234,8 @@
 		<div class="col-lg-12 firewallRules">
 			<div class="col-lg-2"></div>
 			<div class="col-lg-8">	
-				<div id="refreshRules">
-				<h3>Rules</h3>
+				<div id="refreshACLs">
+				<h3>ACLs</h3>
 				<table class="ACLRules">
 				
 				<tr>
@@ -339,7 +339,7 @@ for ($cont = 0; $cont < $numFirewall; $cont++){
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
 			$('#refreshImage').load('datosStatusImage.php');
-			$('#refreshPorts').load('datosStatus.php');
+			$('#refreshACLs').load('datosACLs.php');
 			}, 3000);
 
 			var auto_refresh = setInterval(function (){

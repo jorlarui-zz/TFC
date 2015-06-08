@@ -233,7 +233,7 @@
 
 	<div class="row">
 		<div class="col-lg-12 info-box graphicBox">
-			<div class="col-lg-2"></div>
+			<div class="col-lg-2">	</div>
 			<div class="col-lg-4">
 					<?php
 //Creamos un formulario que actualiza la gráfica en función de la interfaz seleccionada
@@ -250,11 +250,8 @@
 			
 			}		
 			echo "</select></div></form>";
-		
 			
-		 
 			
-
 			$interfaz =  $_POST['interfaces'];
 			$_SESSION[ 'interfaz' ]=$interfaz;
 	

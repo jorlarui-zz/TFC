@@ -4,24 +4,6 @@
 <script src="jquery/jquery.min.js"></script>
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
 
-<!--Script para actualizar imagenes y contenido automaticamente-->
-<script type="text/javascript">
-  $(document).ready(function(){
-			var auto_refresh = setInterval(function (){
-			$('#refreshImage').load('datosStatusImage.php');
-			$('#refreshPorts').load('datosStatus.php');
-			}, 3000);
-
-			var auto_refresh = setInterval(function (){
-			$('#info').load('datosCPU.php');
-			}, 3000);
-		});		
-			
-
- 
-	
-  </script>
-
 
 
 <!--Script para dibujar las graficas-->
@@ -251,7 +233,15 @@
 
 	<div class="row">
 		<div class="col-lg-12 info-box graphicBox">
-			<div class="col-lg-2"></div>
+			<div class="col-lg-2">
+
+			
+		<?php
+			$var = $_POST['val'];
+		 	echo "VARIABLE ".$var;
+			var_dump($var);
+		?>
+	</div>
 			<div class="col-lg-4">
 					<?php
 //Creamos un formulario que actualiza la gráfica en función de la interfaz seleccionada
@@ -268,11 +258,8 @@
 			
 			}		
 			echo "</select></div></form>";
-		
 			
-		 
 			
-
 			$interfaz =  $_POST['interfaces'];
 			$_SESSION[ 'interfaz' ]=$interfaz;
 	
@@ -385,6 +372,26 @@
 <script src="jquery/jquery.min.js"></script>
 <script src="jquery/jquery-ui.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>	
+
+
+<!--Script para actualizar imagenes y contenido automaticamente-->
+<script type="text/javascript">
+  $(document).ready(function(){
+			var auto_refresh = setInterval(function (){
+			$('#refreshImage').load('datosStatusImage.php');
+			$('#refreshPorts').load('datosStatus.php');
+			}, 3000);
+
+			var auto_refresh = setInterval(function (){
+			$('#info').load('datosCPU.php');
+			}, 3000);
+		});		
+			
+
+ 
+	
+  </script>
+
 
 <!-- Script Zoom Grafica -->
 

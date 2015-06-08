@@ -445,7 +445,7 @@ for ($cont = 0; $cont < count($routes); $cont++){
   $(document).ready(function(){
 			var auto_refresh = setInterval(function (){
 			$('#refreshImage').load('datosStatusImage.php');
-			$('#refreshPorts').load('datosStatus.php');
+			$('#refreshPorts').load('datosRouting.php');
 			}, 3000);
 
 			var auto_refresh = setInterval(function (){

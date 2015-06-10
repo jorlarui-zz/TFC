@@ -219,19 +219,30 @@ input[type=submit] {
 
 /*-----------------Vlans.php-----------------*/
 
-.vlanTable{
+.tablePortsCR{
 	font-size:13px;
+	margin-bottom: 40px;
 }  
 
-.vlanTable td{
+.tablePortsCR td{
+	
 	padding-left:25px;
 	padding-top:2px;
-	padding-bottom:2px;
 }  
 
+ 
 input[class=buttonDisable] {
 	font-size:10px !important;
 	 }
+
+#refreshVlans h3{
+	margin-top:10px;
+	margin-bottom: 20px;
+	font-size: 15px;
+	text-decoration:underline;
+	text-align:center;
+	font-weight: bold;
+}
 
 /*-----------------Ports.php-----------------*/
 

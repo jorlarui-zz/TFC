@@ -28,19 +28,21 @@
 		$portsSwitch = $API->comm("/interface/ethernet/switch/port/print");
 		$numPortsSwitch = count($portsSwitch);
 
-		//puerto Acceso, Trunk, NoSwitchport de RB
-		$estadoPort = $API->comm("/interface/ethernet/switch/port/print");
-
 		//puerto Trunk CR
 		$estadoTrunkCR = $API->comm("/interface/ethernet/switch/egress-vlan-tag/print");
 
 		//puerto Acceso CR
 		$estadoAccessCR = $API->comm("/interface/ethernet/switch/ingress-vlan-translation/print");
 
+		//VLANS
+		$vlans = $API->comm("/interface/ethernet/switch/vlan/print");
+
+		//IP ADDRESS
+		$ipAddress = $API->comm("/ip/address/print");
 
 		//CPU
 		$cpuInfo = $API->comm("/system/resource/print");
-		//RB o CS
+		//RB o CR
 		$routeroSwitch = $cpuInfo[0]['board-name'];
 		//Saber iniciales Router o Switch
 		$identidadRS = substr($routeroSwitch,0,2);
@@ -56,7 +58,7 @@
 				?>
 <?php
 				if(strcmp($identidadRS,"RB") == 0 ){
-					echo "Access
+					echo "<h3>Access</h3>
 						<table class='tablePortsCR'>
 					";
 					echo '<tr><td>Ports</td>';
@@ -75,12 +77,11 @@
 				
 					echo "</table>";
 							
-					echo "Trunk
+					echo "<h3>Trunk</h3>
 						<table class='tablePortsCR'>
 					";
 					echo '<tr><td>Ports</td>';
-					echo '<td>Allowed VLANs</td>';
-					echo '<td>Native VLAN</td></tr>';
+					echo '<td>Allowed VLANs</td></tr>';
 					for ($cont = 0; $cont < count($portsSwitch); $cont++){
 						if($portsSwitch[$cont]['vlan-mode']!='disabled' and $portsSwitch[$cont]['vlan-header']=='add-if-missing'){
 						echo '<tr><td>'.$portsSwitch[$cont]['name'].'</td>';
@@ -99,7 +100,6 @@
 						}	
 
 						echo '</td>';
-						echo '<td>'.$portsSwitch[$cont]['default-vlan-id'].'</td>';
 						echo "<td><form name='button$cont' method='post'>
 							<input type='submit' name='disableTrunkRB$cont' value='X' class='buttonDisable'/>
 							</form></td>";
@@ -118,7 +118,7 @@
 			<?php
 				
 				if(strcmp($identidadRS,"CR") == 0 ){
-					echo "Access
+					echo "<h3>Access</h3>
 						<table class='tablePortsCR'>
 					";
 					echo '<tr><td>Ports</td>';
@@ -136,12 +136,11 @@
 				
 					echo "</table>";
 							
-					echo "Trunk
+					echo "<h3>Trunk</h3>
 						<table class='tablePortsCR'>
 					";
 					echo '<tr><td>Ports</td>';
-					echo '<td>Allowed VLANs</td>';
-					echo '<td>Native VLAN</td></tr>';
+					echo '<td>Allowed VLANs</td></tr>';
 			
 					$allPorts= "";
 					for ($cont = 0; $cont < count($estadoTrunkCR); $cont++){
@@ -174,7 +173,7 @@
 						echo '<tr><td>'.$arrayPorts[$cont].'</td>';
 						echo '<td>'.$portsTable.'</td>';
 						$portsTable="";
-							echo '<td>'.'native'.'</td>';
+
 						echo "<td><form name='button$cont' method='post'>
 							<input type='submit' name='disableTrunkCR$cont' value='X' class='buttonDisable'/>
 							</form></td>";

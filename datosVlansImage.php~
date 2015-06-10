@@ -98,7 +98,7 @@
 		$API->disconnect();}	
 				
 			
-				f//Sacar valores String TRUNK CR
+				//Sacar valores String TRUNK CR
 			for ($cont = 0; $cont < count($estadoTrunkCR); $cont++){
 			//Concatenamos todos los puertos de trunk
 				$puertosTrunk = ($estadoTrunkCR[$cont]['tagged-ports'].(",").$puertosTrunk);}

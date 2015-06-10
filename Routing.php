@@ -283,23 +283,9 @@
 
 				Destination Address:</br> <input name='dstAddress' type='text' placeholder='0.0.0.0/0'/></br>
 
-				</br> Gateway (Select one): </br>
-				<div class='styled-selectRouting gateway'>
-				<select name='gatewayInterface'>
-				<option value>Interface</option>
-				<?php
-				
-				for ($cont = 0; $cont < $numInterfaces; $cont++){
-				
-					$interfazSel = $Interfaces[$cont]['name'];
-					echo "<option value=$interfazSel>$interfazSel</option>";}
-			
-		
-				echo "</select></div>";
-				?>
-				<div class='gateway'>
+				</br> Gateway: </br>
 				<input name='gateway' type='text' placeholder='192.168.80.1'/></br>
-				</div>
+			
 				</br><input type='submit' name='submitButton2' value='Submit'/>
 				</form>
 
@@ -316,7 +302,6 @@ $VlanID = $_POST['VlanID'];
 $VlanName = $_POST['VlanName'];
 $VlanAddress = $_POST['VlanAddress'];
 $dstAddress = $_POST['dstAddress'];
-$gatewayInterface = $_POST['gatewayInterface'];
 $gateway = $_POST['gateway'];
 
 	if(isset($_POST['submitButton'])){
@@ -338,9 +323,9 @@ $gateway = $_POST['gateway'];
 		}
 	}
 
-	else if(isset($_POST['submitButton2'])){
+	if(isset($_POST['submitButton2'])){
 			//IF selected gateway was selected and ip gateway too, send ip gateway
-			if($gateway != null and $gatewayInterface != null){
+			
 				$API = new routeros_api();
 				if ($API->connect($IP, $user, $password)) {
 					$API->comm("/ip/route/add", array(
@@ -350,30 +335,7 @@ $gateway = $_POST['gateway'];
 
 					$API->disconnect();}
 			}
-
-			if($gateway == null and $gatewayInterface != null){
-				$API = new routeros_api();
-				if ($API->connect($IP, $user, $password)) {
-					$API->comm("/ip/route/add", array(
-         				 "dst-address"     => $dstAddress,
-          				"gateway" => $gatewayInterface,
-						));
-
-					$API->disconnect();}
-			}
-
-			if($gateway != null and $gatewayInterface == null){
-				$API = new routeros_api();
-				if ($API->connect($IP, $user, $password)) {
-					$API->comm("/ip/route/add", array(
-         				 "dst-address"     => $dstAddress,
-          				"gateway" => $gateway,
-						));
-
-					$API->disconnect();}
-			}
-
-	}
+	
 
 
 ?>

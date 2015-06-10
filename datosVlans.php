@@ -58,11 +58,11 @@
 				?>
 <?php
 				if(strcmp($identidadRS,"RB") == 0 ){
-					echo "Access
+					echo "<h3>Access</h3>
 						<table class='tablePortsCR'>
 					";
-					echo '<tr><td>Ports</td>';
-					echo '<td>VLAN</td></tr>';
+					echo '<tr><th>Ports</th>';
+					echo '<th>VLAN</th></tr>';
 					for ($cont = 0; $cont < count($portsSwitch); $cont++){
 						if($portsSwitch[$cont]['vlan-mode']!='disabled' and $portsSwitch[$cont]['vlan-header']=='always-strip'){
 						echo '<tr><td>'.$portsSwitch[$cont]['name'].'</td>';
@@ -77,12 +77,11 @@
 				
 					echo "</table>";
 							
-					echo "Trunk
+					echo "<h3>Trunk</h3>
 						<table class='tablePortsCR'>
 					";
-					echo '<tr><td>Ports</td>';
-					echo '<td>Allowed VLANs</td>';
-					echo '<td>Native VLAN</td></tr>';
+					echo '<tr><th>Ports</th>';
+					echo '<th>Allowed VLANs</th></tr>';
 					for ($cont = 0; $cont < count($portsSwitch); $cont++){
 						if($portsSwitch[$cont]['vlan-mode']!='disabled' and $portsSwitch[$cont]['vlan-header']=='add-if-missing'){
 						echo '<tr><td>'.$portsSwitch[$cont]['name'].'</td>';
@@ -101,7 +100,6 @@
 						}	
 
 						echo '</td>';
-						echo '<td>'.$portsSwitch[$cont]['default-vlan-id'].'</td>';
 						echo "<td><form name='button$cont' method='post'>
 							<input type='submit' name='disableTrunkRB$cont' value='X' class='buttonDisable'/>
 							</form></td>";
@@ -120,11 +118,11 @@
 			<?php
 				
 				if(strcmp($identidadRS,"CR") == 0 ){
-					echo "Access
+					echo "<h3>Access</h3>
 						<table class='tablePortsCR'>
 					";
-					echo '<tr><td>Ports</td>';
-					echo '<td>VLAN</td></tr>';
+					echo '<tr><th>Ports</th>';
+					echo '<th>VLAN</th></tr>';
 					for ($cont = 0; $cont < count($estadoAccessCR); $cont++){
 						echo '<tr><td>'.$estadoAccessCR[$cont]['ports'].'</td>';
 						echo '<td>'.$estadoAccessCR[$cont]['new-customer-vid'].'</td>';
@@ -138,12 +136,11 @@
 				
 					echo "</table>";
 							
-					echo "Trunk
+					echo "<h3>Trunk</h3>
 						<table class='tablePortsCR'>
 					";
-					echo '<tr><td>Ports</td>';
-					echo '<td>Allowed VLANs</td>';
-					echo '<td>Native VLAN</td></tr>';
+					echo '<tr><th>Ports</th>';
+					echo '<th>Allowed VLANs</th></tr>';
 			
 					$allPorts= "";
 					for ($cont = 0; $cont < count($estadoTrunkCR); $cont++){
@@ -176,7 +173,7 @@
 						echo '<tr><td>'.$arrayPorts[$cont].'</td>';
 						echo '<td>'.$portsTable.'</td>';
 						$portsTable="";
-							echo '<td>'.'native'.'</td>';
+
 						echo "<td><form name='button$cont' method='post'>
 							<input type='submit' name='disableTrunkCR$cont' value='X' class='buttonDisable'/>
 							</form></td>";

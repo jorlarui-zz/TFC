@@ -37,13 +37,13 @@
 
 		$API->disconnect();}	
 				echo "<table class='SwitchTable'>";
-				$contSwitch=-1;
+				$contSwitch=0;
 				for ($cont = 0; $cont < $numPorts; $cont++){
 						
 						if($Ports[$cont]['master-port']=='none'){
 							$contSwitch=$contSwitch+1;
 							echo "<tr>";
-							echo "<th style='border-bottom: 3px solid ".$colores[$contSwitch].";'>Switch ".$contSwitch."</th></tr>";
+							echo "<th style='border-bottom: 3px solid ".$colores[$contSwitch-1].";'>Switch ".$contSwitch."</th></tr>";
 							echo "<tr>";
 							echo "<td id='master-port'>".$Ports[$cont]['name']." <b>(Master-port)</b></td>";
 							for($cont2 = 0; $cont2 < $numPorts; $cont2++){

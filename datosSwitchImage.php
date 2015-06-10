@@ -34,14 +34,28 @@
 			,"#FFD800","##00FF00","#FF0000","#0000FF","#FF6600","#A16B23","#C9341C","#ECC5A8","#A3CBF1","#79BFA1"
 			,"#FB7374","#FF9900","#4FD5D6","#D6E3B5","#FFD197","#FFFF66","#FFC3CE","#21B6A8","#CDFFFF",""];
 		$API->disconnect();}	
-				$contSwitchImg=-1;
+				$contSwitchImg=0;
 				for ($cont = 0; $cont < $numPorts; $cont++){
 					if($Ports[$cont]['master-port']=='none'){
 
-					$contSwitchImg=$contSwitchImg+1;
+					$contSwitchImg=$contSwitchImg+1;}
 
-						if($statusPorts[$cont]['status']=='link-ok'){	
-							echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:$colores[$contSwitchImg]; enable-background:new 0 0 15 11;' xml:space='preserve'>
+					for($cont2 = 0; $cont2 < $numPorts; $cont2++){
+								if($Ports[$cont]['name']==$Ports[$cont2]['master-port']){
+									if($statusPorts[$cont2]['status']=='link-ok'){
+						echo "<svg version='1.1' id='etherGreen$cont2' style='fill:".$colores[$contSwitchImg-1]."' xmlns='http://www.w3.org/2000/svg'
+						xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
+						width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
+						<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
+						</svg>";
+					}
+									
+								}
+
+							}
+
+					if($statusPorts[$cont]['status']=='link-ok' and $Ports[$cont]['master-port']=='none'){	
+							echo "<svg version='1.1' id='etherMaster$cont' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='5.2%' height='5.2%' viewBox='0 0 15 11' style='fill:".$colores[$contSwitchImg-1]."; enable-background:new 0 0 15 11;' xml:space='preserve'>
 								<style type='text/css'>
 								<![CDATA[
 								.st0{font-size:9px;}
@@ -56,18 +70,9 @@
 							
 						}
 				
-					}
-					else{
-
-						if($statusPorts[$cont]['status']=='link-ok'){
-						echo "<svg version='1.1' id='etherGreen$cont' style='fill:$colores[$contSwitchImg]' xmlns='http://www.w3.org/2000/svg'
-						xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px'
-						width='5.2%' height='5.2%' viewBox='0 0 15 11' style='enable-background:new 0 0 15 11;' xml:space='preserve''>
-						<polygon class='st0' points='10.7,2.7 10.7,0.5 4.5,0.5 4.5,2.7 0.3,2.7 0.3,11 15,11 15,2.7 '/>
-						</svg>";
-					}
-						}
+					
+						
 				}
 
-				echo "<img src='images/$modelo.png'></div>"; 				
+				echo "<img src='images/$modelo.png'></div>"; 					
 ?>

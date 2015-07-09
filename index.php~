@@ -79,13 +79,12 @@
 ?>
 <footer class="site-footer">
   <div id= "footerContainer">
-  	<p>Developed by Jorge Lajara - 2015</p>
+  	<p>Developed by Jorge Lajara, Raul Llinares, David Vaello - 2015</p>
      	<p><a href="http://www.epsa.upv.es/"><img src="images/upv.png" alt="UPV"/> EPSA / UPV</a></p>
   	<p><a href="http://www.upv.es/entidades/DC/index-es.html"><img src="images/dcom.jpg" alt="DCOM"/> DCOM</a></p>
-	
+	<p id="help"><a href="Help.html" alt="Help">Help</a></p>
 
   </div>
-	<p id="help"><a href="Help.html" alt="Help">Help</a></p>
  
 </footer>
 

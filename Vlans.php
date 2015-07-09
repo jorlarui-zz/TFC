@@ -479,6 +479,8 @@
 
 
 
+			
+				
 			if(strcmp($identidadRS,"RB") == 0 ){
 				for ($cont = 0; $cont < count($Ports); $cont++){
 			
@@ -487,7 +489,6 @@
 			
 				}		
 			}
-
 			else if(strcmp($identidadRS,"CR") == 0 ){
 				for ($cont = 0; $cont < $numPortsSwitch; $cont++){
 			
@@ -496,7 +497,10 @@
 			
 				}		
 			}
+	
+			
 
+		
 			
 			echo "</select></div>";
 			?>

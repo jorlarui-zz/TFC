@@ -479,24 +479,16 @@
 
 
 
-			if(strcmp($identidadRS,"RB") == 0 ){
+			
 				for ($cont = 0; $cont < count($Ports); $cont++){
 			
 					$interfazSel = $Ports[$cont]['name'];
 					echo "<option value=$interfazSel>$interfazSel</option>";
 			
 				}		
-			}
-
-			else if(strcmp($identidadRS,"CR") == 0 ){
-				for ($cont = 0; $cont < $numPortsSwitch; $cont++){
 			
-					$interfazSel = $portsSwitch[$cont]['name'];
-					echo "<option value=$interfazSel>$interfazSel</option>";
-			
-				}		
-			}
 
+		
 			
 			echo "</select></div>";
 			?>

@@ -31,7 +31,7 @@
 		$statusPorts = $API->parse_response($READ);
 		$API->disconnect();}	
 				echo "
-				<h3>Rules</h3>
+				<h3>ACLs</h3>
 				<table class='ACLRules'>
 				<tr>
 					

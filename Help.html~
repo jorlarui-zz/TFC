@@ -30,7 +30,7 @@
         <div id="navbar" class="collapse navbar-collapse">
 
 	    <ul class="nav navbar-nav navbar-right">
-                <li><a id="logOut" href="Login.php">Back to Login</a></li>
+                <li><a id="logOut" href="index.php">Back to Login</a></li>
             </ul>
         </div> 
     	</div>
@@ -43,7 +43,7 @@
 	<div class="jumbotron">
   		<h1></h1>
   			<p>Mikrotik Switching API is a open source web project for developing VLANs easily to Mikrotik devices.</p>
-  		<p><iframe width="540" height="310" src="http://www.wideo.co/embed/9387391430991834033?height=300&width=500" frameborder="0"></iframe></p>
+  		<p><iframe width="540" height="310" src="http://www.wideo.co/embed/9387391430991834033?height=300&width=500" frameborder="0" style=""></iframe></p>
 		
 	</div>
 	
@@ -144,15 +144,12 @@ Is recommended to access locally or through a VPN.
 				-ACLs.php</br>
 				-Help.html</br>
 				-Login.php</br>
-				-Ports.php</br>
 				-Routing.php</br>
 				-Status.php</br>
 				-Switch.php</br>
 				-Vlans.php</br>
 				-datosCPU.php</br>
 				-datosGraficas.php</br>
-				-datosPorts.php</br>
-				-datosPortsImage.php</br>
 				-datosRouting.php</br>
 				-datosRules.php</br>
 				-datosStatus.php</br>
@@ -256,44 +253,6 @@ If the server can't connect the device an error message will be displayed. Pleas
 <ul>
 		
 	<li>VLANs status:  </br>
-			<p class="tabulated">Displays the 'VLAN' tag of each ports that is involved in each VLAN.  </p></li>
-			<img src="images/helpImages/VLAN1.png" alt="Switch status"/>
-	<li>Info Box: 
-			<p class="tabulated">Shows information of the device: model, CPU load and up-time.</p></li>
-</ul>			
-</p>
-
-<b>Bottom part:</b>
-<ul>
-	<li>VLANs Distribution:</br>
-			<p class="tabulated">Displays the distribution of each VLAN and its interfaces.</p>
-			<p class="tabulated">Gives the option to delete each VLAN.</p></li>
-			<img src="images/helpImages/VLAN2.png" alt="VLANs Distribution"/>
-			</li>
-	<li>Form VLANs:</br>
-			<p class="tabulated">Gives the option to create VLANs. Is needed: an ID, number of interfaces belonging to the VLAN.</p>
-			<p class="tabulated underline">If the device is a Routerboard is required to include the 'switch-cpu' of the ports.</p>
-			<p class="tabulated underline">Only can be a VLAN with the same ID, if the user want to edit it, delete and create a new one.</p>
-			</li>
-			<img src="images/helpImages/VlanRB.png" alt="Form VLANS Routerboard"/>
-			
-</ul>
-
-			</div>
-
-			
-
-
-			</div>
-
-			<div id='ports'><a name='ports'></a>
-				<h3>Ports</h3>
-			<p>Shows information about the status of each port (No Switchport, Access or Trunk). It has two parts:</p>
-<p>
-<b>Top part:</b>
-<ul>
-		
-	<li>Port status:  </br>
 			<p class="tabulated">Displays the tag (No Switchport, Access or Trunk) of the active port depending on its configuration.  </p></li>
 			<img src="images/helpImages/Ports1.png" alt="Port status"/>
 	<li>Info Box: 
@@ -303,28 +262,21 @@ If the server can't connect the device an error message will be displayed. Pleas
 
 <b>Bottom part:</b>
 <ul>
-			
-	<li>Ports Distribution</br>
-			<p class="tabulated">If the device is a Routerboard a table is displayed with the name of the interface, and their type of port.</p>
-			<img src="images/helpImages/PortsRB.png" alt="Ports RB"/>
-			<p class="tabulated">If the device is a Cloud Router Switch two tables are displayed: the first one is the Access table and is shown the name of the interface and the VLAN. The second one is the Trunk table and is shown the VLAN ID and the interfaces belonging. </p>
-			<img src="images/helpImages/PortsCR.png" alt="Ports CR"/>
-			<p class="tabulated">Gives the option to delete the VLANs or the Trunk.</p>
+	<li>Ports Distribution:</br>
+			<p class="tabulated">Displays the distribution of each Port depending on Access or Trunk and its VLANs.</p>
+			<p class="tabulated">Gives the option to reset each Port to the default configuration.</p></li>
+			<img src="images/helpImages/VLAN2.png" alt="VLANs Distribution"/>
 			</li>
-
-	<li>Form Ports: 
-			<p class="tabulated">Gives the option to edit the interface type in three options:</p></li>
-			<p class="tabulated">Access: Is needed the number of the VLAN.</p>
-			<p class="tabulated">Trunk: Two different menus depending on the device:</p>
-			<p class="dobleTabulated">Routerboard: Gives the option to enter the native VLAN . <text class="underline">Is important to choose the switchcpu interface and tick 'Switch CPU Fallback' to enrute the traffic.</text></p>
-			<img src="images/helpImages/Fallback.png" alt="Fallback"/>
-			<p class="dobleTabulated">Cloud Router Switch: Is not needed to choose the interface in the select box. Instead, is needed the ID of the VLAN and the interfaces belonging.</p>
-			<p class="tabulated">No Switchport: Gives the option to enter an IP Address.</p>
-			<p class="tabulated underline">Only can be a VLAN with the same ID, if the user want to edit it, delete and create a new one.</p>
+	<li>Form VLANs:</br>
+			<p class="tabulated">Gives the option to set the desired Port in mode Access, Trunk or No Switchport.</p>
+			<p class="tabulated underline">If the desired option is Access is needed to stablish the Access VLAN.</p>
+			<p class="tabulated underline">If the desired option is Trunk is needed to stablish the allowed VLAN or VLANs.</p>
+			<p class="tabulated underline">If the desired option is No Switchport an optional IP can be stablished.</p>
 			</li>
-			
+			<img src="images/helpImages/VlanRB.png" alt="Form VLANS Routerboard"/>
 			
 </ul>
+
 
 			</div>
 
@@ -351,12 +303,17 @@ If the server can't connect the device an error message will be displayed. Pleas
 	<li>Routing info:</br>
 			<p class="tabulated">Shows information about the VLAN interface (VLAN ID, Interface and the IP address), used to route the VLANs.</p>
 			<p class="tabulated">Gives the option to delete the VLAN interface and the IP Address associated.</p></li>
+			<p class="tabulated">Also shows information about the static and dynamic routes.</p>
+			<p class="tabulated">Gives the option to delete the desired route.</p></li>
 			<img src="images/helpImages/Routing1.png" alt="Routing info"/>
 			</li>
 	<li>Form Routing:</br>
 			<p class="tabulated">Gives the option to create the VLAN interface to route the VLANs.</p>
 			<p class="tabulated">Is needed  the interface by which hangs the VLAN, an ID, a name, an IP address.</p>
 			<p class="tabulated underline">Only can be a VLAN interface with the same ID, if the user want to edit it, delete and create a new one.</p>
+			<p class="tabulated">Also gives the option to create routes.</p>
+			<p class="tabulated">Is needed the destination address and the gateway.</p>
+
 			</li>
 			<img src="images/helpImages/Routing2.png" alt="Form Routing"/>
 			
@@ -386,19 +343,13 @@ If the server can't connect the device an error message will be displayed. Pleas
 <b>Bottom part:</b>
 <ul>
 	<li>Rules creation:</br>
-			<p class="tabulated">Gives the option to create firewall rules. 5 options:</p>
-			<p class="dobleTabulated">Action: Accept or Deny.</p>
-			<p class="dobleTabulated">Source IP.</p>
-			<p class="dobleTabulated">Destination IP.</p>
-			<p class="dobleTabulated">Protocol: TCP, UDP or ICMP.</p>
-			<p class="dobleTabulated">Source Port.</p>
-			<p class="dobleTabulated">Destination Port.</p>
+			<p class="tabulated">Gives the option to create a firewall rules to permit/deny the traffic between VLAN interfaces.
 			<p class="tabulated underline">The chain by default is 'forward' because the objective is to filter VLANs.</p>
 			</li>
 			<img src="images/helpImages/ACL1.png" alt="Rules creation"/>
 			
 	<li>Rules information:</br>
-			<p class="tabulated">Shows information about the firewall rules in a table: Action, source IP, destination IP, protocol, source port and destination port.</p>
+			<p class="tabulated">Shows information about the firewall rules in a table: src. VLAN, action, dst.VLAN.</p>
 			
 			</li>
 			<img src="images/helpImages/ACL2.png" alt="Rules information"/>
@@ -425,13 +376,11 @@ If the server can't connect the device an error message will be displayed. Pleas
 			<ul>
 				<li>1- Check if ports are active. (Status)</li>
 				<li>2- Check if involved ports are in the same switch. (Switch)</li>
-				<li>3- Create VLAN with the desired ports. (VLANs)</li>	
-				<img src="images/helpImages/Example1-1.png" alt="Step 3"/>
-				<li>4- Desired Ports mode Access. (Ports)</li>
+				<li>3- Desired Ports mode Access. (VLANs)</li>
 				<img src="images/helpImages/Example1-2.png" alt="Step 4"/>
-				<li>5- Set 'switch-cpu' mode Trunk to allow traffic between the same Switch. (Ports)</li>
+				<li>4- Set 'switch-cpu' mode Trunk to allow traffic between the same Switch. (Ports)</li>
 				<img src="images/helpImages/Example1-3.png" alt="Step 5"/>
-				<li>6- Give IP Address to the devices and check connection.</li>
+				<li>5- Give IP Address to the devices and check connection.</li>
 				
 			</ul>
 
@@ -444,12 +393,10 @@ If the server can't connect the device an error message will be displayed. Pleas
 			<ul>
 				<li>1- Check if ports are active. (Status)</li>
 				<li>2- Check if involved ports are in the same switch  in each device. (Switch)</li>
-				<li>3- Create VLAN with the desired ports in each device (Ports Trunk and Access). (VLANs)</li>	
-				<img src="images/helpImages/Example2-1.png" alt="Step 3"/>
-				<li>4- Desired Ports mode Access in each device. (Ports)</li>
-				<li>5- Set 'switch-cpu' and the desired port to make Trunk of each device in mode Trunk. (Ports)</li>
+				<li>3- Desired Ports mode Access in each device. (Ports)</li>
+				<li>4- Set 'switch-cpu' and the desired port to make Trunk of each device in mode Trunk. (Ports)</li>
 				<img src="images/helpImages/Example2-2.png" alt="Step 5"/>
-				<li>6- Give IP Address to the devices and check connection.</li>
+				<li>5- Give IP Address to the devices and check connection.</li>
 				
 			</ul>
 
@@ -465,9 +412,8 @@ If the server can't connect the device an error message will be displayed. Pleas
 			
 				<li>1- Check if ports are active. (Status)</li>
 				<li>2- Check if involved ports are in the same switch  in each device. (Switch)</li>
-				<li>3- Create VLAN with the desired ports in each device (Ports Trunk and Access). (VLANs)</li>	
-				<li>4- Desired Ports mode Access in each device. (Ports)</li>
-				<li>5- Set 'switch-cpu' and the desired port to make Trunk of each device in mode Trunk. (Ports)</li>
+				<li>3- Desired Ports mode Access in each device. (Ports)</li>
+				<li>4- Set 'switch-cpu' and the desired port to make Trunk of each device in mode Trunk. (Ports)</li>
 
 
 				
@@ -476,12 +422,10 @@ If the server can't connect the device an error message will be displayed. Pleas
 			<ul>
 			
 				<li>1- Check if ports are active. (Status)</li>
-				<li>2- Create VLAN with the interfaces involved (Trunk port and switch-cpu and tick the switch). (VLANs)</li>
-				<img src="images/helpImages/Example3-1.png" alt="Step 2"/>
-				<li>3- Set interface of the desired port to make Trunk mode Trunk and check the switchcpu of the port in mode Fallback. (Ports).</li>	
+				<li>2- Set interface of the desired port to make Trunk in mode Trunk.</li>
+				<li>3- Set a VLAN interface (name, ID and interface) and an IP Address to enroute traffic. (Routing)</li>
 				<img src="images/helpImages/Fallback.png" alt="Step 3"/>
-				<li>4- Set a VLAN interface (name, ID and interface) and an IP Address to enroute traffic. (Routing)</li>
-				<li>5- Give IP Address to the devices and check connection.</li>
+				<li>4- Give IP Address to the devices and check connection.</li>
 
 
 				
